@@ -1,0 +1,64 @@
+package org.prometheus.relatorios;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.dto.AusenciaExtraFaturamentoDTO;
+import org.prometheus.service.AusenciaExtraFaturamentoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
+@Component
+public class AbaServicosExtraAusencias extends Relatorio {
+
+	private static final int LAYOUT_COLUMNS_COUNT = 4;
+
+	@Autowired
+	private AusenciaExtraFaturamentoService ausenciaExtraService;
+
+	public void write(XSSFWorkbook workBook, String coEquipe) throws InvalidFormatException, IOException {
+
+		carregarFontes(workBook);
+
+		carregarEstilos(workBook);
+
+		XSSFSheet sheet = workBook.createSheet("Extras e Ausências");
+
+		sheet.setDisplayGridlines(false);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+
+		XSSFRow row = addNewRow(sheet);
+
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Serviços extra e ausências", //
+				ALIGN_CENTER_WHITE_BOLD, false);
+
+		List<AusenciaExtraFaturamentoDTO> lista = ausenciaExtraService.listar(coEquipe);
+
+		int pos = 0;
+		row = addNewRow(sheet);
+		addCell(row, pos++, "Fatura", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Sprint", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Extra", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Ausência", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		for (AusenciaExtraFaturamentoDTO a : lista) {
+
+			pos = 0;
+
+			row = addNewRow(sheet);
+			addCell(row, pos++, a.getDeFatura());
+			addCell(row, pos++, a.getNuCicloTrabalho() == null ? "" : a.getNuCicloTrabalho().toString(), ALIGN_CENTER);
+			addCell(row, pos++, a.getQtDiaServicoExtra());
+			addCell(row, pos++, a.getQtDiaAusencia());
+
+		}
+
+		// empty line
+		addNewRow(sheet);
+	}
+}

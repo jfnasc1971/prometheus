@@ -1,0 +1,18 @@
+nu_fatura
+nu_tipo_indicador
+no_tipo_indicador
+sg_tipo_indicador
+dh_geracao_indicador_equipe
+ic_aplica_indicador
+ic_apenas_faturamento_atual
+vr_calculo_indicador
+vr_peso_tipo_indicador
+vr_faixa_fns
+
+addCell(row, pos++, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Descrição", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Data geração", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Aplica", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Valor Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Peso Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+addCell(row, pos++, "Valor FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);

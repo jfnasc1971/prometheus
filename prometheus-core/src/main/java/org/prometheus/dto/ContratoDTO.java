@@ -1,6 +1,8 @@
 package org.prometheus.dto;
 
-public class ContratoDTO {
+import java.io.Serializable;
+
+public class ContratoDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

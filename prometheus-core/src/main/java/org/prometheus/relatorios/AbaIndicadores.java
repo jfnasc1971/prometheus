@@ -1,7 +1,6 @@
 package org.prometheus.relatorios;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -14,8 +13,6 @@ import org.prometheus.dto.SituacaoEntregaIndicadorDTO;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
 import org.prometheus.service.IndicadorService;
-import org.prometheus.service.PrecosEquipeService;
-import org.prometheus.service.QntdeMembrosEquipeService;
 import org.prometheus.service.SituacaoEntregaIndicadorService;
 import org.prometheus.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +30,6 @@ public class AbaIndicadores extends Relatorio {
 
 	@Autowired
 	private SituacaoEntregaIndicadorService situacaoEntregaIndicadorService;
-
-	@Autowired
-	private QntdeMembrosEquipeService qntdeMembrosEquipeService;
-
-	@Autowired
-	private PrecosEquipeService precosEquipeService;
 
 	@Autowired
 	private IndicadorService indicadorService;

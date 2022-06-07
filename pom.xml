@@ -6,6 +6,12 @@
   <version>1.0</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <jdk.version>1.8</jdk.version>
+    <spring.version>4.3.30.RELEASE</spring.version>
+    <poi.version>4.1.2</poi.version>
+  </properties>
+
   <modules>
     <module>prometheus-core</module>
     <module>prometheus-ear</module>

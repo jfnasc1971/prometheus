@@ -168,10 +168,10 @@ public abstract class Relatorio {
 		RegionUtil.setBorderRight(BorderStyle.THIN, cellRangeAddress, sheet);
 		RegionUtil.setBorderLeft(BorderStyle.THIN, cellRangeAddress, sheet);
 
-		RegionUtil.setTopBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-		RegionUtil.setRightBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-		RegionUtil.setBottomBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-		RegionUtil.setLeftBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
+		RegionUtil.setTopBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+		RegionUtil.setRightBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+		RegionUtil.setBottomBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+		RegionUtil.setLeftBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
 
 	}
 
@@ -209,10 +209,10 @@ public abstract class Relatorio {
 			RegionUtil.setBorderRight(BorderStyle.THIN, cellRangeAddress, sheet);
 			RegionUtil.setBorderLeft(BorderStyle.THIN, cellRangeAddress, sheet);
 
-			RegionUtil.setTopBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-			RegionUtil.setRightBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-			RegionUtil.setBottomBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
-			RegionUtil.setLeftBorderColor(IndexedColors.BLACK1.index, cellRangeAddress, sheet);
+			RegionUtil.setTopBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+			RegionUtil.setRightBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+			RegionUtil.setBottomBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+			RegionUtil.setLeftBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
 		}
 
 		return cell1;

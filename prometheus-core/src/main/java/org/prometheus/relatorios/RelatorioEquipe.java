@@ -85,26 +85,30 @@ public class RelatorioEquipe extends Relatorio {
 
 	}
 
-	public void gerar(String coEquipe) {
-		gerar(coEquipe, null);
+	public String gerar(String coEquipe) {
+		(new File(PATH)).mkdirs();
+		return gerar(coEquipe, null);
 	}
 
-	public void gerar(String coEquipe, Date dtFinalFatura) {
+	public String gerar(String coEquipe, Date dtFinalFatura) {
 
 		List<FaturamentoDTO> faturamentos = service.listar(coEquipe, dtFinalFatura);
 
 		try {
-			writeFile(coEquipe, faturamentos);
+			return writeFile(coEquipe, faturamentos);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
-	public void writeFile(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
+	public String writeFile(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
 
 		File file = new File(PATH + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
+		System.out.println(file.getAbsolutePath());
 
 		XSSFWorkbook wb = new XSSFWorkbook();
 
@@ -165,6 +169,7 @@ public class RelatorioEquipe extends Relatorio {
 		wb.write(fos);
 		wb.close();
 
+		return file.getAbsolutePath();
 	}
 
 }

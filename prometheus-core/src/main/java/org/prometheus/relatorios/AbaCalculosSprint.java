@@ -6,8 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -37,8 +35,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 public class AbaCalculosSprint extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 15;
-
-	private static Logger LOG = LogManager.getLogger(AbaCalculosSprint.class);
 
 	@Autowired
 	private SolicitacaoService solicitacaoService;

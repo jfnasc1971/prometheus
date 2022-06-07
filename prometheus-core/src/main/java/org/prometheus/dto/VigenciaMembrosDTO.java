@@ -3,6 +3,8 @@ package org.prometheus.dto;
 public class VigenciaMembrosDTO {
 
 	private Long nuEquipe;
+	private Long nuPerfil;
+	private String dePerfil;
 	private java.util.Date dtInicioVigenciaMembros;
 	private java.util.Date dtFinalVigenciaMembros;
 	private java.math.BigDecimal qtMembrosEquipe;
@@ -64,6 +66,34 @@ public class VigenciaMembrosDTO {
 
 	public java.math.BigDecimal getQtEfetiva() {
 		return this.qtEfetiva;
+	}
+
+	/**
+	 * @return the nuPerfil
+	 */
+	public Long getNuPerfil() {
+		return nuPerfil;
+	}
+
+	/**
+	 * @param nuPerfil the nuPerfil to set
+	 */
+	public void setNuPerfil(Long nuPerfil) {
+		this.nuPerfil = nuPerfil;
+	}
+
+	/**
+	 * @return the dePerfil
+	 */
+	public String getDePerfil() {
+		return dePerfil;
+	}
+
+	/**
+	 * @param dePerfil the dePerfil to set
+	 */
+	public void setDePerfil(String dePerfil) {
+		this.dePerfil = dePerfil;
 	}
 
 }

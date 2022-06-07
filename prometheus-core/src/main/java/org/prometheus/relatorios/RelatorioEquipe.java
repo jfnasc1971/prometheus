@@ -99,7 +99,7 @@ public class RelatorioEquipe extends Relatorio {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
@@ -123,8 +123,8 @@ public class RelatorioEquipe extends Relatorio {
 		AbaEquipe abaEquipe = ctxt.getBean(AbaEquipe.class);
 		abaEquipe.write(wb, coEquipe, faturamentos);
 
-		//AbaMemoriaCalculo abaMemoria = ctxt.getBean(AbaMemoriaCalculo.class);
-		//abaMemoria.write(wb, coEquipe, faturamentos);
+		// AbaMemoriaCalculo abaMemoria = ctxt.getBean(AbaMemoriaCalculo.class);
+		// abaMemoria.write(wb, coEquipe, faturamentos);
 
 		Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
 		XSSFCell cellValorDevido = null;
@@ -135,8 +135,14 @@ public class RelatorioEquipe extends Relatorio {
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
-		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) 
+				|| Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
 			AbaCalculosAcionamento calculos = ctxt.getBean(AbaCalculosAcionamento.class);
+			insumos = calculos.write(wb, coEquipe, faturamentos);
+		}
+
+		if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo())) {
+			AbaCalculosAcionamentoPerfil calculos = ctxt.getBean(AbaCalculosAcionamentoPerfil.class);
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
@@ -153,16 +159,25 @@ public class RelatorioEquipe extends Relatorio {
 		if (Utils.isNotEmpty(insumos)) {
 
 			// Calculos Valor Devido
-			AbaCalculoValorDevido abaCalculoValorDevido = ctxt.getBean(AbaCalculoValorDevido.class);
-			cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+			if ("D".equals(equipe.getIcDistribuiProfissional())) {
+
+				AbaCalculoVrDevidoPerfil abaCalculoValorDevido = ctxt.getBean(AbaCalculoVrDevidoPerfil.class);
+				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+				
+			} else {
+				
+				AbaCalculoValorDevido abaCalculoValorDevido = ctxt.getBean(AbaCalculoValorDevido.class);
+				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+				
+			}
 
 			// Pagamentos
-			AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
-			XSSFCell cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+			//AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
+			//XSSFCell cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
 
 			// Ajuste
-			AbaAjuste abaAjuste = ctxt.getBean(AbaAjuste.class);
-			abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
+			//AbaAjuste abaAjuste = ctxt.getBean(AbaAjuste.class);
+			//abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
 
 		}
 

@@ -1,7 +1,9 @@
 package org.prometheus.dto;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 
 public class InsumosFaturamentoDTO {
@@ -9,12 +11,15 @@ public class InsumosFaturamentoDTO {
 	private Long nuFatura; // Faturamento
 	private XSSFCell qtDiasFaturamento; // Qtd. Dias Fat.
 	private BigDecimal vrPreco; // Preço
+	private Map<Long, BigDecimal> precosPerfil; // Lista de preços por perfil
+	private Map<Long, BigDecimal> qtEfetivaPerfil; // Quantidade efetiva por perfil
 	private XSSFCell qtEfetiva; // Qtd. Efetiva
 	private XSSFCell qtDiasExtra; // Qtd. Dias Extras
 	private XSSFCell qtDiasAusencia; // Qtd. Dias Ausências
 	private XSSFCell vrPrevistoTermo; // Vr. Previsto Termo
 	private XSSFCell vrFns; // FNS
 	private boolean considerarFNS;
+	private Long nuPerfil;
 
 	/**
 	 * @return the nuFatura
@@ -142,5 +147,85 @@ public class InsumosFaturamentoDTO {
 		this.considerarFNS = considerarFNS;
 	}
 
+	/**
+	 * @return the nuPerfil
+	 */
+	public Long getNuPerfil() {
+		return nuPerfil;
+	}
+
+	/**
+	 * @param nuPerfil the nuPerfil to set
+	 */
+	public void setNuPerfil(Long nuPerfil) {
+		this.nuPerfil = nuPerfil;
+	}
+
+	/**
+	 * @return the precosPerfil
+	 */
+	public Map<Long, BigDecimal> getPrecosPerfil() {
+		if (precosPerfil == null) {
+			precosPerfil = new HashedMap<Long, BigDecimal>();
+		}
+		return precosPerfil;
+	}
+
+	/**
+	 * @param precosPerfil the precosPerfil to set
+	 */
+	public void setPrecosPerfil(Map<Long, BigDecimal> precosPerfil) {
+		this.precosPerfil = precosPerfil;
+	}
+
+	public void addVrPrecoPerfil(Long nuPerfil, BigDecimal vrPreco) {
+		getPrecosPerfil().put(nuPerfil, vrPreco);
+	}
+
+	public BigDecimal getVrPrecoPerfil(Long nuPerfil) {
+
+		BigDecimal result = getPrecosPerfil().get(nuPerfil);
+
+		if (result == null) {
+			return BigDecimal.ZERO;
+		}
+
+		return result;
+	}
+
+	/**
+	 * @return the qtEfetivaPerfil
+	 */
+	public Map<Long, BigDecimal> getQtEfetivaPerfil() {
+		if(qtEfetivaPerfil == null) {
+			qtEfetivaPerfil = new HashedMap<Long, BigDecimal>();
+		}
+		return qtEfetivaPerfil;
+	}
+
+	/**
+	 * @param qtEfetivaPerfil the qtEfetivaPerfil to set
+	 */
+	public void setQtEfetivaPerfil(Map<Long, BigDecimal> qtEfetivaPerfil) {
+		this.qtEfetivaPerfil = qtEfetivaPerfil;
+	}
+	
+	public void addQtEfetivaPerfil(Long nuPerfil, BigDecimal cellQtEfetiva) {
+		if (getQtEfetivaPerfil().get(nuPerfil) != null) {
+			cellQtEfetiva = cellQtEfetiva.add(getQtEfetivaPerfil().get(nuPerfil));
+		}
+		getQtEfetivaPerfil().put(nuPerfil, cellQtEfetiva);
+	}
+
+	public BigDecimal getQtEfetivaPerfil(Long nuPerfil) {
+		
+		BigDecimal result = getQtEfetivaPerfil().get(nuPerfil); 
+		
+		if(result == null) {
+			return BigDecimal.ZERO;
+		}
+		
+		return result;
+	}
 	
 }

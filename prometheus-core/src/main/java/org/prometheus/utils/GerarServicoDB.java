@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GerarServicoDB {
 
-	private static final String VIEW_NAME = "ContratoDTO";
-	private static final String SERVICE_NAME = "ContratoService";
+	private static final String VIEW_NAME = "PerfilDTO";
+	private static final String SERVICE_NAME = "PerfilService";
 
 	@Autowired
 	private DatabaseService databaseService;

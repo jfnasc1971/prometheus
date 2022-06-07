@@ -11,6 +11,7 @@ public class QntdeMembrosEquipeDTO {
 	private java.util.Date dhInclusaoInformacao;
 	private String deJustificativaAlteracao;
 	private Long qtIntervalos;
+	private String dePerfil;
 
 	public void setNuEquipe(Long nuEquipe) {
 		this.nuEquipe = nuEquipe;
@@ -88,6 +89,14 @@ public class QntdeMembrosEquipeDTO {
 	 */
 	public void setQtIntervalos(Long qtIntervalos) {
 		this.qtIntervalos = qtIntervalos;
+	}
+
+	public String getDePerfil() {
+		return dePerfil;
+	}
+
+	public void setDePerfil(String dePerfil) {
+		this.dePerfil = dePerfil;
 	}
 
 	@Override

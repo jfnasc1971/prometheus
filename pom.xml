@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <name>prometheus</name>
-  <groupId>org.prometheus</groupId>
-  <artifactId>prometheus</artifactId>
-  <version>1.0</version>
-  <packaging>pom</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<name>prometheus</name>
+	<groupId>org.prometheus</groupId>
+	<artifactId>prometheus</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
 
-  <properties>
-    <jdk.version>1.8</jdk.version>
-    <spring.version>4.3.30.RELEASE</spring.version>
-    <poi.version>4.1.2</poi.version>
-  </properties>
+	<properties>
+		<jdk.version>1.8</jdk.version>
+		<spring.version>4.3.30.RELEASE</spring.version>
+		<poi.version>4.1.2</poi.version>
+	</properties>
 
-  <modules>
-    <module>prometheus-core</module>
-    <module>prometheus-ear</module>
-    <module>prometheus-web</module>
-  </modules>
+	<modules>
+		<module>prometheus-core</module>
+		<module>prometheus-ear</module>
+		<module>prometheus-web</module>
+	</modules>
 </project>

@@ -188,6 +188,7 @@ public class PrecosEquipeService {
 
 			pstmt = conn.prepareStatement(getDML());
 			pstmt.setString(1, coEquipe);
+			pstmt.setString(2, coEquipe);
 
 			rs = pstmt.executeQuery();
 
@@ -204,6 +205,7 @@ public class PrecosEquipeService {
 				dto.setNuUnidadeMedida(rs.getLong("nu_unidade_medida"));
 				dto.setVrPrecoGrupo(rs.getBigDecimal("vr_preco_grupo"));
 				dto.setIcPrecoPadrao(rs.getString("ic_preco_padrao"));
+				dto.setDePerfil(rs.getString("de_perfil"));
 
 				result.add(dto);
 			}
@@ -220,25 +222,48 @@ public class PrecosEquipeService {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" SELECT");
-		sb.append("   tg.nu_tipo_grupo,");
-		sb.append("   tg.no_tipo_grupo,");
-		sb.append("   p.nu_contrato,");
-		sb.append("   p.nu_tipo_preco,");
-		sb.append("   p.dt_inicio_vigencia,");
-		sb.append("   p.dt_final_vigencia,");
-		sb.append("   p.nu_unidade_medida,");
-		sb.append("   p.vr_preco_grupo,");
-		sb.append("   p.ic_preco_padrao");
-		sb.append(" FROM");
-		sb.append("   gct.gcttb087_equipe e");
-		sb.append("   INNER JOIN gct.gcttb165_preco_contrato_equipe p ON (");
-		sb.append("     p.nu_contrato = e.nu_contrato");
-		sb.append("     AND p.nu_tipo_grupo = e.nu_tipo_grupo");
-		sb.append("   )");
-		sb.append("   INNER JOIN gct.gcttb032_tipo_grupo tg ON tg.nu_tipo_grupo = p.nu_tipo_grupo");
-		sb.append(" WHERE");
-		sb.append("   e.co_equipe = ?");
+		sb.append("SELECT "); 
+		sb.append("  tg.nu_tipo_grupo, "); 
+		sb.append("  tg.no_tipo_grupo, "); 
+		sb.append("  p.nu_contrato, "); 
+		sb.append("  p.nu_tipo_preco, "); 
+		sb.append("  p.dt_inicio_vigencia, "); 
+		sb.append("  p.dt_final_vigencia, "); 
+		sb.append("  p.nu_unidade_medida, "); 
+		sb.append("  p.vr_preco_grupo, "); 
+		sb.append("  p.ic_preco_padrao, "); 
+		sb.append("  'N/A'::text de_perfil "); 
+		sb.append("FROM "); 
+		sb.append("  gct.gcttb087_equipe e "); 
+		sb.append("  INNER JOIN gct.gcttb165_preco_contrato_equipe p ON ( "); 
+		sb.append("    p.nu_contrato = e.nu_contrato "); 
+		sb.append("    AND p.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("  ) "); 
+		sb.append("  INNER JOIN gct.gcttb032_tipo_grupo tg ON tg.nu_tipo_grupo = p.nu_tipo_grupo "); 
+		sb.append("WHERE "); 
+		sb.append("  co_equipe = ? "); 
+		sb.append("union "); 
+		sb.append("SELECT "); 
+		sb.append("  tg.nu_tipo_grupo, "); 
+		sb.append("  tg.no_tipo_grupo, "); 
+		sb.append("  p.nu_contrato, "); 
+		sb.append("  p.nu_tipo_preco, "); 
+		sb.append("  p.dt_inicio_vigencia, "); 
+		sb.append("  p.dt_final_vigencia, "); 
+		sb.append("  p.nu_unidade_medida, "); 
+		sb.append("  p.vr_preco_grupo, "); 
+		sb.append("  p.ic_preco_padrao, "); 
+		sb.append("  pp.de_perfil "); 
+		sb.append("FROM "); 
+		sb.append("  gct.gcttb087_equipe e "); 
+		sb.append("  INNER JOIN gct.gcttb524_preco_cntrto_equipe_perfil p ON ( "); 
+		sb.append("    p.nu_contrato = e.nu_contrato "); 
+		sb.append("    AND p.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("  ) "); 
+		sb.append("  INNER JOIN gct.gcttb032_tipo_grupo tg ON tg.nu_tipo_grupo = p.nu_tipo_grupo "); 
+		sb.append("  inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = p.nu_perfil "); 
+		sb.append("WHERE "); 
+		sb.append("  co_equipe = ? ");
 
 		return sb.toString();
 	}

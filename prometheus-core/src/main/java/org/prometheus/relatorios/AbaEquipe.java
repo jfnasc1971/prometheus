@@ -129,11 +129,19 @@ public class AbaEquipe extends Relatorio {
 		List<PrecosEquipeDTO> precos = precosEquipeService.listar(coEquipe);
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Preços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			addMergedRegion(sheet, row, 0, 4, "Preços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		} else {
+			addMergedRegion(sheet, row, 0, 2, "Preços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		}
 
 		pos = 0;
 		row = addNewRow(sheet);
 
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		}
 		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -143,6 +151,9 @@ public class AbaEquipe extends Relatorio {
 			pos = 0;
 			row = addNewRow(sheet);
 
+			if ("D".equals(equipe.getIcDistribuiProfissional())) {
+				addMergedRegion(sheet, row, pos++, pos++, preco.getDePerfil());
+			}
 			addCell(row, pos++, preco.getDtInicioVigencia());
 			addCell(row, pos++, preco.getDtFinalVigencia());
 			addCell(row, pos++, preco.getVrPrecoGrupo());
@@ -158,9 +169,18 @@ public class AbaEquipe extends Relatorio {
 
 		pos = 0;
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			addMergedRegion(sheet, row, 0, 4, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		}
+		else {
+			addMergedRegion(sheet, row, 0, 2, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		}
 
 		row = addNewRow(sheet);
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		}
 		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -170,6 +190,9 @@ public class AbaEquipe extends Relatorio {
 			row = addNewRow(sheet);
 
 			if (membro.getQtIntervalos() <= 1) {
+				if ("D".equals(equipe.getIcDistribuiProfissional())) {
+					addMergedRegion(sheet, row, pos++, pos++, membro.getDePerfil());
+				}
 				addCell(row, pos++, membro.getDtInicioVigenciaMembros());
 				addCell(row, pos++, membro.getDtFinalVigenciaMembros());
 				addCell(row, pos++, membro.getQtMembrosEquipe());

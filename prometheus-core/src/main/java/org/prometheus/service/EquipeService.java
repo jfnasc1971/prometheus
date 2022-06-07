@@ -55,6 +55,7 @@ public class EquipeService {
 				dto.setIcPermiteServicoExtra(rs.getString("ic_permite_servico_extra"));
 				dto.setIcPermiteRegistroAusencia(rs.getString("ic_permite_registro_ausencia"));
 				dto.setDtConsiderarFns(rs.getDate("dt_considerar_fns"));
+				dto.setIcDistribuiProfissional(rs.getString("ic_distribui_profissional"));
 
 			}
 		} catch (SQLException e) {
@@ -73,7 +74,8 @@ public class EquipeService {
 		sb.append("SELECT "); 
 		sb.append("  c.nu_contrato, "); 
 		sb.append("  c.no_contrato, "); 
-		sb.append("  c.co_contrato, "); 
+		sb.append("  c.co_contrato, ");
+		sb.append("  c.ic_distribui_profissional, ");
 		sb.append("  tg.nu_tipo_grupo, "); 
 		sb.append("  tg.no_tipo_grupo, "); 
 		sb.append("  e.nu_equipe, "); 

@@ -2,6 +2,7 @@ package org.prometheus.relatorios;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +11,18 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.dto.AusenciaExtraFaturamentoDTO;
 import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.dto.PerfilDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
+import org.prometheus.service.AusenciaExtraFaturamentoService;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
+import org.prometheus.service.PerfilService;
 import org.prometheus.service.PrecosEquipeService;
 import org.prometheus.service.VigenciaMembrosService;
 import org.prometheus.utils.DateUtil;
@@ -31,6 +36,12 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 12;
+
+	@Autowired
+	private AusenciaExtraFaturamentoService ausenciaExtraService;
+
+	@Autowired
+	private PerfilService perfilService;
 
 	@Autowired
 	private VigenciaMembrosService vigenciasMembrosService;
@@ -72,7 +83,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
 		setColumnWidth(sheet, 3, 5); // Coluna D
-		setColumnWidth(sheet, 4, 80); // Coluna E
+		setColumnWidth(sheet, 4, 75); // Coluna E
 
 		XSSFRow row = null;
 
@@ -92,6 +103,12 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					equipe.getNuContrato(), equipe.getNuEquipe(), faturamento.getNuFatura(),
 					faturamento.getDeFatura()));
 
+			int pos = 0;
+
+			XSSFCell cellQtDiasFaturamento = null;
+			XSSFCell cellInicioVigencias = null;
+			XSSFCell cellFinalVigencias = null;
+
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
 			insumo.setNuFatura(faturamento.getNuFatura());
@@ -109,20 +126,98 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 			row = addNewRow(sheet);
 
-			int posRowVigencias = row.getRowNum(); // preciso guardar essa posicao
+			int rowNumSecao1 = row.getRowNum(); // preciso guardar essa posicao
+			int rowNumSecao2 = row.getRowNum(); // preciso guardar essa posicao
 
+			/**
+			 * Dias Trabalhados no Faturamento
+			 */
+			row = getRow(sheet, rowNumSecao1++);
+			addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+			row = getRow(sheet, rowNumSecao1++);
+			addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
+			addCell(row, 1, "Dt. Final", ALIGN_CENTER_BOLD);
+			addCell(row, 2, "Qt. Dias", ALIGN_CENTER_BOLD);
+
+			row = getRow(sheet, rowNumSecao1++);
+			addCell(row, 0, faturamento.getDtInicioFatura());
+			addCell(row, 1, faturamento.getDtFinalFatura());
+			cellQtDiasFaturamento = addCell(row, 2, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
+
+			/**
+			 * Ausências/Extras
+			 */
+			row = getRow(sheet, rowNumSecao2++);
+			addMergedRegion(sheet, row, 4, 9, "Ausências/Extras", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+			row = getRow(sheet, rowNumSecao2++);
+			pos = 4;
+			addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Qt. Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Qt. Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Valor Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Valor Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+			List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
+
+			XSSFCell cellVrExtras = null;
+			XSSFCell cellVrAusencias = null;
+			List<XSSFCell> listaVrAusencias = new ArrayList<XSSFCell>();
+			List<XSSFCell> listaVrExtras = new ArrayList<XSSFCell>();
+
+			for (PerfilDTO perfil : perfis) {
+
+				AusenciaExtraFaturamentoDTO ausenciaExtra = ausenciaExtraService.findBy(equipe.getNuEquipe(), //
+						faturamento.getNuFatura(), perfil.getNuPerfil());
+
+				row = getRow(sheet, rowNumSecao2++);
+				pos = 4;
+
+				addCell(row, pos++, perfil.getDePerfil());
+
+				XSSFCell cellvrPrecoGrupo = null;
+				XSSFCell cellQtExtras = null;
+				XSSFCell cellQtAusencias = null;
+
+				if (ausenciaExtra == null) {
+					cellQtAusencias = addCell(row, pos++, BigDecimal.ZERO);
+					cellQtExtras = addCell(row, pos++, BigDecimal.ZERO);
+				} else {
+					cellQtAusencias = addCell(row, pos++, ausenciaExtra.getQtDiaAusencia());
+					cellQtExtras = addCell(row, pos++, ausenciaExtra.getQtDiaServicoExtra());
+				}
+
+				BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
+						faturamento.getNuFatura(), perfil.getNuPerfil());
+
+				cellvrPrecoGrupo = addCell(row, pos++, vrPrecoGrupo == null ? BigDecimal.ZERO : vrPrecoGrupo);
+
+				listaVrAusencias.add(setCellFormula(sheet, row, //
+						String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+						pos++));
+				listaVrExtras.add(setCellFormula(sheet, row, //
+						String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+						pos++));
+			}
+
+			// blank
+			row = getRow(sheet, rowNumSecao2++);
+
+			/**
+			 * Vigência dos Membros do Faturamento
+			 */
+			row = getRow(sheet, rowNumSecao2++);
 			addMergedRegion(sheet, row, 4, 11, "Vigência dos Membros do Faturamento", //
 					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 			List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
 					equipe.getNuEquipe());
 
-			XSSFCell cellInicioVigencias = null;
-			XSSFCell cellFinalVigencias = null;
-
 			if (Utils.isNotEmpty(vigencias)) {
 
-				int pos = 4;
+				pos = 4;
 
 				row = addNewRow(sheet);
 				addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -168,42 +263,46 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 				}
 
-				if (cellFinalVigencias == null) {
-					cellFinalVigencias = cellInicioVigencias;
+				if (Utils.isNotEmpty(listaVrAusencias)) {
+					pos = 10;
+					row = addNewRow(sheet);
+					addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+					cellVrAusencias = setCellFormula(sheet, row, //
+							"sum(" + listaVrAusencias.get(0).getReference() + ":" + //
+									listaVrAusencias.get(listaVrAusencias.size() - 1).getReference() + ")",
+							pos++);
+					insumo.setVrAusencias(cellVrAusencias);
+				}
+
+				if (Utils.isNotEmpty(listaVrExtras)) {
+					pos = 10;
+					row = addNewRow(sheet);
+					addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+					cellVrExtras = setCellFormula(sheet, row, //
+							"sum(" + listaVrExtras.get(0).getReference() + ":" + //
+									listaVrExtras.get(listaVrExtras.size() - 1).getReference() + ")",
+							pos++);
+					insumo.setVrExtras(cellVrExtras);
 				}
 
 				pos = 10;
 				row = addNewRow(sheet);
-				addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				setCellFormula(sheet, row, "sum(" + cellInicioVigencias.getReference() + ":" + //
-						cellFinalVigencias.getReference() + ")", pos++);
-
-				row = addNewRow(sheet);
+				addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+				cellFinalVigencias = setCellFormula(sheet, row, //
+						"sum(" + cellInicioVigencias.getReference() + ":" + //
+								cellFinalVigencias.getReference() + ") + " + //
+								cellVrExtras.getReference() + " - " + //
+								cellVrAusencias.getReference(),
+						pos++);
+				insumo.setVrPrevistoTermo(cellFinalVigencias);
 			}
 
-			/**
-			 * Dias Trabalhados no Faturamento
-			 */
-			row = getRow(sheet, posRowVigencias++);
-			addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados no Faturamento", //
-					ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-			row = getRow(sheet, posRowVigencias++);
-			addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
-			addCell(row, 1, "Dt. Final", ALIGN_CENTER_BOLD);
-			addCell(row, 2, "Qt. Dias", ALIGN_CENTER_BOLD);
-
-			row = getRow(sheet, posRowVigencias++);
-			addCell(row, 0, faturamento.getDtInicioFatura());
-			addCell(row, 1, faturamento.getDtFinalFatura());
-			addCell(row, 2, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
-
-			int rownum = cellFinalVigencias.getRowIndex() + 3;
+			int rownum = cellFinalVigencias.getRowIndex() + 2;
 
 			row = getRow(sheet, rownum);
-			
+
 			addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
-			
+
 			XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
 			XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
 			XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
@@ -214,7 +313,6 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 			 * Indicadores
 			 */
 			if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-				getRow(sheet, rownum++); // blank
 
 				row = getRow(sheet, rownum++);
 				addMergedRegion(sheet, row, 4, 7, "Grupo configurado para aplicar Indicadores somente a partir de "
@@ -284,7 +382,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 				/**
 				 * Média dos Indicadores
 				 */
-				rownum = cellFinalVigencias.getRowIndex() + 3;
+				rownum = cellFinalVigencias.getRowIndex() + 2;
 
 				row = getRow(sheet, rownum++);
 				addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
@@ -322,27 +420,33 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 				/**
 				 * Desempenho / Valor FNS
 				 */
-				rownum = cellFinalVigencias.getRowIndex() + 8;
+				rownum = cellFinalVigencias.getRowIndex() + 7;
 
 				row = getRow(sheet, rownum++);
 				addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
 				addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
+				addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
 
 				row = getRow(sheet, rownum++);
 
 				XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
 				XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
-
-				getRow(sheet, rownum++); // blank
+				XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
 
 				setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
 				setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
+				setCellFormula(cellValorFinanceiro, //
+						String.format("%s*%s", cellValorFNS.getReference(), cellFinalVigencias.getReference()), //
+						STYLE_DECIMAL);
+
 				insumo.setVrFns(cellValorFNS);
 
 			}
 
 			result.put(faturamento.getNuFatura(), insumo);
 
+			row = addNewRow(sheet);
+			
 		} // faturamentos
 
 		return result;
@@ -357,7 +461,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 		addCell(row, 0, "Atrasados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
 	}
-	
+
 	private XSSFCell listarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 
 		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
@@ -394,7 +498,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 	}
 
 	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		
+
 		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
 
@@ -402,7 +506,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 		addCell(row, 0, "Entregues/Estoque", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
 	}
-	
+
 	private XSSFCell listarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
@@ -442,7 +546,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 		addCell(row, 0, "Contratados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosContratados.size()));
 	}
-	
+
 	private XSSFCell listarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 
 		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),

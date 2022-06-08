@@ -15,6 +15,8 @@ public class InsumosFaturamentoDTO {
 	private Map<Long, BigDecimal> qtEfetivaPerfil; // Quantidade efetiva por perfil
 	private XSSFCell qtEfetiva; // Qtd. Efetiva
 	private XSSFCell qtDiasExtra; // Qtd. Dias Extras
+	private XSSFCell vrExtras; // Valor Extras
+	private XSSFCell vrAusencias; // Valor Ausências
 	private XSSFCell qtDiasAusencia; // Qtd. Dias Ausências
 	private XSSFCell vrPrevistoTermo; // Vr. Previsto Termo
 	private XSSFCell vrFns; // FNS
@@ -197,7 +199,7 @@ public class InsumosFaturamentoDTO {
 	 * @return the qtEfetivaPerfil
 	 */
 	public Map<Long, BigDecimal> getQtEfetivaPerfil() {
-		if(qtEfetivaPerfil == null) {
+		if (qtEfetivaPerfil == null) {
 			qtEfetivaPerfil = new HashedMap<Long, BigDecimal>();
 		}
 		return qtEfetivaPerfil;
@@ -209,7 +211,7 @@ public class InsumosFaturamentoDTO {
 	public void setQtEfetivaPerfil(Map<Long, BigDecimal> qtEfetivaPerfil) {
 		this.qtEfetivaPerfil = qtEfetivaPerfil;
 	}
-	
+
 	public void addQtEfetivaPerfil(Long nuPerfil, BigDecimal cellQtEfetiva) {
 		if (getQtEfetivaPerfil().get(nuPerfil) != null) {
 			cellQtEfetiva = cellQtEfetiva.add(getQtEfetivaPerfil().get(nuPerfil));
@@ -218,14 +220,42 @@ public class InsumosFaturamentoDTO {
 	}
 
 	public BigDecimal getQtEfetivaPerfil(Long nuPerfil) {
-		
-		BigDecimal result = getQtEfetivaPerfil().get(nuPerfil); 
-		
-		if(result == null) {
+
+		BigDecimal result = getQtEfetivaPerfil().get(nuPerfil);
+
+		if (result == null) {
 			return BigDecimal.ZERO;
 		}
-		
+
 		return result;
 	}
-	
+
+	/**
+	 * @return the vrAusencias
+	 */
+	public XSSFCell getVrAusencias() {
+		return vrAusencias;
+	}
+
+	/**
+	 * @return the vrExtras
+	 */
+	public XSSFCell getVrExtras() {
+		return vrExtras;
+	}
+
+	/**
+	 * @param vrExtras the vrExtras to set
+	 */
+	public void setVrExtras(XSSFCell vrExtras) {
+		this.vrExtras = vrExtras;
+	}
+
+	/**
+	 * @param vrAusencias the vrAusencias to set
+	 */
+	public void setVrAusencias(XSSFCell vrAusencias) {
+		this.vrAusencias = vrAusencias;
+	}
+
 }

@@ -59,6 +59,42 @@ public class AusenciaExtraFaturamentoService {
 
 	}
 
+	public AusenciaExtraFaturamentoDTO findBy(Long nuEquipe, Long nuFatura, Long nuPerfil) {
+
+		AusenciaExtraFaturamentoDTO dto = null;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = databaseService.getDataSource().getConnection();
+
+			pstmt = conn.prepareStatement(getDMLPerfil());
+			pstmt.setLong(1, nuEquipe);
+			pstmt.setLong(2, nuFatura);
+			pstmt.setLong(3, nuPerfil);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new AusenciaExtraFaturamentoDTO();
+
+				dto.setNuEquipe(rs.getLong("nu_equipe"));
+				dto.setQtDiaAusencia(rs.getBigDecimal("qt_dia_ausencia"));
+				dto.setQtDiaServicoExtra(rs.getBigDecimal("qt_dia_servico_extra"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+
+		return dto;
+
+	}
+
 	public AusenciaExtraFaturamentoDTO findBy(String coEquipe, Long nuFatura) {
 
 		AusenciaExtraFaturamentoDTO dto = null;
@@ -122,28 +158,25 @@ public class AusenciaExtraFaturamentoService {
 		sb.append("   f.de_fatura, ");
 		sb.append("   a.nu_ciclo_trabalho ");
 
-//		sb.append(" SELECT");
-//		sb.append("   e.nu_equipe,");
-//		sb.append("   f.de_fatura,");
-//		sb.append("   a.nu_ciclo_trabalho,");
-//		sb.append("   coalesce(a.qt_dia_servico_extra, 0) as qt_dia_servico_extra,");
-//		sb.append("   coalesce(a.qt_dia_ausencia, 0) as qt_dia_ausencia");
-//		sb.append(" FROM");
-//		sb.append("   gct.gcttb087_equipe e");
-//		sb.append("   INNER JOIN gct.gcttb170_termo_equipe t ON t.nu_equipe = e.nu_equipe");
-//		sb.append("   INNER JOIN gct.gcttb102_fatura f ON f.nu_fatura = t.nu_fatura_gerada");
-//		sb.append("   LEFT JOIN gct.gcttb166_ausencia_servico_extra a ON (");
-//		sb.append("     a.nu_equipe = e.nu_equipe");
-//		sb.append("     AND a.nu_fatura = t.nu_fatura_gerada");
-//		sb.append("   )");
-//		sb.append(" WHERE");
-//		sb.append("   t.nu_tipo_termo = 11");
-//		sb.append("   AND e.co_equipe = ?");
-//		if (filtrarFatura) {
-//			sb.append(" AND t.nu_fatura_gerada = ?");
-//		}
-//		sb.append(" ORDER BY");
-//		sb.append("   f.dt_final_fatura");
+		return sb.toString();
+	}
+
+	public String getDMLPerfil() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("SELECT "); 
+		sb.append("  a.nu_equipe, "); 
+		sb.append("  sum(coalesce(a.qt_dia_servico_extra, 0)) as qt_dia_servico_extra, "); 
+		sb.append("  sum(coalesce(a.qt_dia_ausencia, 0)) as qt_dia_ausencia "); 
+		sb.append("from "); 
+		sb.append("  gct.gcttb166_ausencia_servico_extra a "); 
+		sb.append("where "); 
+		sb.append("  a.nu_equipe = ? "); 
+		sb.append("  and a.nu_fatura = ? "); 
+		sb.append("  and coalesce(a.nu_perfil_ausencia, a.nu_perfil_servico_extra) = ? "); 
+		sb.append("group by "); 
+		sb.append("  a.nu_equipe ");
 
 		return sb.toString();
 	}

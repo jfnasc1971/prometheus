@@ -127,6 +127,7 @@ public class RelatorioEquipe extends Relatorio {
 		// abaMemoria.write(wb, coEquipe, faturamentos);
 
 		Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
+		
 		XSSFCell cellValorDevido = null;
 
 		// Cálculos
@@ -172,12 +173,23 @@ public class RelatorioEquipe extends Relatorio {
 			}
 
 			// Pagamentos
-			//AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
-			//XSSFCell cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+			XSSFCell cellValorPagamentos = null;
+			
+			if ("D".equals(equipe.getIcDistribuiProfissional())) {
+
+				AbaPagamentosPerfil abaPagamentos = ctxt.getBean(AbaPagamentosPerfil.class);
+				cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+				
+			} else {
+				
+				AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
+				cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+				
+			}
 
 			// Ajuste
-			//AbaAjuste abaAjuste = ctxt.getBean(AbaAjuste.class);
-			//abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
+			AbaAjuste abaAjuste = ctxt.getBean(AbaAjuste.class);
+			abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
 
 		}
 

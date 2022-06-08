@@ -2,6 +2,7 @@ package org.prometheus.relatorios;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +14,8 @@ import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.PerfilDTO;
-import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.PerfilService;
-import org.prometheus.service.VigenciaMembrosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +31,6 @@ public class AbaCalculoVrDevidoPerfil extends Relatorio {
 
 	@Autowired
 	private EquipeService equipeService;
-
-	@Autowired
-	private VigenciaMembrosService vigenciasMembrosService;
 
 	public XSSFCell write(XSSFWorkbook workBook, String coEquipe, List<FaturamentoDTO> faturamentos,
 			Map<Long, InsumosFaturamentoDTO> insumos) throws InvalidFormatException, IOException {
@@ -57,18 +53,16 @@ public class AbaCalculoVrDevidoPerfil extends Relatorio {
 
 		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
 		addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Dias Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Dias Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Vr. Previsto Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-		addCell(row, pos++, "Vr. Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
-		XSSFCell primeiraFatura = null;
-		XSSFCell ultimaFatura = null;
+		List<XSSFCell> listaValoresFinanceiros = new ArrayList<XSSFCell>();
+		XSSFCell cellVrPrevisto = null;
+		XSSFCell cellVrFns = null;
 
 		for (FaturamentoDTO faturamento : faturamentos) {
 
@@ -88,23 +82,64 @@ public class AbaCalculoVrDevidoPerfil extends Relatorio {
 				BigDecimal valorEquipe = BigDecimal.ZERO;
 
 				for (PerfilDTO perfil : perfis) {
-					
-					System.out.println(
-							faturamento.getNuFatura() + " " +
-							perfil.getNuPerfil() + " " + 
-							insumo.getVrPrecoPerfil(perfil.getNuPerfil()) + " " +
-							insumo.getQtEfetivaPerfil(perfil.getNuPerfil())
-							);
-					
+
+					System.out.println(faturamento.getNuFatura() + " " + perfil.getNuPerfil() + " "
+							+ insumo.getVrPrecoPerfil(perfil.getNuPerfil()) + " "
+							+ insumo.getQtEfetivaPerfil(perfil.getNuPerfil()));
+
 					valorEquipe = valorEquipe.add(insumo.getVrPrecoPerfil(perfil.getNuPerfil())
 							.multiply(insumo.getQtEfetivaPerfil(perfil.getNuPerfil())));
 				}
 
 				addCell(row, pos++, valorEquipe);
+
+				setCellFormula(sheet, row, //
+						String.format("'%s'!%s", //
+								insumo.getVrAusencias().getSheet().getSheetName(), //
+								insumo.getVrAusencias().getReference()), //
+						pos++);
+
+				setCellFormula(sheet, row, //
+						String.format("'%s'!%s", //
+								insumo.getVrExtras().getSheet().getSheetName(), //
+								insumo.getVrExtras().getReference()), //
+						pos++);
+
+				cellVrPrevisto = setCellFormula(sheet, row, //
+						String.format("'%s'!%s", //
+								insumo.getVrPrevistoTermo().getSheet().getSheetName(), //
+								insumo.getVrPrevistoTermo().getReference()), //
+						pos++);
+
+				if (insumo.getVrFns() != null) {
+					cellVrFns = setCellFormula(sheet, row, //
+							String.format("'%s'!%s", //
+									insumo.getVrFns().getSheet().getSheetName(), //
+									insumo.getVrFns().getReference()), //
+							pos++);
+				} else {
+					cellVrFns = addCell(row, pos++, BigDecimal.ONE);
+				}
+				
+				listaValoresFinanceiros.add(setCellFormula(sheet, row, //
+						String.format("%s*%s", //
+								cellVrPrevisto.getReference(), //
+								cellVrFns.getReference()), //
+						pos++));
+
 			}
 		}
 
-		return null;
+		row = addNewRow(sheet);
+		pos = 6;
+		addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		XSSFCell result = setCellFormula(sheet, row, //
+				String.format("sum(%s:%s)", //
+						listaValoresFinanceiros.get(0).getReference(), //
+						listaValoresFinanceiros.get(listaValoresFinanceiros.size() - 1).getReference()), //
+				pos++);
+		
+		return result;
 
 	}
 

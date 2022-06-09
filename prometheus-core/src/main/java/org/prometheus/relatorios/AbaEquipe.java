@@ -169,11 +169,10 @@ public class AbaEquipe extends Relatorio {
 
 		pos = 0;
 		row = addNewRow(sheet);
-		
+
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
 			addMergedRegion(sheet, row, 0, 4, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		}
-		else {
+		} else {
 			addMergedRegion(sheet, row, 0, 2, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 		}
 
@@ -300,14 +299,15 @@ public class AbaEquipe extends Relatorio {
 		 */
 		pos = 7;
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 3, "Situações Consideradas para Serviços Contratados",
+		addMergedRegion(sheet, row, pos, pos + 5, //
+				"Situações Consideradas para Serviços Contratados", //
 				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		List<SituacaoEntregaIndicadorDTO> situacoes = situacaoEntregaIndicadorService.listar(equipe.getNuEquipe());
 
 		if (Utils.isEmpty(situacoes)) {
 			row = addNewRow(sheet, rownum++);
-			addMergedRegion(sheet, row, pos, pos + 3, "Nenhuma situação configurada.", ALIGN_CENTER_RED_BOLD);
+			addMergedRegion(sheet, row, pos, pos + 5, "Nenhuma situação configurada.", ALIGN_CENTER_RED_BOLD);
 		}
 
 		if (Utils.isNotEmpty(situacoes)) {
@@ -315,13 +315,15 @@ public class AbaEquipe extends Relatorio {
 			row = addNewRow(sheet, rownum++);
 
 			addMergedRegion(sheet, row, pos, pos + 1, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addMergedRegion(sheet, row, pos + 2, pos + 3, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addMergedRegion(sheet, row, pos + 2, pos + 3, "Agrupador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addMergedRegion(sheet, row, pos + 4, pos + 5, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
 				row = addNewRow(sheet, rownum++);
 				addMergedRegion(sheet, row, pos, pos + 1, situacao.getSgTipoIndicador() + //
 						" - " + situacao.getNoTipoIndicador());
-				addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNuSituacaoAtendimento() + //
+				addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNoAgrupador());
+				addMergedRegion(sheet, row, pos + 4, pos + 5, situacao.getNuSituacaoAtendimento() + //
 						" - " + situacao.getNoSituacaoAtendimento());
 			}
 		}

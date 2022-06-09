@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GerarServicoDB {
 
-	private static final String VIEW_NAME = "PerfilDTO";
-	private static final String SERVICE_NAME = "PerfilService";
+	private static final String VIEW_NAME = "SituacaoEntregaIndicadorDTO";
+	private static final String SERVICE_NAME = "SituacaoEntregaIndicadorService";
 
 	@Autowired
 	private DatabaseService databaseService;
@@ -51,7 +51,7 @@ public class GerarServicoDB {
 			FileWriter fw = new FileWriter(f);
 
 			// abre a classe
-			fw.write("package br.gov.caixa.sigct.service;\n");
+			fw.write("package org.prometheus.service;\n");
 			fw.write("\n");
 			fw.write("import java.sql.Connection;\n");
 			fw.write("import java.sql.PreparedStatement;\n");
@@ -63,9 +63,9 @@ public class GerarServicoDB {
 			fw.write("import org.springframework.beans.factory.annotation.Autowired;\n");
 			fw.write("import org.springframework.stereotype.Component;\n");
 			fw.write("\n");
-			fw.write("import br.gov.caixa.sigct.dto." + dtoName + ";\n\n");
-			fw.write("import br.gov.caixa.sigct.utils.DBUtil;\n");
-			fw.write("import br.gov.caixa.sigct.utils.DatabaseService;\n\n");			
+			fw.write("import org.prometheus.dto." + dtoName + ";\n\n");
+			fw.write("import org.prometheus.utils.DBUtil;\n");
+			fw.write("import org.prometheus.utils.DatabaseService;\n\n");			
 			
 			fw.write("@Component\n");
 			fw.write("public class " + name + " {\n\n");
@@ -137,7 +137,7 @@ public class GerarServicoDB {
 			sb.append("			e.printStackTrace(); \n");
 			sb.append("		} \n");
 			sb.append("		finally { \n");
-			sb.append("			DBUtils.close(rs, pstmt, conn); \n");
+			sb.append("			DBUtil.close(conn, pstmt, rs); \n");
 			sb.append("		} \n");
 			sb.append(" \n");
 			sb.append("		return result; \n");

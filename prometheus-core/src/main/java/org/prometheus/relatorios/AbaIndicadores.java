@@ -100,20 +100,20 @@ public class AbaIndicadores extends Relatorio {
 			addMergedRegion(sheet, row, 0, 2, "Nenhuma situação configurada.");
 		}
 
-		if (Utils.isNotEmpty(situacoes)) {
-
-			row = addNewRow(sheet, rownum++);
-			addCell(row, 0, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addMergedRegion(sheet, row, 1, 2, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
-				row = addNewRow(sheet, rownum++);
-				addCell(row, 0, situacao.getSgTipoIndicador() + //
-						" - " + situacao.getNoTipoIndicador());
-				addMergedRegion(sheet, row, 1, 2, situacao.getNuSituacaoAtendimento() + //
-						" - " + situacao.getNoSituacaoAtendimento());
-			}
-		}
+//		if (Utils.isNotEmpty(situacoes)) {
+//
+//			row = addNewRow(sheet, rownum++);
+//			addCell(row, 0, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+//			addMergedRegion(sheet, row, 1, 2, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+//
+//			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
+//				row = addNewRow(sheet, rownum++);
+//				addCell(row, 0, situacao.getSgTipoIndicador() + //
+//						" - " + situacao.getNoTipoIndicador());
+//				addMergedRegion(sheet, row, 1, 2, situacao.getNuSituacaoAtendimento() + //
+//						" - " + situacao.getNoSituacaoAtendimento());
+//			}
+//		}
 
 		/**
 		 * Valores Faixas Indicador

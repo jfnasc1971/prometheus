@@ -285,6 +285,10 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					insumo.setVrExtras(cellVrExtras);
 				}
 
+				if (cellFinalVigencias == null) {
+					cellFinalVigencias = cellInicioVigencias;
+				}
+				
 				pos = 10;
 				row = addNewRow(sheet);
 				addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -299,16 +303,6 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 			int rownum = cellFinalVigencias.getRowIndex() + 2;
 
-			row = getRow(sheet, rownum);
-
-			addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
-
-			XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
-
 			/**
 			 * Indicadores
 			 */
@@ -321,6 +315,16 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
+				row = getRow(sheet, rownum);
+
+				addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
+
+				XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
+				XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
+				XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
+				XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
+				XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
+				
 				row = getRow(sheet, rownum++);
 				addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 

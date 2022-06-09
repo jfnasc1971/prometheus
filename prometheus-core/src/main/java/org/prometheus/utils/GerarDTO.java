@@ -43,9 +43,9 @@ public class GerarDTO {
 			FileWriter fw = new FileWriter(f);
 
 			// abre a classe
-			fw.write("package br.gov.caixa.sigct.client.view;\n");
+			fw.write("package org.prometheus.dto;\n");
 			fw.write("\n");
-			fw.write("public class " + name + " extends BaseView {\n\n");
+			fw.write("public class " + name + " extends BaseDTO {\n\n");
 			fw.write("    private static final long serialVersionUID = 1L;\n\n");
 
 			conn = databaseService.getDataSource().getConnection();

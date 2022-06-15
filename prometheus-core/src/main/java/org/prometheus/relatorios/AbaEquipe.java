@@ -320,8 +320,7 @@ public class AbaEquipe extends Relatorio {
 
 			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
 				row = addNewRow(sheet, rownum++);
-				addMergedRegion(sheet, row, pos, pos + 1, situacao.getSgTipoIndicador() + //
-						" - " + situacao.getNoTipoIndicador());
+				addMergedRegion(sheet, row, pos, pos + 1, situacao.getNoTipoIndicador());
 				addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNoAgrupador());
 				addMergedRegion(sheet, row, pos + 4, pos + 5, situacao.getNuSituacaoAtendimento() + //
 						" - " + situacao.getNoSituacaoAtendimento());

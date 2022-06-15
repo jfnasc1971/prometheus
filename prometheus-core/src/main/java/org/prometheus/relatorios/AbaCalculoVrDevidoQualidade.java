@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Component
-public class AbaCalculoVrDevidoPerfil extends Relatorio {
+public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 14;
 
@@ -111,7 +111,7 @@ public class AbaCalculoVrDevidoPerfil extends Relatorio {
 								insumo.getVrPrevistoTermo().getReference()), //
 						pos++);
 
-				if (insumo.getVrFns() != null) {
+				if (insumo.getVrFns() != null && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
 					cellVrFns = setCellFormula(sheet, row, //
 							String.format("'%s'!%s", //
 									insumo.getVrFns().getSheet().getSheetName(), //

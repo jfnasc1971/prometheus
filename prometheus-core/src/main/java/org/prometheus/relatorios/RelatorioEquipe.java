@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RelatorioEquipe extends Relatorio {
 
-	private static final String PATH = "./Demonstrativos";
-
+	private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+	
 	@Autowired
 	private EquipeService equipeService;
 
@@ -142,8 +142,9 @@ public class RelatorioEquipe extends Relatorio {
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
-		if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo())) {
-			AbaCalculosAcionamentoPerfil calculos = ctxt.getBean(AbaCalculosAcionamentoPerfil.class);
+		if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo())
+				|| Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
+			AbaCalculosAcionamentoQualidade calculos = ctxt.getBean(AbaCalculosAcionamentoQualidade.class);
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
@@ -162,7 +163,7 @@ public class RelatorioEquipe extends Relatorio {
 			// Calculos Valor Devido
 			if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-				AbaCalculoVrDevidoPerfil abaCalculoValorDevido = ctxt.getBean(AbaCalculoVrDevidoPerfil.class);
+				AbaCalculoVrDevidoQualidade abaCalculoValorDevido = ctxt.getBean(AbaCalculoVrDevidoQualidade.class);
 				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
 				
 			} else {
@@ -177,7 +178,7 @@ public class RelatorioEquipe extends Relatorio {
 			
 			if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-				AbaPagamentosPerfil abaPagamentos = ctxt.getBean(AbaPagamentosPerfil.class);
+				AbaPagamentosQualidade abaPagamentos = ctxt.getBean(AbaPagamentosQualidade.class);
 				cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
 				
 			} else {

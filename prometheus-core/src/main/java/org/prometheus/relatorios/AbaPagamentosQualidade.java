@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Component
-public class AbaPagamentosPerfil extends Relatorio {
+public class AbaPagamentosQualidade extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 14;
 
@@ -85,10 +85,10 @@ public class AbaPagamentosPerfil extends Relatorio {
 			addCell(row, pos++, termo.getNuFaturaPaga() + " - " + termo.getDeFaturaPaga());
 
 			if (primeiraFatura == null) {
-				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
+				primeiraFatura = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFinanceiroTermoOriginal() : termo.getVrFinanceiroTermo());
 				ultimaFatura = primeiraFatura; 
 			} else {
-				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
+				ultimaFatura = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFinanceiroTermoOriginal() : termo.getVrFinanceiroTermo());
 			}
 
 		}

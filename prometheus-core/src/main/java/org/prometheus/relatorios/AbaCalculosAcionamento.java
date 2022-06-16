@@ -570,7 +570,8 @@ public class AbaCalculosAcionamento extends Relatorio {
 			StringBuilder formula = new StringBuilder();
 
 			for (int i = 1; i <= qtFaixas; i++) {
-				formula.append(String.format("+if(and(round(%s)>Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
+				
+				formula.append(String.format("+if(and(rounddown(%s,2)>Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
 						cellDesempenho.getReference(), pos + i, //
 						cellDesempenho.getReference(), pos + i, //
 						pos + i));

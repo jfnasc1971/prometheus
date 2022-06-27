@@ -1,11 +1,11 @@
 package org.prometheus.service;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.utils.DBUtil;

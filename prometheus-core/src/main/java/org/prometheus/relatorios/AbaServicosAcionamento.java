@@ -15,9 +15,6 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
-import org.prometheus.service.FaixaIndicadorService;
-import org.prometheus.service.PrecosEquipeService;
-import org.prometheus.service.VigenciaMembrosService;
 import org.prometheus.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,16 +27,7 @@ public class AbaServicosAcionamento extends Relatorio {
 	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
-	private VigenciaMembrosService vigenciasMembrosService;
-
-	@Autowired
 	private EquipeService equipeService;
-
-	@Autowired
-	private FaixaIndicadorService faixaIndicadorService;
-
-	@Autowired
-	private PrecosEquipeService precoEquipeService;
 
 	@Autowired
 	private EntregaService entregaService;
@@ -84,15 +72,15 @@ public class AbaServicosAcionamento extends Relatorio {
 					ALIGN_CENTER_GREEN_BOLD);
 
 			addBlank(sheet);
-			
+
 			listarServicosEntregues(equipe, sheet, faturamento);
 			listarServicosDevolvidos(equipe, sheet, faturamento);
 			listarServicosAtrasados(equipe, sheet, faturamento);
 			listarServicosEntreguesEstoque(equipe, sheet, faturamento);
 			listarServicosContratados(equipe, sheet, faturamento);
-			
+
 			addBlank(sheet);
-			
+
 		} // faturamentos
 
 		return result;
@@ -109,8 +97,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos+2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		pos = pos+3;
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -127,8 +115,8 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos+2, e.getNoSolicitacao());
-			pos = pos+3;
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao());
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
@@ -156,8 +144,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos+2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		pos = pos+3;
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -169,13 +157,13 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
-		
+
 		for (EntregaDTO e : servicosEntreguesEstoque) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos+2, e.getNoSolicitacao());
-			pos = pos+3;
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao());
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
@@ -204,8 +192,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos+2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		pos = pos+3;
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -222,8 +210,8 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos+2, e.getNoSolicitacao());
-			pos = pos+3;
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao());
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
@@ -252,8 +240,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos+2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		pos = pos+3;
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -270,8 +258,8 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos+2, e.getNoSolicitacao());
-			pos = pos+3;
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao());
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
@@ -300,8 +288,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos+2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		pos = pos+3;
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -318,8 +306,8 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos+2, e.getNoSolicitacao());
-			pos = pos+3;
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao());
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());

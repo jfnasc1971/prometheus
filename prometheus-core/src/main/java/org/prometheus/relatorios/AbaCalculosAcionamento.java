@@ -347,41 +347,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
 	}
 
-	private XSSFCell listarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
-				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues com Atraso", //
-				ALIGN_CENTER_ORANGE_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosEntreguesComAtraso) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 2, Long.valueOf(servicosEntreguesComAtraso.size()));
-		return cellQtServicosEntreguesComAtraso;
-	}
-
 	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
@@ -389,35 +354,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Entregues/Estoque", ALIGN_CENTER_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
-	}
-
-	private XSSFCell listarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues/Estoque", //
-				ALIGN_CENTER_GREEN_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		for (EntregaDTO e : servicosEntreguesEstoque) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, Long.valueOf(servicosEntreguesEstoque.size()));
-		return cellQtServicosEntreguesEstoque;
 	}
 
 	private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -430,41 +366,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		return addCell(row, 1, Long.valueOf(servicosContratados.size()));
 	}
 
-	private XSSFCell listarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
-				faturamento.getNuFatura(), 19L);
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Contratados", //
-				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosContratados)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosContratados) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosContratados = addCell(row, 2, Long.valueOf(servicosContratados.size()));
-		return cellQtServicosContratados;
-	}
-
 	private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
@@ -472,41 +373,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Devolvidos", ALIGN_CENTER_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
-	}
-
-	private XSSFCell listarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Devolvidos", //
-				ALIGN_CENTER_RED_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosDevolvidos)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosDevolvidos) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosDevolvidos = addCell(row, 2, Long.valueOf(servicosDevolvidos.size()));
-		return cellQtServicosDevolvidos;
 	}
 
 	private XSSFCell contarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -518,41 +384,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		addCell(row, 0, "Entregues", ALIGN_CENTER_BOLD);
 
 		return addCell(row, 1, Long.valueOf(servicosEntregues.size()));
-	}
-
-	private XSSFCell listarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues", //
-				ALIGN_CENTER_GREEN_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosEntregues)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosEntregues) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntregues = addCell(row, 2, Long.valueOf(servicosEntregues.size()));
-		return cellQtServicosEntregues;
 	}
 
 	private void setCellFormulaDesempenho(XSSFCell cell, Long nuFatura) {

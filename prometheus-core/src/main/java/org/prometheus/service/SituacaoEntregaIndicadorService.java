@@ -7,13 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import org.prometheus.dto.SituacaoEntregaIndicadorDTO;
-
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SituacaoEntregaIndicadorService {

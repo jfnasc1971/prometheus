@@ -1,7 +1,6 @@
 package org.prometheus.relatorios;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;

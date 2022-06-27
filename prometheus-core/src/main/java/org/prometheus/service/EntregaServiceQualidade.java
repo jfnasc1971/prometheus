@@ -68,7 +68,7 @@ public class EntregaServiceQualidade {
 				EntregaDTO dto = new EntregaDTO();
 
 				dto.setCoSolicitacao(rs.getString("co_solicitacao"));
-				dto.setDeSolicitacao(rs.getString("de_solicitacao"));
+				dto.setNoSolicitacao(rs.getString("no_solicitacao"));
 				dto.setDhPrevista(rs.getTimestamp("dh_prevista"));
 				dto.setDhPrevistaPendencias(rs.getDate("dh_prevista_pendencias"));
 				dto.setDhEfetiva(rs.getTimestamp("dh_efetiva"));
@@ -264,14 +264,14 @@ public class EntregaServiceQualidade {
 		sb.append("    and s.nu_fatura_amostra = se.nu_fatura_amostra "); 
 		sb.append("  ) "); 
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = se.nu_fatura_amostra "); 
-		sb.append("  inner join gct.gcttb390_rejeicao_solicitacao rs on ( "); 
+		sb.append("  inner join gct.gcttb226_devolucao_solicitacao rs on ( "); 
 		sb.append("    rs.nu_solicitacao = s.nu_solicitacao "); 
 		sb.append("  ) "); 
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? ");
 		sb.append("  and s.dh_resolucao :: date between f.dt_inicio_fatura and f.dt_final_fatura ");
-		sb.append("  and rs.dh_efetiva_rejeicao between f.dt_inicio_fatura and f.dt_final_fatura "); 
+		sb.append("  and rs.dh_rejeicao between f.dt_inicio_fatura and f.dt_final_fatura "); 
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 

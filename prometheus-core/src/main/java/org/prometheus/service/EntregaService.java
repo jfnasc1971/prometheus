@@ -68,12 +68,14 @@ public class EntregaService {
 				EntregaDTO dto = new EntregaDTO();
 
 				dto.setCoSolicitacao(rs.getString("co_solicitacao"));
-				dto.setDeSolicitacao(rs.getString("de_solicitacao"));
+				dto.setNoSolicitacao(rs.getString("no_solicitacao"));
 				dto.setDhPrevista(rs.getTimestamp("dh_prevista"));
 				dto.setDhPrevistaPendencias(rs.getDate("dh_prevista_pendencias"));
 				dto.setDhEfetiva(rs.getTimestamp("dh_efetiva"));
 				dto.setIcServicoCompoeCalculoFns(rs.getString("ic_servico_compoe_calculo_fns"));
 				dto.setCoFalhaSolicitacao(rs.getString("co_falha_solicitacao"));
+				dto.setDeSituacaoSolicitacao(rs.getString("de_situacao_solicitacao"));
+				dto.setNuSituacaoSolicitacao(rs.getLong("nu_situacao_solicitacao"));
 
 				result.add(dto);
 			}
@@ -90,14 +92,17 @@ public class EntregaService {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" select");
-		sb.append("     s.co_solicitacao,");
-		sb.append("     s.de_solicitacao,");
-		sb.append("     s.dh_prevista,");
-		sb.append("     gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias,");
-		sb.append("     s.dh_efetiva,");
-		sb.append("     sc.ic_servico_compoe_calculo_fns,");
-		sb.append("     se.co_falha_solicitacao");
+		sb.append("select ");
+		sb.append("  s.co_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
+		sb.append("  s.dh_prevista, ");
+		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
+		sb.append("    date(s.dh_prevista)) dh_prevista_pendencias, ");
+		sb.append("  s.dh_efetiva, ");
+		sb.append("  sc.ic_servico_compoe_calculo_fns, ");
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, ") ; 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
 		sb.append(" from");
 		sb.append("     gct.gcttb086_solicitacao_equipe se");
 		sb.append("     inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe");
@@ -106,11 +111,14 @@ public class EntregaService {
 		sb.append("     inner join gct.gcttb005_solicitacao s on (se.nu_solicitacao = s.nu_solicitacao)");
 		sb.append("     inner join gct.gcttb055_servico_contrato sc on (");
 		sb.append("         sc.nu_tipo_servico = se.nu_tipo_servico");
+		sb.append("         and e.nu_tipo_grupo = sc.nu_tipo_grupo");
 		sb.append("         and e.nu_contrato = sc.nu_contrato");
 		sb.append("     )");
-		sb.append("     inner join gct.gcttb102_fatura f on f.nu_faturamento = c.nu_faturamento");
-		sb.append("     and f.co_sitio = ai.co_sitio");
-		sb.append("     and f.nu_fatura = ?");
+		sb.append("     inner join gct.gcttb102_fatura f on (");
+		sb.append("         f.nu_faturamento = c.nu_faturamento");
+		sb.append("         and f.co_sitio = ai.co_sitio");
+		sb.append("         and f.nu_fatura = ?");
+		sb.append("     )");
 		sb.append(" where");
 		sb.append("     se.nu_equipe = ?");
 		sb.append("     and sc.ic_servico_compoe_calculo_fns = 'S'");
@@ -143,13 +151,15 @@ public class EntregaService {
 
 		sb.append("select ");
 		sb.append("  s.co_solicitacao, ");
-		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, ");
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
 		sb.append("    date(s.dh_prevista)) dh_prevista_pendencias, ");
 		sb.append("  s.dh_efetiva, ");
 		sb.append("  sc.ic_servico_compoe_calculo_fns, ");
-		sb.append("  se.co_falha_solicitacao ");
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, ") ; 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
 		sb.append("from ");
 		sb.append("  gct.gcttb086_solicitacao_equipe se ");
 		sb.append("  inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe ");
@@ -179,14 +189,17 @@ public class EntregaService {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" select");
-		sb.append("     s.co_solicitacao,");
-		sb.append("     s.de_solicitacao,");
-		sb.append("     s.dh_prevista,");
-		sb.append("     gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias,");
-		sb.append("     s.dh_efetiva,");
-		sb.append("     sc.ic_servico_compoe_calculo_fns,");
-		sb.append("     se.co_falha_solicitacao");
+		sb.append("select ");
+		sb.append("  s.co_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
+		sb.append("  s.dh_prevista, ");
+		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
+		sb.append("    date(s.dh_prevista)) dh_prevista_pendencias, ");
+		sb.append("  s.dh_efetiva, ");
+		sb.append("  sc.ic_servico_compoe_calculo_fns, ");
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, ") ; 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
 		sb.append(" from");
 		sb.append("     gct.gcttb086_solicitacao_equipe se");
 		sb.append("     inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe");
@@ -217,12 +230,15 @@ public class EntregaService {
 
 		sb.append("select ");
 		sb.append("  s.co_solicitacao, ");
-		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, ");
-		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, ");
+		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
+		sb.append("    date(s.dh_prevista)) dh_prevista_pendencias, ");
 		sb.append("  s.dh_efetiva, ");
 		sb.append("  sc.ic_servico_compoe_calculo_fns, ");
-		sb.append("  se.co_falha_solicitacao ");
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, ") ; 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
 		sb.append("from ");
 		sb.append("  gct.gcttb086_solicitacao_equipe se ");
 		sb.append("  inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe ");
@@ -257,13 +273,15 @@ public class EntregaService {
 
 		sb.append("select ");
 		sb.append("  s.co_solicitacao, ");
-		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, ");
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
 		sb.append("    date(s.dh_prevista)) dh_prevista_pendencias, ");
 		sb.append("  s.dh_efetiva, ");
 		sb.append("  sc.ic_servico_compoe_calculo_fns, ");
-		sb.append("  se.co_falha_solicitacao ");
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, ") ; 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
 		sb.append("from ");
 		sb.append("  gct.gcttb086_solicitacao_equipe se ");
 		sb.append("  inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe ");

@@ -188,20 +188,17 @@ public class AbaEquipe extends Relatorio {
 			pos = 0;
 			row = addNewRow(sheet);
 
-			if (membro.getQtIntervalos() <= 1) {
-				if ("D".equals(equipe.getIcDistribuiProfissional())) {
-					addMergedRegion(sheet, row, pos++, pos++, membro.getDePerfil());
-				}
-				addCell(row, pos++, membro.getDtInicioVigenciaMembros());
-				addCell(row, pos++, membro.getDtFinalVigenciaMembros());
-				addCell(row, pos++, membro.getQtMembrosEquipe());
-			} else {
-				addCell(row, pos++, membro.getDtInicioVigenciaMembros(), ALIGN_CENTER_RED_BOLD);
-				addCell(row, pos++, membro.getDtFinalVigenciaMembros(), ALIGN_CENTER_RED_BOLD);
-				addCell(row, pos++, membro.getQtMembrosEquipe(), ALIGN_RIGHT_RED_BOLD);
-				setCellComment(row.getCell(row.getLastCellNum() - 1),
-						"Essa vigência está incorreta. Verifique se há sobreposição de datas.");
+			if ("D".equals(equipe.getIcDistribuiProfissional())) {
+				addMergedRegion(sheet, row, pos++, pos++, membro.getDePerfil());
 			}
+			addCell(row, pos++, membro.getDtInicioVigenciaMembros());
+			addCell(row, pos++, membro.getDtFinalVigenciaMembros());
+			addCell(row, pos++, membro.getQtMembrosEquipe());
+
+//			if (membro.getQtIntervalos() > 1) {
+//				setCellComment(row.getCell(row.getLastCellNum() - 1),
+//						"Essa vigência está incorreta. Verifique se há sobreposição de datas.");
+//			}
 
 		}
 
@@ -299,9 +296,16 @@ public class AbaEquipe extends Relatorio {
 		 */
 		pos = 7;
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 5, //
-				"Situações Consideradas para Serviços Contratados", //
-				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			addMergedRegion(sheet, row, pos, pos + 5, //
+					"Situações Consideradas para Serviços Contratados", //
+					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		} else {
+			addMergedRegion(sheet, row, pos, pos + 3, //
+					"Situações Consideradas para Serviços Contratados", //
+					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		}
 
 		List<SituacaoEntregaIndicadorDTO> situacoes = situacaoEntregaIndicadorService.listar(equipe.getNuEquipe());
 
@@ -315,15 +319,28 @@ public class AbaEquipe extends Relatorio {
 			row = addNewRow(sheet, rownum++);
 
 			addMergedRegion(sheet, row, pos, pos + 1, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addMergedRegion(sheet, row, pos + 2, pos + 3, "Agrupador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addMergedRegion(sheet, row, pos + 4, pos + 5, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+			if ("D".equals(equipe.getIcDistribuiProfissional())) {
+				addMergedRegion(sheet, row, pos + 2, pos + 3, "Agrupador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+				addMergedRegion(sheet, row, pos + 4, pos + 5, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			} else {
+				addMergedRegion(sheet, row, pos + 2, pos + 3, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			}
 
 			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
+
 				row = addNewRow(sheet, rownum++);
+
 				addMergedRegion(sheet, row, pos, pos + 1, situacao.getNoTipoIndicador());
-				addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNoAgrupador());
-				addMergedRegion(sheet, row, pos + 4, pos + 5, situacao.getNuSituacaoAtendimento() + //
-						" - " + situacao.getNoSituacaoAtendimento());
+
+				if ("D".equals(equipe.getIcDistribuiProfissional())) {
+					addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNoAgrupador());
+					addMergedRegion(sheet, row, pos + 4, pos + 5, situacao.getNuSituacaoAtendimento() + //
+							" - " + situacao.getNoSituacaoAtendimento());
+				} else {
+					addMergedRegion(sheet, row, pos + 2, pos + 3, situacao.getNuSituacaoAtendimento() + //
+							" - " + situacao.getNoSituacaoAtendimento());
+				}
 			}
 		}
 

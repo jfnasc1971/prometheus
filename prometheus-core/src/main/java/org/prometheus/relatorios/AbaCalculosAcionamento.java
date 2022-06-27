@@ -54,7 +54,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 	Map<Long, List<XSSFCell>> listaMediaIEQQL = null;
 	Map<Long, List<XSSFCell>> listaMediaIEQQPZ = null;
 	Map<Long, List<XSSFCell>> listaMediaIEQQET = null;
-	
+
 	public Map<Long, InsumosFaturamentoDTO> write(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
 			throws InvalidFormatException, IOException {
 
@@ -87,8 +87,8 @@ public class AbaCalculosAcionamento extends Relatorio {
 		for (FaturamentoDTO faturamento : faturamentos) {
 
 			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
-					equipe.getNuContrato(), equipe.getNuEquipe(), faturamento.getNuFatura(),
-					faturamento.getDeFatura()));
+					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
+					faturamento.getNuFatura(), faturamento.getDeFatura()));
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
@@ -101,7 +101,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
-					faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
+					"Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
 					ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 			/**
@@ -168,7 +168,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 			 */
 			row = getRow(sheet, posRowVigencias++);
 			addMergedRegion(sheet, row, 0, 4, "Dias Trabalhados no Faturamento", //
-					ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 			row = getRow(sheet, posRowVigencias++);
 			addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
@@ -184,16 +184,19 @@ public class AbaCalculosAcionamento extends Relatorio {
 			insumo.setQtDiasExtra(addCell(row, 3, faturamento.getQtDiasServicoExtra(), STYLE_DECIMAL));
 			insumo.setQtDiasAusencia(addCell(row, 4, faturamento.getQtDiasAusencia(), STYLE_DECIMAL));
 
-			int rownum = cellQtEfetiva.getRowIndex() + 1;
-
 			//
 			addNewRow(sheet);
 
-			XSSFCell cellQtServicosEntregues = listarServicosEntregues(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosDevolvidos = listarServicosDevolvidos(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesComAtraso = listarServicosAtrasados(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesEstoque = listarServicosEntreguesEstoque(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosContratados = listarServicosContratados(equipe, sheet, faturamento);
+			row = getRow(sheet, cellQtEfetiva.getRowIndex() + 2);
+			addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+			XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
+			XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
+			XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
+			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
+			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
+
+			int rownum = cellQtEfetiva.getRowIndex() + 1;
 
 			/**
 			 * Indicadores
@@ -211,15 +214,15 @@ public class AbaCalculosAcionamento extends Relatorio {
 				getRow(sheet, rownum++); // blank
 
 				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+				addMergedRegion(sheet, row, 3, 5, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 				/**
 				 * IEQQL - Qualidade do Serviço
 				 */
 				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "IEQQL - Qualidade do Serviço", ALIGN_LEFT);
+				addMergedRegion(sheet, row, 3, 4, "IEQQL - Qualidade do Serviço", ALIGN_LEFT);
 
-				XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
+				XSSFCell cellFormulaIEQQL = addCell(row, 5, "N/A", ALIGN_CENTER);
 
 				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
 						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
@@ -236,9 +239,9 @@ public class AbaCalculosAcionamento extends Relatorio {
 				 * IEQQPZ - Prazo do Serviço
 				 */
 				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "IEQQPZ - Prazo do Serviço", ALIGN_LEFT);
+				addMergedRegion(sheet, row, 3, 4, "IEQQPZ - Prazo do Serviço", ALIGN_LEFT);
 
-				XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
+				XSSFCell cellFormulaIEQQPZ = addCell(row, 5, "N/A", ALIGN_CENTER);
 
 				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
 						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
@@ -254,9 +257,9 @@ public class AbaCalculosAcionamento extends Relatorio {
 				 * IEQQET - Estoque do Serviço
 				 */
 				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "IEQQET - Estoque do Serviço", ALIGN_LEFT);
+				addMergedRegion(sheet, row, 3, 4, "IEQQET - Estoque do Serviço", ALIGN_LEFT);
 
-				XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
+				XSSFCell cellFormulaIEQQET = addCell(row, 5, "N/A", ALIGN_CENTER);
 
 				if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
 						&& cellQtServicosContratados.getNumericCellValue() != 0) {
@@ -335,6 +338,15 @@ public class AbaCalculosAcionamento extends Relatorio {
 		return result;
 	}
 
+	private XSSFCell contarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
+				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addCell(row, 0, "Atrasados", ALIGN_CENTER_BOLD);
+		return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
+	}
+
 	private XSSFCell listarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 
 		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
@@ -370,6 +382,15 @@ public class AbaCalculosAcionamento extends Relatorio {
 		return cellQtServicosEntreguesComAtraso;
 	}
 
+	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addCell(row, 0, "Entregues/Estoque", ALIGN_CENTER_BOLD);
+		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
+	}
+
 	private XSSFCell listarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
@@ -397,11 +418,20 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, Long.valueOf(servicosEntreguesEstoque.size()));
 		return cellQtServicosEntreguesEstoque;
+	}
 
+	private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
+				faturamento.getNuFatura(), 19L);
+
+		XSSFRow row = addNewRow(sheet);
+		addCell(row, 0, "Contratados", ALIGN_CENTER_BOLD);
+		return addCell(row, 1, Long.valueOf(servicosContratados.size()));
 	}
 
 	private XSSFCell listarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		
+
 		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
 				faturamento.getNuFatura(), 19L);
 
@@ -433,6 +463,15 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFCell cellQtServicosContratados = addCell(row, 2, Long.valueOf(servicosContratados.size()));
 		return cellQtServicosContratados;
+	}
+
+	private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addCell(row, 0, "Devolvidos", ALIGN_CENTER_BOLD);
+		return addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
 	}
 
 	private XSSFCell listarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -468,6 +507,17 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFCell cellQtServicosDevolvidos = addCell(row, 2, Long.valueOf(servicosDevolvidos.size()));
 		return cellQtServicosDevolvidos;
+	}
+
+	private XSSFCell contarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addCell(row, 0, "Entregues", ALIGN_CENTER_BOLD);
+
+		return addCell(row, 1, Long.valueOf(servicosEntregues.size()));
 	}
 
 	private XSSFCell listarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -529,7 +579,8 @@ public class AbaCalculosAcionamento extends Relatorio {
 		}
 
 		if (s1.length() > 1) {
-			//System.out.println(String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)));
+			// System.out.println(String.format("(%s)/sum(%s)", s1.toString().substring(1),
+			// s2.toString().substring(1)));
 			setCellFormula(cell, //
 					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);
@@ -541,10 +592,10 @@ public class AbaCalculosAcionamento extends Relatorio {
 		StringBuilder p1 = new StringBuilder();
 
 		List<XSSFCell> indicadores = getIndicadoresMediaFNS(lista, nuFatura, 1);
-		
+
 		for (XSSFCell c : indicadores) {
 			try {
-				
+
 				if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
 					p1.append("," + c.getReference());
 				}
@@ -564,17 +615,18 @@ public class AbaCalculosAcionamento extends Relatorio {
 		// essa posição fixa é o número da primeira linha das faixas
 		// da seção "Valores Faixas Indicador" na aba equipe
 		int pos = 15;
-		
+
 		if (!"N/A".equalsIgnoreCase(cellDesempenho.toString())) {
 
 			StringBuilder formula = new StringBuilder();
 
 			for (int i = 1; i <= qtFaixas; i++) {
-				
-				formula.append(String.format("+if(and(rounddown(%s,2)>Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-						cellDesempenho.getReference(), pos + i, //
-						cellDesempenho.getReference(), pos + i, //
-						pos + i));
+
+				formula.append(
+						String.format("+if(and(rounddown(%s,2)>=Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+								cellDesempenho.getReference(), pos + i, //
+								cellDesempenho.getReference(), pos + i, //
+								pos + i));
 
 			}
 

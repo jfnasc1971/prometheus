@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class RelatorioEquipe extends Relatorio {
 
 	private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-	
+
 	@Autowired
 	private EquipeService equipeService;
 
@@ -77,17 +77,9 @@ public class RelatorioEquipe extends Relatorio {
 		((ConfigurableApplicationContext) ctxt).close();
 	}
 
-	public void gerar(Long nuContrato) {
-
-	}
-
-	public void gerar(Long nuContrato, Long nuTipoGrupo) {
-
-	}
-
 	public String gerar(String coEquipe) {
 		(new File(PATH)).mkdirs();
-		return gerar(coEquipe, null);
+		return gerar(coEquipe, (Date) null);
 	}
 
 	public String gerar(String coEquipe, Date dtFinalFatura) {
@@ -95,7 +87,7 @@ public class RelatorioEquipe extends Relatorio {
 		List<FaturamentoDTO> faturamentos = service.listar(coEquipe, dtFinalFatura);
 
 		try {
-			return writeFile(coEquipe, faturamentos);
+			return gerar(coEquipe, faturamentos);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -103,7 +95,7 @@ public class RelatorioEquipe extends Relatorio {
 		return null;
 	}
 
-	public String writeFile(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
+	public String gerar(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
 
 		File file = new File(PATH + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
 		file.delete();
@@ -119,33 +111,42 @@ public class RelatorioEquipe extends Relatorio {
 				" - " + equipe.getNoTipoGrupo() + //
 				" - " + equipe.getIcTipoAtendimento());
 
+		Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
+		
 		// Equipe
 		AbaEquipe abaEquipe = ctxt.getBean(AbaEquipe.class);
 		abaEquipe.write(wb, coEquipe, faturamentos);
 
-		// AbaMemoriaCalculo abaMemoria = ctxt.getBean(AbaMemoriaCalculo.class);
-		// abaMemoria.write(wb, coEquipe, faturamentos);
-
-		Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
+		XSSFCell cellValorPagamentos = null;
 		
-		XSSFCell cellValorDevido = null;
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-		// Cálculos
-		if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
-			AbaCalculosSprint calculos = ctxt.getBean(AbaCalculosSprint.class);
-			insumos = calculos.write(wb, coEquipe, faturamentos);
+			AbaPagamentosQualidade abaPagamentos = ctxt.getBean(AbaPagamentosQualidade.class);
+			cellValorPagamentos = abaPagamentos.gerar(wb, coEquipe, insumos);
+
+		} else {
+
+			AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
+			cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+
 		}
 
-		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) 
-				|| Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+		//
+		// Cálculos
+		//
+		if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
+			AbaCalculosSprint calculos = ctxt.getBean(AbaCalculosSprint.class);
+			insumos = calculos.gerar(wb, coEquipe, faturamentos);
+		}
+
+		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
 			AbaCalculosAcionamento calculos = ctxt.getBean(AbaCalculosAcionamento.class);
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
-		if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo())
-				|| Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
+		if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
 			AbaCalculosAcionamentoQualidade calculos = ctxt.getBean(AbaCalculosAcionamentoQualidade.class);
-			insumos = calculos.write(wb, coEquipe, faturamentos);
+			calculos.gerar(wb, coEquipe, faturamentos, insumos);
 		}
 
 		if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
@@ -158,34 +159,29 @@ public class RelatorioEquipe extends Relatorio {
 			insumos = calculos.write(wb, coEquipe, faturamentos);
 		}
 
+		//
+		// Serviços
+		//
+		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+			AbaServicosAcionamento calculos = ctxt.getBean(AbaServicosAcionamento.class);
+			calculos.write(wb, coEquipe, faturamentos);
+		}
+		
 		if (Utils.isNotEmpty(insumos)) {
 
+			XSSFCell cellValorDevido = null;
+			
 			// Calculos Valor Devido
 			if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
 				AbaCalculoVrDevidoQualidade abaCalculoValorDevido = ctxt.getBean(AbaCalculoVrDevidoQualidade.class);
-				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
-				
+				cellValorDevido = abaCalculoValorDevido.gerar(wb, coEquipe, faturamentos, insumos);
+
 			} else {
-				
+
 				AbaCalculoValorDevido abaCalculoValorDevido = ctxt.getBean(AbaCalculoValorDevido.class);
 				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
-				
-			}
 
-			// Pagamentos
-			XSSFCell cellValorPagamentos = null;
-			
-			if ("D".equals(equipe.getIcDistribuiProfissional())) {
-
-				AbaPagamentosQualidade abaPagamentos = ctxt.getBean(AbaPagamentosQualidade.class);
-				cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
-				
-			} else {
-				
-				AbaPagamentos abaPagamentos = ctxt.getBean(AbaPagamentos.class);
-				cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
-				
 			}
 
 			// Ajuste

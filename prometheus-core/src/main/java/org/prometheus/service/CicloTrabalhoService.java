@@ -259,13 +259,7 @@ public class CicloTrabalhoService {
 		sb.append("        gct.gcttb166_ausencia_servico_extra ase1 ");
 		sb.append("      where ");
 		sb.append("        ase1.nu_equipe = e.nu_equipe ");
-		sb.append("        and ase1.nu_fatura <= f.nu_fatura ");
 		sb.append("        and ase1.nu_ciclo_trabalho = ct.nu_ciclo_trabalho ");
-		sb.append("        and ( ");
-		sb.append("          ct.dt_inicio_ciclo_trabalho between f.dt_inicio_fatura and f.dt_final_fatura ");
-		sb.append("          or ");
-		sb.append("          ct.dt_alvo_ciclo_trabalho between f.dt_inicio_fatura and f.dt_final_fatura ");
-		sb.append("        ) ");
 		sb.append("    ), ");
 		sb.append("    0 :: numeric ");
 		sb.append("  ) qt_dia_servico_extra ");

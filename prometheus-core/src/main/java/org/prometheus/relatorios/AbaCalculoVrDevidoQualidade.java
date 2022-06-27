@@ -1,6 +1,5 @@
 package org.prometheus.relatorios;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,32 +9,18 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
-import org.prometheus.dto.PerfilDTO;
-import org.prometheus.service.EquipeService;
-import org.prometheus.service.PerfilService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.prometheus.utils.XSSFUtils;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Component
 public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 14;
 
-	@Autowired
-	private PerfilService perfilService;
-
-	@Autowired
-	private EquipeService equipeService;
-
-	public XSSFCell write(XSSFWorkbook workBook, String coEquipe, List<FaturamentoDTO> faturamentos,
-			Map<Long, InsumosFaturamentoDTO> insumos) throws InvalidFormatException, IOException {
-
-		EquipeDTO equipe = equipeService.findBy(coEquipe);
+	public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, List<FaturamentoDTO> faturamentos,
+			Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
 
 		carregarFontes(workBook);
 
@@ -53,15 +38,19 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
 		addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-		addCell(row, pos++, "Valor Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
-		List<XSSFCell> listaValoresFinanceiros = new ArrayList<XSSFCell>();
+		List<XSSFCell> listaValoresPrevistos = new ArrayList<XSSFCell>();
+
 		XSSFCell cellVrPrevisto = null;
+		XSSFCell cellVrEquipe = null;
+		XSSFCell cellVrAusencias = null;
+		XSSFCell cellVrExtras = null;
 		XSSFCell cellVrFns = null;
 
 		for (FaturamentoDTO faturamento : faturamentos) {
@@ -74,41 +63,23 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 				pos = 0;
 
-				List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
-
 				addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
 				addCell(row, pos++, faturamento.getQtDiasFaturamento());
+				setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getQtEfetivaTotal()), pos++);
 
-				BigDecimal valorEquipe = BigDecimal.ZERO;
+				cellVrEquipe = setCellFormula(sheet, row, //
+						XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
 
-				for (PerfilDTO perfil : perfis) {
-
-					System.out.println(faturamento.getNuFatura() + " " + perfil.getNuPerfil() + " "
-							+ insumo.getVrPrecoPerfil(perfil.getNuPerfil()) + " "
-							+ insumo.getQtEfetivaPerfil(perfil.getNuPerfil()));
-
-					valorEquipe = valorEquipe.add(insumo.getVrPrecoPerfil(perfil.getNuPerfil())
-							.multiply(insumo.getQtEfetivaPerfil(perfil.getNuPerfil())));
-				}
-
-				addCell(row, pos++, valorEquipe);
-
-				setCellFormula(sheet, row, //
-						String.format("'%s'!%s", //
-								insumo.getVrAusencias().getSheet().getSheetName(), //
-								insumo.getVrAusencias().getReference()), //
-						pos++);
-
-				setCellFormula(sheet, row, //
+				cellVrExtras = setCellFormula(sheet, row, //
 						String.format("'%s'!%s", //
 								insumo.getVrExtras().getSheet().getSheetName(), //
 								insumo.getVrExtras().getReference()), //
 						pos++);
 
-				cellVrPrevisto = setCellFormula(sheet, row, //
+				cellVrAusencias = setCellFormula(sheet, row, //
 						String.format("'%s'!%s", //
-								insumo.getVrPrevistoTermo().getSheet().getSheetName(), //
-								insumo.getVrPrevistoTermo().getReference()), //
+								insumo.getVrAusencias().getSheet().getSheetName(), //
+								insumo.getVrAusencias().getReference()), //
 						pos++);
 
 				if (insumo.getVrFns() != null && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
@@ -120,12 +91,16 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 				} else {
 					cellVrFns = addCell(row, pos++, BigDecimal.ONE);
 				}
-				
-				listaValoresFinanceiros.add(setCellFormula(sheet, row, //
-						String.format("%s*%s", //
-								cellVrPrevisto.getReference(), //
+
+				cellVrPrevisto = setCellFormula(sheet, row, //
+						String.format("(%s+%s-%s)*%s", //
+								cellVrEquipe.getReference(), //
+								cellVrExtras.getReference(), //
+								cellVrAusencias.getReference(), //
 								cellVrFns.getReference()), //
-						pos++));
+						pos++);
+
+				listaValoresPrevistos.add(cellVrPrevisto);
 
 			}
 		}
@@ -135,12 +110,11 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 		addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 		XSSFCell result = setCellFormula(sheet, row, //
 				String.format("sum(%s:%s)", //
-						listaValoresFinanceiros.get(0).getReference(), //
-						listaValoresFinanceiros.get(listaValoresFinanceiros.size() - 1).getReference()), //
+						listaValoresPrevistos.get(0).getReference(), //
+						listaValoresPrevistos.get(listaValoresPrevistos.size() - 1).getReference()), //
 				pos++);
-		
-		return result;
 
+		return result;
 	}
 
 }

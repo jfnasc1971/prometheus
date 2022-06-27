@@ -39,9 +39,10 @@ public abstract class Relatorio {
 		ctxt = new ClassPathXmlApplicationContext("applicationContext.xml");
 	}
 
-	public static final String ABA_CALCULOS = "Cálculos";
+	public static final String ABA_CALCULOS = "Memória de Cálculo";
 	public static final String ABA_CALCULO_VALOR_DEVIDO = "Cálculo Valor Devido";
 	public static final String ABA_PAGAMENTOS = "Pagamentos";
+	public static final String ABA_SERVICOS = "Serviços";
 
 	protected Map<String, Integer> fontes = new HashMap<>();
 	protected Map<String, XSSFCellStyle> estilos = new HashMap<>();
@@ -67,7 +68,7 @@ public abstract class Relatorio {
 	public static final String ALIGN_RIGHT_ORANGE_BOLD = "ALIGN_RIGHT_ORANGE_BOLD";
 	public static final String ALIGN_RIGHT_RED_BOLD = "ALIGN_RIGHT_RED_BOLD";
 
-	public static final short FONT_SIZE = (short) 10;
+	public static final short FONT_SIZE = (short) 9;
 	public static final String FONT_FAMILY = "Arial";
 	public static final String FONTE_BOLD = "FONTE_BOLD";
 	public static final String FONTE_NORMAL = "FONTE_NORMAL";
@@ -363,27 +364,27 @@ public abstract class Relatorio {
 
 		XSSFFont normal = workBook.createFont();
 		normal.setFontHeightInPoints(FONT_SIZE);
-		// normal.setFontName(FONT_FAMILY);
+		normal.setFontName(FONT_FAMILY);
 		normal.setColor(IndexedColors.BLACK.getIndex());
 		fontes.put(FONTE_NORMAL, normal.getIndexAsInt());
 
 		XSSFFont bold = workBook.createFont();
 		bold.setFontHeightInPoints(FONT_SIZE);
-		// bold.setFontName(FONT_FAMILY);
+		bold.setFontName(FONT_FAMILY);
 		bold.setColor(IndexedColors.BLACK.getIndex());
 		bold.setBold(true);
 		fontes.put(FONTE_BOLD, bold.getIndexAsInt());
 
 		XSSFFont whiteBold = workBook.createFont();
 		whiteBold.setFontHeightInPoints(FONT_SIZE);
-		// whiteBold.setFontName(FONT_FAMILY);
+		whiteBold.setFontName(FONT_FAMILY);
 		whiteBold.setColor(IndexedColors.WHITE.getIndex());
 		whiteBold.setBold(true);
 		fontes.put(FONTE_WHITE_BOLD, whiteBold.getIndexAsInt());
 
 		XSSFFont redBold = workBook.createFont();
 		redBold.setFontHeightInPoints(FONT_SIZE);
-		// whiteBold.setFontName(FONT_FAMILY);
+		whiteBold.setFontName(FONT_FAMILY);
 		redBold.setColor(IndexedColors.RED.getIndex());
 		redBold.setBold(true);
 		fontes.put(FONTE_RED_BOLD, redBold.getIndexAsInt());
@@ -469,7 +470,7 @@ public abstract class Relatorio {
 
 		XSSFCellStyle s13 = wb.createCellStyle();
 		s13.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
-		s13.setDataFormat(createHelper.createDataFormat().getFormat("###,###,###,###,##0.00"));
+		s13.setDataFormat(createHelper.createDataFormat().getFormat("###,###,###,###,##0.00;[Red]-###,###,###,###,##0.00"));
 		setAlignRight(s13);
 		addBorders(s13);
 		estilos.put(STYLE_DECIMAL, s13);

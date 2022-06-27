@@ -61,7 +61,7 @@ public class AbaCalculosSprint extends Relatorio {
 	private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
 	private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
 
-	public Map<Long, InsumosFaturamentoDTO> write(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
+	public Map<Long, InsumosFaturamentoDTO> gerar(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
 			throws InvalidFormatException, IOException {
 
 		indicadoresProdutividade = new LinkedHashMap<Long, List<XSSFCell>>();

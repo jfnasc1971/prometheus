@@ -73,8 +73,9 @@ public class VigenciaMembrosService {
 		sb.append("FROM "); 
 		sb.append("  ( "); 
 		sb.append("    SELECT "); 
-		sb.append("      pp.nu_perfil, ");
-		sb.append("      pp.de_perfil, ");
+		sb.append("      pp.nu_perfil, "); 
+		sb.append("      pp.de_perfil, "); 
+		sb.append("      q.co_sitio, "); 
 		sb.append("      e.nu_equipe, "); 
 		sb.append("      q.dt_inicio_vigencia as  dt_inicio_vigencia_membros, "); 
 		sb.append("      coalesce( "); 
@@ -97,7 +98,7 @@ public class VigenciaMembrosService {
 		sb.append("            c.dt_final_compromisso "); 
 		sb.append("          ) "); 
 		sb.append("        END, "); 
-		sb.append("        e.co_sitio, "); 
+		sb.append("        ai.co_sitio, "); 
 		sb.append("        gc.ic_dias_calculo_pagamento "); 
 		sb.append("      ) qt_dias_trabalhados, "); 
 		sb.append("      gct.gctfn305_dias_entre_data( "); 
@@ -108,6 +109,7 @@ public class VigenciaMembrosService {
 		sb.append("      ) qt_dias_faturamento "); 
 		sb.append("    FROM "); 
 		sb.append("      gct.gcttb087_equipe e "); 
+		sb.append("      inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
 		sb.append("      INNER JOIN gct.gcttb010_contrato c ON c.nu_contrato = e.nu_contrato "); 
 		sb.append("      INNER JOIN gct.gcttb033_grupo_contrato gc ON ( "); 
 		sb.append("        gc.nu_contrato = e.nu_contrato "); 
@@ -126,13 +128,14 @@ public class VigenciaMembrosService {
 		sb.append("  ) tb "); 
 		sb.append("union "); 
 		sb.append("SELECT "); 
-		sb.append("  null::numeric nu_perfil, ");
+		sb.append("  null::numeric nu_perfil, "); 
 		sb.append("  null::text de_perfil, "); 
 		sb.append("  *, "); 
 		sb.append("  (qt_dias_trabalhados / qt_dias_faturamento) * qt_membros_equipe qt_efetiva "); 
 		sb.append("FROM "); 
 		sb.append("  ( "); 
 		sb.append("    SELECT "); 
+		sb.append("      ai.co_sitio, "); 
 		sb.append("      e.nu_equipe, "); 
 		sb.append("      q.dt_inicio_vigencia_membros, "); 
 		sb.append("      coalesce( "); 
@@ -166,6 +169,7 @@ public class VigenciaMembrosService {
 		sb.append("      ) qt_dias_faturamento "); 
 		sb.append("    FROM "); 
 		sb.append("      gct.gcttb087_equipe e "); 
+		sb.append("      inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
 		sb.append("      INNER JOIN gct.gcttb010_contrato c ON c.nu_contrato = e.nu_contrato "); 
 		sb.append("      INNER JOIN gct.gcttb033_grupo_contrato gc ON ( "); 
 		sb.append("        gc.nu_contrato = e.nu_contrato "); 
@@ -183,7 +187,6 @@ public class VigenciaMembrosService {
 		sb.append("  ) tb "); 
 		sb.append("order by "); 
 		sb.append("  de_perfil, dt_inicio_vigencia_membros ");
-
 		return sb.toString();
 	}
 

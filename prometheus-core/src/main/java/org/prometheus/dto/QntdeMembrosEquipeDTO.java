@@ -12,6 +12,7 @@ public class QntdeMembrosEquipeDTO {
 	private String deJustificativaAlteracao;
 	private Long qtIntervalos;
 	private String dePerfil;
+	private String noMatricula;
 
 	public void setNuEquipe(Long nuEquipe) {
 		this.nuEquipe = nuEquipe;
@@ -97,6 +98,20 @@ public class QntdeMembrosEquipeDTO {
 
 	public void setDePerfil(String dePerfil) {
 		this.dePerfil = dePerfil;
+	}
+
+	/**
+	 * @return the noMatricula
+	 */
+	public String getNoMatricula() {
+		return noMatricula;
+	}
+
+	/**
+	 * @param noMatricula the noMatricula to set
+	 */
+	public void setNoMatricula(String noMatricula) {
+		this.noMatricula = noMatricula;
 	}
 
 	@Override

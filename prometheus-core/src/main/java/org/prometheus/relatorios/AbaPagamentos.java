@@ -85,7 +85,7 @@ public class AbaPagamentos extends Relatorio {
 			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFinanceiroTermoOriginal() : null);
 
 			if (termo.getVrFns() == null) {
-				addCell(row, pos++, termo.getNuTipoTermo() == 11 ? BigDecimal.ONE : null, STYLE_DECIMAL);
+				addCell(row, pos++);
 			} else {
 				addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, STYLE_DECIMAL);
 			}

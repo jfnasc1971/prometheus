@@ -74,6 +74,25 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("    select "); 
 		sb.append("      ti.sg_tipo_indicador, "); 
 		sb.append("      ti.no_tipo_indicador, "); 
+		sb.append("      '-' as no_agrupador, "); 
+		sb.append("      sa.nu_situacao_atendimento, "); 
+		sb.append("      sa.no_situacao_atendimento, "); 
+		sb.append("      gis.nu_contrato, "); 
+		sb.append("      gis.nu_tipo_grupo, "); 
+		sb.append("      e.nu_equipe, "); 
+		sb.append("      ti.nu_tipo_indicador "); 
+		sb.append("    from "); 
+		sb.append("      gct.gcttb174_grupo_indicador_situacao gis "); 
+		sb.append("      inner join gct.gcttb112_tipo_indicador ti on ti.nu_tipo_indicador = gis.nu_tipo_indicador "); 
+		sb.append("      inner join gct.gcttb092_situacao_atendimento sa on gis.nu_situacao_atendimento = sa.nu_situacao_atendimento "); 
+		sb.append("      inner join gct.gcttb087_equipe e on ( "); 
+		sb.append("        gis.nu_contrato = e.nu_contrato "); 
+		sb.append("        and gis.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      ) "); 
+		sb.append("    union "); 
+		sb.append("    select "); 
+		sb.append("      ti.sg_tipo_indicador, "); 
+		sb.append("      ti.no_tipo_indicador, "); 
 		sb.append("      'Serviços Entregues' :: text no_agrupador, "); 
 		sb.append("      sa.nu_situacao_atendimento, "); 
 		sb.append("      sa.no_situacao_atendimento, "); 
@@ -85,8 +104,10 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("      gct.gcttb087_equipe e "); 
 		sb.append("      inner join gct.gcttb033_grupo_contrato gc on gc.nu_contrato = e.nu_contrato "); 
 		sb.append("      and gc.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      inner join gct.gcttb191_servico_entregue se on se.nu_contrato = gc.nu_contrato "); 
-		sb.append("      and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      inner join gct.gcttb191_servico_entregue se on ( "); 
+		sb.append("        se.nu_contrato = gc.nu_contrato "); 
+		sb.append("        and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      ) "); 
 		sb.append("      inner join gct.gcttb092_situacao_atendimento sa on se.nu_situacao_atendimento = sa.nu_situacao_atendimento "); 
 		sb.append("      inner join gct.gcttb112_tipo_indicador ti on ti.nu_tipo_indicador = se.nu_tipo_indicador "); 
 		sb.append("    union "); 
@@ -104,8 +125,10 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("      gct.gcttb087_equipe e "); 
 		sb.append("      inner join gct.gcttb033_grupo_contrato gc on gc.nu_contrato = e.nu_contrato "); 
 		sb.append("      and gc.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      inner join gct.gcttb192_servico_contratado se on se.nu_contrato = gc.nu_contrato "); 
-		sb.append("      and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      inner join gct.gcttb192_servico_contratado se on ( "); 
+		sb.append("        se.nu_contrato = gc.nu_contrato "); 
+		sb.append("        and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      ) "); 
 		sb.append("      inner join gct.gcttb092_situacao_atendimento sa on se.nu_situacao_atendimento = sa.nu_situacao_atendimento "); 
 		sb.append("      inner join gct.gcttb112_tipo_indicador ti on ti.nu_tipo_indicador = se.nu_tipo_indicador "); 
 		sb.append("    union "); 
@@ -123,8 +146,10 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("      gct.gcttb087_equipe e "); 
 		sb.append("      inner join gct.gcttb033_grupo_contrato gc on gc.nu_contrato = e.nu_contrato "); 
 		sb.append("      and gc.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      inner join gct.gcttb193_servico_atraso se on se.nu_contrato = gc.nu_contrato "); 
-		sb.append("      and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      inner join gct.gcttb193_servico_atraso se on ( "); 
+		sb.append("        se.nu_contrato = gc.nu_contrato "); 
+		sb.append("        and se.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      ) "); 
 		sb.append("      inner join gct.gcttb092_situacao_atendimento sa on se.nu_situacao_atendimento = sa.nu_situacao_atendimento "); 
 		sb.append("      inner join gct.gcttb112_tipo_indicador ti on ti.nu_tipo_indicador = se.nu_tipo_indicador "); 
 		sb.append("    union "); 
@@ -151,8 +176,9 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("  nu_equipe = ? "); 
 		sb.append("order by "); 
 		sb.append("  no_tipo_indicador, "); 
-		sb.append("  no_agrupador ");
-		
+		sb.append("  no_agrupador, ");
+		sb.append("  no_situacao_atendimento ");
+
 		return sb.toString();
 	}
 

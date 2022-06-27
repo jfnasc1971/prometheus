@@ -134,7 +134,7 @@ public class FaturamentoService {
 		sb.append("where "); 
 		sb.append("  e.co_equipe = ? ");
 		sb.append("order by "); 
-		sb.append("  f.nu_fatura ");
+		sb.append("  f.dt_final_fatura ");
 
 		return sb.toString();
 	}

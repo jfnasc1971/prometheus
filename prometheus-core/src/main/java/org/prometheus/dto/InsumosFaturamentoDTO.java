@@ -14,11 +14,14 @@ public class InsumosFaturamentoDTO {
 	private Map<Long, BigDecimal> precosPerfil; // Lista de preços por perfil
 	private Map<Long, BigDecimal> qtEfetivaPerfil; // Quantidade efetiva por perfil
 	private XSSFCell qtEfetiva; // Qtd. Efetiva
+	private XSSFCell qtEfetivaTotal; // Qtd. Efetiva
 	private XSSFCell qtDiasExtra; // Qtd. Dias Extras
 	private XSSFCell vrExtras; // Valor Extras
 	private XSSFCell vrAusencias; // Valor Ausências
+	private XSSFCell vrPago; // Valor Pago
 	private XSSFCell qtDiasAusencia; // Qtd. Dias Ausências
 	private XSSFCell vrPrevistoTermo; // Vr. Previsto Termo
+	private XSSFCell vrEquipe; // Vr. Previsto Termo
 	private XSSFCell vrFns; // FNS
 	private boolean considerarFNS;
 	private Long nuPerfil;
@@ -256,6 +259,48 @@ public class InsumosFaturamentoDTO {
 	 */
 	public void setVrAusencias(XSSFCell vrAusencias) {
 		this.vrAusencias = vrAusencias;
+	}
+
+	/**
+	 * @return the vrEquipe
+	 */
+	public XSSFCell getVrEquipe() {
+		return vrEquipe;
+	}
+
+	/**
+	 * @param vrEquipe the vrEquipe to set
+	 */
+	public void setVrEquipe(XSSFCell vrEquipe) {
+		this.vrEquipe = vrEquipe;
+	}
+
+	/**
+	 * @return the qtEfetivaTotal
+	 */
+	public XSSFCell getQtEfetivaTotal() {
+		return qtEfetivaTotal;
+	}
+
+	/**
+	 * @param qtEfetivaTotal the qtEfetivaTotal to set
+	 */
+	public void setQtEfetivaTotal(XSSFCell qtEfetivaTotal) {
+		this.qtEfetivaTotal = qtEfetivaTotal;
+	}
+
+	/**
+	 * @return the vrPago
+	 */
+	public XSSFCell getVrPago() {
+		return vrPago;
+	}
+
+	/**
+	 * @param vrPago the vrPago to set
+	 */
+	public void setVrPago(XSSFCell vrPago) {
+		this.vrPago = vrPago;
 	}
 
 }

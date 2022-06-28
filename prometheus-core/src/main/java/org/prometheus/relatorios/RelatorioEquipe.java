@@ -112,13 +112,13 @@ public class RelatorioEquipe extends Relatorio {
 				" - " + equipe.getIcTipoAtendimento());
 
 		Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
-		
+
 		// Equipe
 		AbaEquipe abaEquipe = ctxt.getBean(AbaEquipe.class);
 		abaEquipe.write(wb, coEquipe, faturamentos);
 
 		XSSFCell cellValorPagamentos = null;
-		
+
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
 			AbaPagamentosQualidade abaPagamentos = ctxt.getBean(AbaPagamentosQualidade.class);
@@ -162,15 +162,16 @@ public class RelatorioEquipe extends Relatorio {
 		//
 		// Serviços
 		//
-		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())
+				|| Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
 			AbaServicosAcionamento calculos = ctxt.getBean(AbaServicosAcionamento.class);
 			calculos.write(wb, coEquipe, faturamentos);
 		}
-		
+
 		if (Utils.isNotEmpty(insumos)) {
 
 			XSSFCell cellValorDevido = null;
-			
+
 			// Calculos Valor Devido
 			if ("D".equals(equipe.getIcDistribuiProfissional())) {
 

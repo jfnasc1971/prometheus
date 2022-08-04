@@ -41,6 +41,7 @@ public class OrdemServicoService {
 
 				OrdemServicoDTO dto = new OrdemServicoDTO();
 
+				dto.setNuOrdemServico(rs.getLong("nu_ordem_servico"));
 				dto.setCoOrdemServico(rs.getString("co_ordem_servico"));
 				dto.setNuTipoGrupo(rs.getLong("nu_tipo_grupo"));
 				dto.setNoTipoGrupo(rs.getString("no_tipo_grupo"));
@@ -66,6 +67,7 @@ public class OrdemServicoService {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(" select");
+		sb.append("   os.nu_ordem_servico,");
 		sb.append("   os.co_ordem_servico,");
 		sb.append("   tg.nu_tipo_grupo,");
 		sb.append("   tg.no_tipo_grupo,");

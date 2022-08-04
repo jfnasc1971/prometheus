@@ -77,6 +77,7 @@ public abstract class Relatorio {
 	public static final String STYLE_NUMBER = "STYLE_NUMBER";
 	public static final String STYLE_TEXT = "STYLE_TEXT";
 	public static final String STYLE_REDBOLD_TEXT = "STYLE_REDBOLD_TEXT";
+	public static final String STYLE_PERCENT = "STYLE_PERCENT";
 
 	public static final String BOLD = "_BOLD";
 
@@ -308,8 +309,6 @@ public abstract class Relatorio {
 	protected final XSSFCell addCell(XSSFRow row, int pos, Date value, String style) {
 		XSSFCell cell1 = row.createCell(pos);
 		XSSFCellStyle s0 = estilos.get(style);
-		CreationHelper createHelper = row.getSheet().getWorkbook().getCreationHelper();
-		s0.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
 		cell1.setCellStyle(s0);
 		cell1.setCellValue(value);
 		return cell1;
@@ -402,6 +401,7 @@ public abstract class Relatorio {
 		estilos.put(ALIGN_CENTER_BOLD, s2);
 
 		XSSFCellStyle s3 = wb.createCellStyle();
+		s3.setWrapText(true);
 		setAlignCenter(s3);
 		setFillForeground(s3, IndexedColors.GREY_25_PERCENT.index);
 		s3.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
@@ -544,6 +544,13 @@ public abstract class Relatorio {
 		addBorders(s25);
 		estilos.put(ALIGN_RIGHT_BOLD, s25);
 
+		XSSFCellStyle s26 = wb.createCellStyle();
+		s26.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+		s26.setDataFormat(createHelper.createDataFormat().getFormat("###,###,###,###,##0.00%;[Red]-###,###,###,###,##0.00%"));
+		setAlignRight(s26);
+		addBorders(s26);
+		estilos.put(STYLE_PERCENT, s26);
+		
 	}
 
 	protected XSSFCell setCellFormula(XSSFCell cell, String formula, String style) {

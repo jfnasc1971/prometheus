@@ -1,5 +1,6 @@
 package org.prometheus.service;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import org.prometheus.dto.DemandaDTO;
+import org.prometheus.dto.OrdemServicoDTO;
 import org.prometheus.dto.SolicitacaoDemandaDTO;
-
+import org.prometheus.dto.TipoQuantidadeDemandaDTO;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 
@@ -21,7 +23,68 @@ public class SolicitacaoDemandaService {
 	@Autowired
 	private DatabaseService databaseService;
 
+	public BigDecimal getQuantidade(DemandaDTO demanda, OrdemServicoDTO os, SolicitacaoDemandaDTO solicitacao,
+			TipoQuantidadeDemandaDTO tipo) {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = databaseService.getDataSource().getConnection();
+
+			pstmt = conn.prepareStatement(getDMLQuantidade());
+			pstmt.setLong(1, demanda.getNuDemanda());
+			pstmt.setLong(2, os.getNuOrdemServico());
+			pstmt.setLong(3, solicitacao.getNuSolicitacao());
+			pstmt.setLong(4, tipo.getNuTipoQuantidade());
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getBigDecimal(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+
+		return BigDecimal.ZERO;
+	}
+
+	public BigDecimal getMensuracao(DemandaDTO demanda, OrdemServicoDTO os, SolicitacaoDemandaDTO solicitacao) {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = databaseService.getDataSource().getConnection();
+
+			pstmt = conn.prepareStatement(getDMLMensuracao());
+			pstmt.setLong(1, demanda.getNuDemanda());
+			pstmt.setLong(2, os.getNuOrdemServico());
+			pstmt.setLong(3, solicitacao.getNuSolicitacao());
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getBigDecimal(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+
+		return BigDecimal.ZERO;
+	}
+
 	public List<SolicitacaoDemandaDTO> listar(String coDemanda) {
+
 		List<SolicitacaoDemandaDTO> result = new ArrayList<SolicitacaoDemandaDTO>();
 
 		Connection conn = null;
@@ -96,4 +159,36 @@ public class SolicitacaoDemandaService {
 		return sb.toString();
 	}
 
+	public String getDMLMensuracao() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select coalesce(sum(qos.qt_solicitacao), 0) ");
+		sb.append("from gct.gcttb021_demanda d ");
+		sb.append("inner join gct.gcttb023_ordem_servico os on os.nu_demanda = d.nu_demanda ");
+		sb.append("inner join gct.gcttb051_quantidade_ordem_serv qos on qos.nu_ordem_servico = os.nu_ordem_servico ");
+		sb.append("inner join gct.gcttb049_tipo_quantidade tq on tq.nu_tipo_quantidade = qos.nu_tipo_quantidade ");
+		sb.append("where d.nu_demanda = ? ");
+		sb.append("and os.nu_ordem_servico = ? ");
+		sb.append("and qos.nu_solicitacao = ? ");
+
+		return sb.toString();
+	}
+
+	public String getDMLQuantidade() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select coalesce(sum(qos.qt_solicitacao), 0) ");
+		sb.append("from gct.gcttb021_demanda d ");
+		sb.append("inner join gct.gcttb023_ordem_servico os on os.nu_demanda = d.nu_demanda ");
+		sb.append("inner join gct.gcttb051_quantidade_ordem_serv qos on qos.nu_ordem_servico = os.nu_ordem_servico ");
+		sb.append("inner join gct.gcttb049_tipo_quantidade tq on tq.nu_tipo_quantidade = qos.nu_tipo_quantidade ");
+		sb.append("where d.nu_demanda = ? ");
+		sb.append("and os.nu_ordem_servico = ? ");
+		sb.append("and qos.nu_solicitacao = ? ");
+		sb.append("and qos.nu_tipo_quantidade = ? ");
+
+		return sb.toString();
+	}
 }

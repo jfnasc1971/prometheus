@@ -149,7 +149,8 @@ public class GerarDTO {
 			return "java.math.BigDecimal";
 		}
 
-		else if ("date".equalsIgnoreCase(columnTypeName) || "timestamp".equalsIgnoreCase(columnTypeName)) {
+		else if ("date".equalsIgnoreCase(columnTypeName) || "timestamp".equalsIgnoreCase(columnTypeName)
+				 || "timestamptz".equalsIgnoreCase(columnTypeName)) {
 			return "java.util.Date";
 		}
 

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GerarServicoDB {
 
-	private static final String PREFIX = "OrdemServico";
+	private static final String PREFIX = "EntregaDemanda";
 	private static final String VIEW_NAME = PREFIX + "DTO";
 	private static final String SERVICE_NAME = PREFIX + "Service";
 

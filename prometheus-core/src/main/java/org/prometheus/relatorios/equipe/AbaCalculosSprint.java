@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -18,6 +18,8 @@ import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.SolicitacaoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.dto.VigenciaMembrosSprintDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.CicloTrabalhoService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
@@ -72,7 +74,7 @@ public class AbaCalculosSprint extends Relatorio {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		XSSFSheet sheet = wb.createSheet(Relatorio.ABA_CALCULOS);
+		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
 		carregarFontes(wb);
 		carregarEstilos(wb);

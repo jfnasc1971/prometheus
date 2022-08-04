@@ -1,23 +1,25 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.EquipeDTO;
-import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.TermoDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.TermoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 @Component
-public class AbaPagamentosQualidade extends Relatorio {
+public class AbaPagamentos extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 14;
 
@@ -27,7 +29,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 	@Autowired
 	private EquipeService equipeService;
 
-	public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
+	public XSSFCell write(XSSFWorkbook workBook, String coEquipe) throws InvalidFormatException, IOException {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
@@ -35,7 +37,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 
 		carregarEstilos(workBook);
 
-		XSSFSheet sheet = workBook.createSheet(Relatorio.ABA_PAGAMENTOS);
+		XSSFSheet sheet = workBook.createSheet(RelatorioEquipe.ABA_PAGAMENTOS);
 
 		sheet.setDisplayGridlines(false);
 
@@ -48,13 +50,17 @@ public class AbaPagamentosQualidade extends Relatorio {
 		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
 		addCell(row, pos++, "Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Emissão", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qtd. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Vr. Previsto Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qtd. Dias Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qtd. Dias Ausência", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Vr. Previsto Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Fatura Paga", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-		addCell(row, pos++, "Valor Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Vr. Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 		List<TermoDTO> termos = termoService.listar(equipe.getNuEquipe());
 
@@ -70,52 +76,30 @@ public class AbaPagamentosQualidade extends Relatorio {
 			addCell(row, pos++, termo.getNuFaturaGerada() + " - " + termo.getDeFatura());
 			addCell(row, pos++, termo.getCoTermo());
 			addCell(row, pos++, termo.getDhEmissaoTermo());
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrPrecoGrupo() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getDiaServicoExtra() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtDiaAusencia() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFinanceiroTermoOriginal() : null);
 
-			XSSFCell cellVrPrevisto = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null);
-			XSSFCell cellVrAcrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null);
-			XSSFCell cellVrDecrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null);
-
-			// FNS
-			XSSFCell cellVrFNS = null;
-			
 			if (termo.getVrFns() == null) {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? BigDecimal.ONE : null, STYLE_DECIMAL);
+				addCell(row, pos++);
 			} else {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, STYLE_DECIMAL);
-			}
-			
-			// Valor Previsto
-			if (termo.getNuTipoTermo() == 11) {
-				setCellFormula(sheet, row, //
-						String.format("(%s+%s-%s)*%s", //
-								cellVrPrevisto.getReference(), //
-								cellVrAcrescimo.getReference(),
-								cellVrDecrescimo.getReference(), //
-								cellVrFNS.getReference()), //
-						pos++);
+				addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, STYLE_DECIMAL);
 			}
 
-			if (termo.getNuTipoTermo() == 12) {
-				addCell(row, pos++);
-			}
-			
 			addCell(row, pos++, termo.getNuFaturaPaga() + " - " + termo.getDeFaturaPaga());
 
 			if (primeiraFatura == null) {
 				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
-				ultimaFatura = primeiraFatura;
+				ultimaFatura = primeiraFatura; 
 			} else {
 				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
 			}
 
-			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
-			insumo.setVrPago(ultimaFatura);
-			
-			insumos.put(termo.getNuFaturaGerada(), insumo);
-			
 		}
 
 		row = addNewRow(sheet);
@@ -124,8 +108,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 
 		if (primeiraFatura != null) {
 			setCellFormula(result,
-					String.format("sum(%s:%s)", //
-							primeiraFatura.getReference(), ultimaFatura.getReference()), //
+					String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
 					STYLE_DECIMAL);
 		}
 

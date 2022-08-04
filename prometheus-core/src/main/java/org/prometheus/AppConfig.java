@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.CicloTrabalhoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
+import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.CicloTrabalhoService;
 import org.prometheus.service.EquipeService;
 import org.springframework.beans.factory.annotation.Autowired;

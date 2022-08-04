@@ -93,6 +93,7 @@ public class EntregaServiceQualidade {
 		sb.append("select ");
 		sb.append("  s.co_solicitacao, ");
 		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, ");
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, ");
 		sb.append("  s.dh_efetiva, ");
@@ -142,6 +143,7 @@ public class EntregaServiceQualidade {
 
 		sb.append("select ");
 		sb.append("  s.co_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.de_solicitacao, ");
 		sb.append("  s.dh_prevista, ");
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, ");
@@ -190,7 +192,8 @@ public class EntregaServiceQualidade {
 
 		sb.append("select "); 
 		sb.append("  s.co_solicitacao, "); 
-		sb.append("  s.de_solicitacao, "); 
+		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
@@ -240,7 +243,8 @@ public class EntregaServiceQualidade {
 		sb.append("select "); 
 		sb.append("  e.co_equipe, "); 
 		sb.append("  se.nu_fatura_amostra, "); 
-		sb.append("  s.co_solicitacao, "); 
+		sb.append("  s.co_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  f.dt_final_fatura, "); 
 		sb.append("  s.dh_prevista, "); 
@@ -293,7 +297,8 @@ public class EntregaServiceQualidade {
 
 		sb.append("select "); 
 		sb.append("  s.co_solicitacao, "); 
-		sb.append("  s.de_solicitacao, "); 
+		sb.append("  s.de_solicitacao, ");
+		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 

@@ -35,8 +35,8 @@ public class EntregaService {
 		return listar(nuEquipe, nuFatura, getDMLServicosDevolvidos());
 	}
 
-	public List<EntregaDTO> listarServicosEntreguesEstoque(Long nuEquipe, Long nuFatura) {
-		return listar(nuEquipe, nuFatura, getDMLServicosEntreguesEstoque());
+	public List<EntregaDTO> listarServicosEstoque(Long nuEquipe, Long nuFatura) {
+		return listar(nuEquipe, nuFatura, getDMLServicosEstoque());
 	}
 
 	private List<EntregaDTO> listar(Long nuEquipe, Long nuFatura, String sql) {
@@ -267,7 +267,7 @@ public class EntregaService {
 		return sb.toString();
 	}
 
-	private String getDMLServicosEntreguesEstoque() {
+	private String getDMLServicosEstoque() {
 
 		StringBuilder sb = new StringBuilder();
 

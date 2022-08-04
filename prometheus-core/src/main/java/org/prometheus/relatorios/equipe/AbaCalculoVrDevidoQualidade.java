@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.utils.XSSFUtils;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +28,7 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 		carregarEstilos(workBook);
 
-		XSSFSheet sheet = workBook.createSheet(Relatorio.ABA_CALCULO_VALOR_DEVIDO);
+		XSSFSheet sheet = workBook.createSheet(RelatorioEquipe.ABA_CALCULO_VALOR_DEVIDO);
 
 		sheet.setDisplayGridlines(false);
 

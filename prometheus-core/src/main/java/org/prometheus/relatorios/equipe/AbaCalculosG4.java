@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,6 +16,8 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.IndicadorVinculadoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
@@ -63,7 +65,7 @@ public class AbaCalculosG4 extends Relatorio {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		XSSFSheet sheet = wb.createSheet(Relatorio.ABA_CALCULOS);
+		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
 		carregarFontes(wb);
 		carregarEstilos(wb);
@@ -246,7 +248,7 @@ public class AbaCalculosG4 extends Relatorio {
 			 * Serviços Entregues/Estoque
 			 */
 			List<EntregaDTO> servicosEntreguesEstoque = entregaService
-					.listarServicosEntreguesEstoque(equipe.getNuEquipe(), faturamento.getNuFatura());
+					.listarServicosEstoque(equipe.getNuEquipe(), faturamento.getNuFatura());
 
 			addBlank(sheet);
 			row = addNewRow(sheet);

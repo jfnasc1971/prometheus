@@ -15,6 +15,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.relatorios.equipe.AbaAjuste;
+import org.prometheus.relatorios.equipe.AbaCalculoValorDevido;
+import org.prometheus.relatorios.equipe.AbaCalculoVrDevidoQualidade;
+import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
+import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoQualidade;
+import org.prometheus.relatorios.equipe.AbaCalculosG4;
+import org.prometheus.relatorios.equipe.AbaCalculosSprint;
+import org.prometheus.relatorios.equipe.AbaEquipe;
+import org.prometheus.relatorios.equipe.AbaPagamentos;
+import org.prometheus.relatorios.equipe.AbaPagamentosQualidade;
+import org.prometheus.relatorios.equipe.AbaServicosAcionamento;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaturamentoService;
 import org.prometheus.utils.Utils;
@@ -25,6 +36,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RelatorioEquipe extends Relatorio {
 
+	public static final String ABA_CALCULOS = "Memória de Cálculo";
+	public static final String ABA_CALCULO_VALOR_DEVIDO = "Cálculo Valor Devido";
+	public static final String ABA_PAGAMENTOS = "Pagamentos";
+	public static final String ABA_SERVICOS = "Serviços";
+	
 	private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
 
 	@Autowired

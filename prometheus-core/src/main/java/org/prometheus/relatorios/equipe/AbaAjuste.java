@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 
@@ -6,6 +6,8 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -35,12 +37,12 @@ public class AbaAjuste extends Relatorio {
 
 		row = addNewRow(sheet);
 		addMergedRegion(sheet, row, 0, 1, "Vr. Devido Faturamento", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		setCellFormula(sheet, row, getCellReference(Relatorio.ABA_CALCULO_VALOR_DEVIDO, //
+		setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULO_VALOR_DEVIDO, //
 				cellValorDevido.getReference()), 2, STYLE_DECIMAL);
 
 		row = addNewRow(sheet);
 		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		setCellFormula(sheet, row, getCellReference(Relatorio.ABA_PAGAMENTOS, //
+		setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_PAGAMENTOS, //
 				cellValorPagamentos.getReference()), 2, STYLE_DECIMAL);
 
 		row = addNewRow(sheet);

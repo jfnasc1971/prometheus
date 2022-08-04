@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaixaIndicadorDTO;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.SituacaoEntregaIndicadorDTO;
+import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
 import org.prometheus.service.IndicadorService;

@@ -39,11 +39,6 @@ public abstract class Relatorio {
 		ctxt = new ClassPathXmlApplicationContext("applicationContext.xml");
 	}
 
-	public static final String ABA_CALCULOS = "Memória de Cálculo";
-	public static final String ABA_CALCULO_VALOR_DEVIDO = "Cálculo Valor Devido";
-	public static final String ABA_PAGAMENTOS = "Pagamentos";
-	public static final String ABA_SERVICOS = "Serviços";
-
 	protected Map<String, Integer> fontes = new HashMap<>();
 	protected Map<String, XSSFCellStyle> estilos = new HashMap<>();
 

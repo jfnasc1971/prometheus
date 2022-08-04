@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -13,6 +13,8 @@ import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.utils.Utils;
@@ -47,7 +49,7 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		XSSFSheet sheet = wb.createSheet(Relatorio.ABA_SERVICOS);
+		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_SERVICOS);
 
 		carregarFontes(wb);
 		carregarEstilos(wb);
@@ -76,7 +78,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			listarServicosEntregues(equipe, sheet, faturamento);
 			listarServicosDevolvidos(equipe, sheet, faturamento);
 			listarServicosAtrasados(equipe, sheet, faturamento);
-			listarServicosEntreguesEstoque(equipe, sheet, faturamento);
+			listarServicosEstoque(equipe, sheet, faturamento);
 			listarServicosContratados(equipe, sheet, faturamento);
 
 			addBlank(sheet);
@@ -134,8 +136,8 @@ public class AbaServicosAcionamento extends Relatorio {
 		return cellQtServicosEntreguesComAtraso;
 	}
 
-	private XSSFCell listarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+	private XSSFCell listarServicosEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);

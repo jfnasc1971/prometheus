@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -12,6 +12,7 @@ import org.prometheus.dto.DetalheFaturamentoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.IndicadorDTO;
+import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.AusenciaExtraFaturamentoService;
 import org.prometheus.service.DetalheFaturamentoService;
 import org.prometheus.service.EquipeService;

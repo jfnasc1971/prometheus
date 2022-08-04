@@ -1,4 +1,4 @@
-package org.prometheus.relatorios;
+package org.prometheus.relatorios.equipe;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.PerfilDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.AusenciaExtraFaturamentoService;
 import org.prometheus.service.EntregaServiceQualidade;
 import org.prometheus.service.EquipeService;
@@ -68,7 +70,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		XSSFSheet sheet = wb.createSheet(Relatorio.ABA_CALCULOS);
+		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
 		carregarFontes(wb);
 		carregarEstilos(wb);

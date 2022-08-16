@@ -17,6 +17,14 @@ public class EntregaDemandaDTO extends BaseDTO {
 	private java.util.Date dhPrevistaEntregaPendencia;
 	private java.util.Date dhEfetivaEntrega;
 	private java.math.BigDecimal vrPrevistoEntrega;
+	private java.math.BigDecimal vrMensuracaoEfetiva;
+	private java.math.BigDecimal vrPreco;
+	private Long qtDiasAtraso;
+	private java.math.BigDecimal vrRedutorAtraso;
+	private java.math.BigDecimal vrDescontoAtraso;
+	private Long qtErros;
+	private java.math.BigDecimal vrDescontoErros;
+	private java.math.BigDecimal vrLiquido;
 
 	public void setCoDemanda(String coDemanda) {
 		this.coDemanda = coDemanda;
@@ -120,6 +128,118 @@ public class EntregaDemandaDTO extends BaseDTO {
 
 	public java.math.BigDecimal getVrPrevistoEntrega() {
 		return this.vrPrevistoEntrega;
+	}
+
+	/**
+	 * @return the vrMensuracaoEfetiva
+	 */
+	public java.math.BigDecimal getVrMensuracaoEfetiva() {
+		return vrMensuracaoEfetiva;
+	}
+
+	/**
+	 * @param vrMensuracaoEfetiva the vrMensuracaoEfetiva to set
+	 */
+	public void setVrMensuracaoEfetiva(java.math.BigDecimal vrMensuracaoEfetiva) {
+		this.vrMensuracaoEfetiva = vrMensuracaoEfetiva;
+	}
+
+	/**
+	 * @return the vrPreco
+	 */
+	public java.math.BigDecimal getVrPreco() {
+		return vrPreco;
+	}
+
+	/**
+	 * @param vrPreco the vrPreco to set
+	 */
+	public void setVrPreco(java.math.BigDecimal vrPreco) {
+		this.vrPreco = vrPreco;
+	}
+
+	/**
+	 * @return the qtDiasAtraso
+	 */
+	public Long getQtDiasAtraso() {
+		return qtDiasAtraso;
+	}
+
+	/**
+	 * @param qtDiasAtraso the qtDiasAtraso to set
+	 */
+	public void setQtDiasAtraso(Long qtDiasAtraso) {
+		this.qtDiasAtraso = qtDiasAtraso;
+	}
+
+	/**
+	 * @return the vrRedutorAtraso
+	 */
+	public java.math.BigDecimal getVrRedutorAtraso() {
+		return vrRedutorAtraso;
+	}
+
+	/**
+	 * @param vrRedutorAtraso the vrRedutorAtraso to set
+	 */
+	public void setVrRedutorAtraso(java.math.BigDecimal vrRedutorAtraso) {
+		this.vrRedutorAtraso = vrRedutorAtraso;
+	}
+
+	/**
+	 * @return the vrDescontoAtraso
+	 */
+	public java.math.BigDecimal getVrDescontoAtraso() {
+		return vrDescontoAtraso;
+	}
+
+	/**
+	 * @param vrDescontoAtraso the vrDescontoAtraso to set
+	 */
+	public void setVrDescontoAtraso(java.math.BigDecimal vrDescontoAtraso) {
+		this.vrDescontoAtraso = vrDescontoAtraso;
+	}
+
+	/**
+	 * @return the qtErros
+	 */
+	public Long getQtErros() {
+		return qtErros;
+	}
+
+	/**
+	 * @param qtErros the qtErros to set
+	 */
+	public void setQtErros(Long qtErros) {
+		this.qtErros = qtErros;
+	}
+
+	/**
+	 * @return the vrDescontoErros
+	 */
+	public java.math.BigDecimal getVrDescontoErros() {
+		return vrDescontoErros;
+	}
+
+	/**
+	 * @param vrDescontoErros the vrDescontoErros to set
+	 */
+	public void setVrDescontoErros(java.math.BigDecimal vrDescontoErros) {
+		this.vrDescontoErros = vrDescontoErros;
+	}
+
+	/**
+	 * @return the vrLiquido
+	 */
+	public java.math.BigDecimal getVrLiquido() {
+		return vrLiquido;
+	}
+
+	/**
+	 * @param vrLiquido the vrLiquido to set
+	 */
+	public void setVrLiquido(java.math.BigDecimal vrLiquido) {
+		this.vrLiquido = vrLiquido;
 	}
 
 }

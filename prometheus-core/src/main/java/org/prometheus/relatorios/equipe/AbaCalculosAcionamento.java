@@ -341,6 +341,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 	}
 
 	private XSSFCell contarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		
 		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
 				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
 
@@ -350,16 +351,17 @@ public class AbaCalculosAcionamento extends Relatorio {
 	}
 
 	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		
 		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEstoque(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Entregues/Estoque", ALIGN_CENTER_BOLD);
+		addCell(row, 0, "Estoque", ALIGN_CENTER_BOLD);
 		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
 	}
 
 	private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
+		
 		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
 				faturamento.getNuFatura(), 19L);
 
@@ -369,6 +371,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 	}
 
 	private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		
 		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
 

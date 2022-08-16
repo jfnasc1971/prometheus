@@ -479,6 +479,7 @@ public abstract class Relatorio {
 		XSSFCellStyle s15 = wb.createCellStyle();
 		s15.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
 		s15.setDataFormat(createHelper.createDataFormat().getFormat("##############0"));
+		s15.setVerticalAlignment(VerticalAlignment.CENTER);
 		addBorders(s15);
 		estilos.put(STYLE_NUMBER, s15);
 

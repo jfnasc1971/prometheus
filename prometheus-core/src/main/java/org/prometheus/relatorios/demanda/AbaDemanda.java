@@ -2,6 +2,7 @@ package org.prometheus.relatorios.demanda;
 
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbaDemanda extends Relatorio {
 
-	private static final int LAYOUT_COLUMNS_COUNT = 14;
+	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
 	private DemandaService demandaService;
@@ -49,14 +50,15 @@ public class AbaDemanda extends Relatorio {
 
 		XSSFSheet sheet = workBook.createSheet(coDemanda);
 
+		sheet.setZoom(90);
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT + 1, 70);
 
 		XSSFRow row = null;
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 		addBlank(sheet);
 
@@ -70,12 +72,12 @@ public class AbaDemanda extends Relatorio {
 
 		row = addNewRow(sheet);
 		addCell(row, 0, "Código", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, 1, 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 1, 8, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 		for (SolicitacaoDemandaDTO solicitacao : solicitacoes) {
 			row = addNewRow(sheet);
 			addCell(row, 0, solicitacao.getCoSolicitacao());
-			addMergedRegion(sheet, row, 1, 2, solicitacao.getNoSolicitacao());
+			addMergedRegion(sheet, row, 1, 8, solicitacao.getNoSolicitacao());
 		}
 
 		addBlank(sheet);
@@ -102,10 +104,10 @@ public class AbaDemanda extends Relatorio {
 
 			addBlank(sheet);
 			processarMensuracoes(sheet, demanda, os, solicitacoes);
-			
+
 			addBlank(sheet);
 			processarEntregas(sheet, os);
-			
+
 		}
 
 	}
@@ -124,11 +126,11 @@ public class AbaDemanda extends Relatorio {
 		addCell(row, pos++, "Qt. Dias Pendência", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Prevista c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		
+
 		List<EntregaDemandaDTO> entregas = entregaDemandaService.listar(os);
-		
-		for(EntregaDemandaDTO entrega:entregas) {
-			
+
+		for (EntregaDemandaDTO entrega : entregas) {
+
 			row = addNewRow(sheet);
 
 			pos = 0;
@@ -140,9 +142,55 @@ public class AbaDemanda extends Relatorio {
 			addCell(row, pos++, entrega.getQtDiasPendencia());
 			addCell(row, pos++, entrega.getDhPrevistaEntregaPendencia(), STYLE_DATE_TIME);
 			addCell(row, pos++, entrega.getDhEfetivaEntrega(), STYLE_DATE_TIME);
-			
+
 		}
-		
+
+		addBlank(sheet);
+
+		row = addNewRow(sheet);
+		row.setHeight((short) 600);
+
+		pos = 0;
+		addCell(row, pos++, "Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "% Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "% Executado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Mensuração Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Dias de Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Redutor Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Desconto Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Quantidade de Erros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Desconto Erros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Valor Líquido", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		for (EntregaDemandaDTO entrega : entregas) {
+
+			row = addNewRow(sheet);
+
+			pos = 0;
+			addCell(row, pos++, entrega.getCoEntrega());
+			XSSFCell pcEntrega = addCell(row, pos++, entrega.getPcEntrega(), STYLE_PERCENT);
+			XSSFCell pcExecutado = addCell(row, pos++, entrega.getPcExecutado(), STYLE_PERCENT);
+			XSSFCell vrMensuracao = addCell(row, pos++, entrega.getVrMensuracaoEfetiva());
+			XSSFCell vrPreco = addCell(row, pos++, entrega.getVrPreco());
+
+			setCellFormula(sheet, row, //
+					String.format("%s*%s*%s*%s", //
+							pcEntrega.getReference(), //
+							pcExecutado.getReference(), //
+							vrMensuracao.getReference(), //
+							vrPreco.getReference()),
+					pos++);
+			
+			addCell(row, pos++, entrega.getQtDiasAtraso());
+			addCell(row, pos++, entrega.getVrRedutorAtraso());
+			addCell(row, pos++, entrega.getVrDescontoAtraso());
+			addCell(row, pos++, entrega.getQtErros());
+			addCell(row, pos++, entrega.getVrDescontoErros());
+			addCell(row, pos++, entrega.getVrLiquido());
+		}
+
 	}
 
 	private void processarMensuracoes(XSSFSheet sheet, DemandaDTO demanda, OrdemServicoDTO os,
@@ -165,7 +213,7 @@ public class AbaDemanda extends Relatorio {
 			pos = 0;
 			addCell(row, pos++, solicitacao.getCoSolicitacao());
 			addCell(row, pos++, solicitacaoDemandaService.getMensuracao(demanda, os, solicitacao));
-			for(TipoQuantidadeDemandaDTO tipo:tiposQuantidade) {
+			for (TipoQuantidadeDemandaDTO tipo : tiposQuantidade) {
 				addCell(row, pos++, solicitacaoDemandaService.getQuantidade(demanda, os, solicitacao, tipo));
 			}
 		}

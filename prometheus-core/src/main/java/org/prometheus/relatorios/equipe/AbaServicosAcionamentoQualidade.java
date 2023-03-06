@@ -1,0 +1,331 @@
+package org.prometheus.relatorios.equipe;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.dto.EntregaDTO;
+import org.prometheus.dto.EquipeDTO;
+import org.prometheus.dto.FaturamentoDTO;
+import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioEquipe;
+import org.prometheus.service.EntregaService;
+import org.prometheus.service.EntregaServiceQualidade;
+import org.prometheus.service.EquipeService;
+import org.prometheus.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
+@Component
+public class AbaServicosAcionamentoQualidade extends Relatorio {
+
+	private static final int LAYOUT_COLUMNS_COUNT = 11;
+
+	@Autowired
+	private EquipeService equipeService;
+
+	@Autowired
+	private EntregaServiceQualidade entregaService;
+
+	Map<Long, List<XSSFCell>> listaIEQQL = null;
+	Map<Long, List<XSSFCell>> listaIEQQPZ = null;
+	Map<Long, List<XSSFCell>> listaIEQQET = null;
+
+	Map<Long, List<XSSFCell>> listaMediaIEQQL = null;
+	Map<Long, List<XSSFCell>> listaMediaIEQQPZ = null;
+	Map<Long, List<XSSFCell>> listaMediaIEQQET = null;
+
+	public Map<Long, InsumosFaturamentoDTO> write(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
+			throws InvalidFormatException, IOException {
+
+		Map<Long, InsumosFaturamentoDTO> result = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
+
+		EquipeDTO equipe = equipeService.findBy(coEquipe);
+
+		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_SERVICOS);
+
+		carregarFontes(wb);
+		carregarEstilos(wb);
+
+		sheet.setZoom(90);
+		sheet.setDisplayGridlines(false);
+
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 75);
+
+		XSSFRow row = null;
+
+		// faturamentos
+		for (FaturamentoDTO faturamento : faturamentos) {
+
+			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
+					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
+					faturamento.getNuFatura(), faturamento.getDeFatura()));
+
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+					"Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
+					ALIGN_CENTER_GREEN_BOLD);
+
+			addBlank(sheet);
+
+			listarServicosEntregues(equipe, sheet, faturamento);
+			listarServicosDevolvidos(equipe, sheet, faturamento);
+			listarServicosAtrasados(equipe, sheet, faturamento);
+			listarServicosEstoque(equipe, sheet, faturamento);
+			listarServicosContratados(equipe, sheet, faturamento);
+
+			addBlank(sheet);
+
+		} // faturamentos
+
+		return result;
+	}
+
+	private XSSFCell listarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
+				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		row = addNewRow(sheet);
+		int pos = 0;
+		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
+		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+		}
+
+		for (EntregaDTO e : servicosEntreguesComAtraso) {
+			row = addNewRow(sheet);
+			pos = 0;
+			addCell(row, pos++, e.getCoSolicitacao());
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
+			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getDhPrevistaPendencias());
+			addCell(row, pos++, e.getDhEfetiva());
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+		}
+
+		row = addNewRow(sheet);
+		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+
+		addBlank(sheet);
+
+		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
+		return cellQtServicosEntreguesComAtraso;
+	}
+
+	private XSSFCell listarServicosEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		row = addNewRow(sheet);
+		int pos = 0;
+		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
+		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		if (Utils.isEmpty(servicosEntreguesEstoque)) {
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+		}
+
+		for (EntregaDTO e : servicosEntreguesEstoque) {
+			row = addNewRow(sheet);
+			pos = 0;
+			addCell(row, pos++, e.getCoSolicitacao());
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
+			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getDhPrevistaPendencias());
+			addCell(row, pos++, e.getDhEfetiva());
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+		}
+
+		row = addNewRow(sheet);
+		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+
+		addBlank(sheet);
+
+		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
+		return cellQtServicosEntreguesEstoque;
+	}
+
+	private XSSFCell listarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Contratados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		row = addNewRow(sheet);
+		int pos = 0;
+		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
+		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		if (Utils.isEmpty(servicosContratados)) {
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+		}
+
+		for (EntregaDTO e : servicosContratados) {
+			row = addNewRow(sheet);
+			pos = 0;
+			addCell(row, pos++, e.getCoSolicitacao());
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
+			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getDhPrevistaPendencias());
+			addCell(row, pos++, e.getDhEfetiva());
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+		}
+
+		row = addNewRow(sheet);
+		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+
+		addBlank(sheet);
+
+		XSSFCell cellQtServicosContratados = addCell(row, 1, Long.valueOf(servicosContratados.size()));
+		return cellQtServicosContratados;
+	}
+
+	private XSSFCell listarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		row = addNewRow(sheet);
+		int pos = 0;
+		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
+		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		if (Utils.isEmpty(servicosDevolvidos)) {
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+		}
+
+		for (EntregaDTO e : servicosDevolvidos) {
+			row = addNewRow(sheet);
+			pos = 0;
+			addCell(row, pos++, e.getCoSolicitacao());
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
+			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getDhPrevistaPendencias());
+			addCell(row, pos++, e.getDhEfetiva());
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+		}
+
+		row = addNewRow(sheet);
+		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+
+		addBlank(sheet);
+
+		XSSFCell cellQtServicosDevolvidos = addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
+		return cellQtServicosDevolvidos;
+	}
+
+	private XSSFCell listarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+		List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
+				faturamento.getNuFatura());
+
+		XSSFRow row = addNewRow(sheet);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Entregues", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+		row = addNewRow(sheet);
+		int pos = 0;
+		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		pos = pos + 3;
+		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+		if (Utils.isEmpty(servicosEntregues)) {
+			row = addNewRow(sheet);
+			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+		}
+
+		for (EntregaDTO e : servicosEntregues) {
+			row = addNewRow(sheet);
+			pos = 0;
+			addCell(row, pos++, e.getCoSolicitacao());
+			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			pos = pos + 3;
+			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getDhPrevistaPendencias());
+			addCell(row, pos++, e.getDhEfetiva());
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+		}
+
+		row = addNewRow(sheet);
+		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+
+		addBlank(sheet);
+
+		XSSFCell cellQtServicosEntregues = addCell(row, 1, Long.valueOf(servicosEntregues.size()));
+		return cellQtServicosEntregues;
+	}
+
+}

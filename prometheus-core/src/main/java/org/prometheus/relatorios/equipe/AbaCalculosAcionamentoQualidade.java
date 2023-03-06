@@ -302,158 +302,162 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 								cellVrExtras.getReference() + " - " + //
 								cellVrAusencias.getReference(),
 						pos++));
+
+				int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
+
+				/**
+				 * Indicadores
+				 */
+				if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 7,
+							"Grupo configurado para aplicar Indicadores somente a partir de "
+									+ DateUtil.format(faturamento.getDtConsiderarFns()),
+							ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+				}
+
+				if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+
+					row = getRow(sheet, rownum);
+
+					addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
+
+					XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
+					XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
+					XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
+					XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet,
+							faturamento);
+					XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+					/**
+					 * ICQL - Qualidade do Serviço
+					 */
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 5, "ICQL - Qualidade", ALIGN_LEFT);
+
+					XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+					if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+							&& cellQtServicosEntregues.getNumericCellValue() != 0) {
+						setCellFormula(cellFormulaIEQQL, //
+								String.format("1-(%s/%s)", //
+										cellQtServicosDevolvidos.getReference(), //
+										cellQtServicosEntregues.getReference()), //
+								STYLE_DECIMAL_5DIGITS);
+					}
+
+					addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+
+					/**
+					 * IEQQPZ - Prazo do Serviço
+					 */
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 5, "ICPZ - Prazo", ALIGN_LEFT);
+
+					XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+					if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+							&& cellQtServicosEntregues.getNumericCellValue() != 0) {
+						setCellFormula(cellFormulaIEQQPZ, //
+								String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
+										cellQtServicosEntregues.getReference()), //
+								STYLE_DECIMAL_5DIGITS);
+					}
+
+					addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+
+					/**
+					 * ICET - Estoque
+					 */
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
+
+					XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+					if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
+							&& cellQtServicosContratados.getNumericCellValue() != 0) {
+						setCellFormula(cellFormulaIEQQET, //
+								String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
+										cellQtServicosContratados.getReference()), //
+								STYLE_DECIMAL_5DIGITS);
+					}
+
+					addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+
+					/**
+					 * Média dos Indicadores
+					 */
+					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
+					cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
+					if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) != null) {
+						setCellFormula(cellFormulaIEQQL, //
+								"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) + ")", //
+								STYLE_DECIMAL_5DIGITS);
+					}
+					addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
+					cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
+					if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
+						setCellFormula(cellFormulaIEQQPZ, //
+								"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
+								STYLE_DECIMAL_5DIGITS);
+					}
+					addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
+					cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
+					if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) != null) {
+						setCellFormula(cellFormulaIEQQET, //
+								"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) + ")", //
+								STYLE_DECIMAL_5DIGITS);
+					}
+					addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+
+					/**
+					 * Desempenho / Valor FNS
+					 */
+					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
+
+					row = getRow(sheet, rownum++);
+					addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
+					addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
+					addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
+
+					row = getRow(sheet, rownum++);
+
+					XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
+					XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
+					XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
+
+					setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+					setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
+					setCellFormula(cellValorFinanceiro, //
+							String.format("%s*%s", //
+									"STRING".equalsIgnoreCase(cellValorFNS.getCellType().name()) ? //
+											BigDecimal.ONE : cellValorFNS.getReference(), //
+									insumo.getVrPrevistoTermo().getReference()), //
+							STYLE_DECIMAL);
+
+					insumo.setVrFns(cellValorFNS);
+
+				}
+
+				row = addNewRow(sheet);
+
 			}
-
-			int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
-
-			/**
-			 * Indicadores
-			 */
-			if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 7, "Grupo configurado para aplicar Indicadores somente a partir de "
-						+ DateUtil.format(faturamento.getDtConsiderarFns()), ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-			}
-
-			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-
-				row = getRow(sheet, rownum);
-
-				addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
-
-				XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
-				XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
-				XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-				XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
-				XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-				/**
-				 * ICQL - Qualidade do Serviço
-				 */
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "ICQL - Qualidade", ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQL, //
-							String.format("1-(%s/%s)", //
-									cellQtServicosDevolvidos.getReference(), //
-									cellQtServicosEntregues.getReference()), //
-							STYLE_DECIMAL_5DIGITS);
-				}
-
-				addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-				/**
-				 * IEQQPZ - Prazo do Serviço
-				 */
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "ICPZ - Prazo", ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQPZ, //
-							String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
-									cellQtServicosEntregues.getReference()), //
-							STYLE_DECIMAL_5DIGITS);
-				}
-
-				addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-				/**
-				 * ICET - Estoque
-				 */
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
-						&& cellQtServicosContratados.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQET, //
-							String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
-									cellQtServicosContratados.getReference()), //
-							STYLE_DECIMAL_5DIGITS);
-				}
-
-				addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
-				/**
-				 * Média dos Indicadores
-				 */
-				rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
-				cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) != null) {
-					setCellFormula(cellFormulaIEQQL, //
-							"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) + ")", //
-							STYLE_DECIMAL_5DIGITS);
-				}
-				addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
-				cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
-					setCellFormula(cellFormulaIEQQPZ, //
-							"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
-							STYLE_DECIMAL_5DIGITS);
-				}
-				addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-				row = getRow(sheet, rownum++);
-				addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
-				cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) != null) {
-					setCellFormula(cellFormulaIEQQET, //
-							"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) + ")", //
-							STYLE_DECIMAL_5DIGITS);
-				}
-				addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
-				/**
-				 * Desempenho / Valor FNS
-				 */
-				rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
-
-				row = getRow(sheet, rownum++);
-				addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
-				addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
-				addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
-
-				row = getRow(sheet, rownum++);
-
-				XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
-				XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
-				XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
-
-				setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
-				setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
-				setCellFormula(cellValorFinanceiro, //
-						String.format("%s*%s", //
-								"STRING".equalsIgnoreCase(cellValorFNS.getCellType().name()) ? //
-										BigDecimal.ONE : cellValorFNS.getReference(), //
-								insumo.getVrPrevistoTermo().getReference()), //
-						STYLE_DECIMAL);
-
-				insumo.setVrFns(cellValorFNS);
-
-			}
-
-			row = addNewRow(sheet);
 
 		} // faturamentos
 	}

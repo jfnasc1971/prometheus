@@ -26,6 +26,7 @@ import org.prometheus.relatorios.equipe.AbaEquipe;
 import org.prometheus.relatorios.equipe.AbaPagamentos;
 import org.prometheus.relatorios.equipe.AbaPagamentosQualidade;
 import org.prometheus.relatorios.equipe.AbaServicosAcionamento;
+import org.prometheus.relatorios.equipe.AbaServicosAcionamentoQualidade;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaturamentoService;
 import org.prometheus.utils.Utils;
@@ -181,6 +182,11 @@ public class RelatorioEquipe extends Relatorio {
 		if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())
 				|| Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
 			AbaServicosAcionamento calculos = ctxt.getBean(AbaServicosAcionamento.class);
+			calculos.write(wb, coEquipe, faturamentos);
+		}
+		
+		if ("D".equals(equipe.getIcDistribuiProfissional())) {
+			AbaServicosAcionamentoQualidade calculos = ctxt.getBean(AbaServicosAcionamentoQualidade.class);
 			calculos.write(wb, coEquipe, faturamentos);
 		}
 

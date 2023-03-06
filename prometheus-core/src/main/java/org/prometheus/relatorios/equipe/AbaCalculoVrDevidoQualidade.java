@@ -67,42 +67,47 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
 				addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
 				addCell(row, pos++, faturamento.getQtDiasFaturamento());
-				setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getQtEfetivaTotal()), pos++);
+				
+				if (insumo.getQtEfetivaTotal() != null) {
 
-				cellVrEquipe = setCellFormula(sheet, row, //
-						XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
+					setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getQtEfetivaTotal()), pos++);
 
-				cellVrExtras = setCellFormula(sheet, row, //
-						String.format("'%s'!%s", //
-								insumo.getVrExtras().getSheet().getSheetName(), //
-								insumo.getVrExtras().getReference()), //
-						pos++);
+					cellVrEquipe = setCellFormula(sheet, row, //
+							XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
 
-				cellVrAusencias = setCellFormula(sheet, row, //
-						String.format("'%s'!%s", //
-								insumo.getVrAusencias().getSheet().getSheetName(), //
-								insumo.getVrAusencias().getReference()), //
-						pos++);
-
-				if (insumo.getVrFns() != null && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
-					cellVrFns = setCellFormula(sheet, row, //
+					cellVrExtras = setCellFormula(sheet, row, //
 							String.format("'%s'!%s", //
-									insumo.getVrFns().getSheet().getSheetName(), //
-									insumo.getVrFns().getReference()), //
+									insumo.getVrExtras().getSheet().getSheetName(), //
+									insumo.getVrExtras().getReference()), //
 							pos++);
-				} else {
-					cellVrFns = addCell(row, pos++, BigDecimal.ONE);
+
+					cellVrAusencias = setCellFormula(sheet, row, //
+							String.format("'%s'!%s", //
+									insumo.getVrAusencias().getSheet().getSheetName(), //
+									insumo.getVrAusencias().getReference()), //
+							pos++);
+
+					if (insumo.getVrFns() != null && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
+						cellVrFns = setCellFormula(sheet, row, //
+								String.format("'%s'!%s", //
+										insumo.getVrFns().getSheet().getSheetName(), //
+										insumo.getVrFns().getReference()), //
+								pos++);
+					} else {
+						cellVrFns = addCell(row, pos++, BigDecimal.ONE);
+					}
+
+					cellVrPrevisto = setCellFormula(sheet, row, //
+							String.format("(%s+%s-%s)*%s", //
+									cellVrEquipe.getReference(), //
+									cellVrExtras.getReference(), //
+									cellVrAusencias.getReference(), //
+									cellVrFns.getReference()), //
+							pos++);
+
+					listaValoresPrevistos.add(cellVrPrevisto);
+					
 				}
-
-				cellVrPrevisto = setCellFormula(sheet, row, //
-						String.format("(%s+%s-%s)*%s", //
-								cellVrEquipe.getReference(), //
-								cellVrExtras.getReference(), //
-								cellVrAusencias.getReference(), //
-								cellVrFns.getReference()), //
-						pos++);
-
-				listaValoresPrevistos.add(cellVrPrevisto);
 
 			}
 		}

@@ -10,6 +10,7 @@ public class TermoDTO {
 	private Long nuTermoEquipe;
 	private Long nuTipoTermo;
 	private String coTermo;
+	private java.util.Date dtInicioAtendimento;
 	private java.util.Date dhEmissaoTermo;
 	private java.math.BigDecimal qtMembroEquipeVigente;
 	private java.math.BigDecimal vrPrevistoEquipe;
@@ -184,6 +185,20 @@ public class TermoDTO {
 	 */
 	public void setNuTipoTermo(Long nuTipoTermo) {
 		this.nuTipoTermo = nuTipoTermo;
+	}
+
+	/**
+	 * @return the dtInicioAtendimento
+	 */
+	public java.util.Date getDtInicioAtendimento() {
+		return dtInicioAtendimento;
+	}
+
+	/**
+	 * @param dtInicioAtendimento the dtInicioAtendimento to set
+	 */
+	public void setDtInicioAtendimento(java.util.Date dtInicioAtendimento) {
+		this.dtInicioAtendimento = dtInicioAtendimento;
 	}
 
 }

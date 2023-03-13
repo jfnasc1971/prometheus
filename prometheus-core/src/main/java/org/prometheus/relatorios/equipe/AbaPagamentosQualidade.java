@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbaPagamentosQualidade extends Relatorio {
 
-	private static final int LAYOUT_COLUMNS_COUNT = 14;
+	private static final int LAYOUT_COLUMNS_COUNT = 15;
 
 	@Autowired
 	private TermoService termoService;
@@ -51,6 +51,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 		addCell(row, pos++, "Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Emissão", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -75,6 +76,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 
 			XSSFCell cellVrPrevisto = addCell(row, pos++,
 					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null);
 			XSSFCell cellVrAcrescimo = addCell(row, pos++,
 					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null);
 			XSSFCell cellVrDecrescimo = addCell(row, pos++,

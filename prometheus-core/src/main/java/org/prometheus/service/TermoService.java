@@ -75,6 +75,7 @@ public class TermoService {
 				dto.setNuFaturaPaga(rs.getLong("nu_fatura_paga"));
 				dto.setDeFaturaPaga(rs.getString("de_fatura_paga"));
 				dto.setNuEquipe(rs.getLong("nu_equipe"));
+				dto.setDtInicioAtendimento(rs.getTimestamp("dt_inicio_atendimento"));
 				dto.setNuTermoEquipe(rs.getLong("nu_termo_equipe"));
 				dto.setNuTipoTermo(rs.getLong("nu_tipo_termo"));
 				dto.setCoTermo(rs.getString("co_termo"));
@@ -106,7 +107,8 @@ public class TermoService {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(" select "); 
-		sb.append("     t.nu_fatura_gerada, "); 
+		sb.append("     t.nu_fatura_gerada, ");
+		sb.append("     e.dt_inicio_atendimento, ");
 		sb.append("     f.de_fatura, "); 
 		sb.append("     t.nu_fatura_paga, "); 
 		sb.append("     fp.de_fatura de_fatura_paga, "); 

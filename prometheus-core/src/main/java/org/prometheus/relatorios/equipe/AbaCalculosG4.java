@@ -88,7 +88,7 @@ public class AbaCalculosG4 extends Relatorio {
 		for (FaturamentoDTO faturamento : faturamentos) {
 
 			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
-					equipe.getNuContrato(), equipe.getNuEquipe(), faturamento.getNuFatura(),
+					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
 					faturamento.getDeFatura()));
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();

@@ -247,7 +247,7 @@ public class AbaCalculosSprint extends Relatorio {
 
 					System.out.println(
 							String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
-									equipe.getNuContrato(), equipe.getNuEquipe(), faturamento.getNuFatura(),
+									equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
 									faturamento.getDeFatura(), //
 									ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 

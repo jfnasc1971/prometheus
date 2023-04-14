@@ -119,7 +119,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -166,7 +166,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -214,7 +214,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -262,7 +262,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -310,7 +310,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());

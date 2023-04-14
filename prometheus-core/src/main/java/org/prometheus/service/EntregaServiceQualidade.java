@@ -40,10 +40,6 @@ public class EntregaServiceQualidade {
 	}
 
 	private List<EntregaDTO> listar(Long nuEquipe, Long nuFatura, String sql) {
-		return listar(nuEquipe, nuFatura, sql, null);
-	}
-
-	private List<EntregaDTO> listar(Long nuEquipe, Long nuFatura, String sql, Long nuTipoIndicador) {
 		List<EntregaDTO> result = new ArrayList<EntregaDTO>();
 
 		Connection conn = null;
@@ -57,9 +53,6 @@ public class EntregaServiceQualidade {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, nuFatura);
 			pstmt.setLong(2, nuEquipe);
-			if (nuTipoIndicador != null) {
-				pstmt.setLong(3, nuTipoIndicador);
-			}
 
 			rs = pstmt.executeQuery();
 
@@ -68,12 +61,15 @@ public class EntregaServiceQualidade {
 				EntregaDTO dto = new EntregaDTO();
 
 				dto.setCoSolicitacao(rs.getString("co_solicitacao"));
+				dto.setDeSituacaoSolicitacao(rs.getString("de_situacao_solicitacao"));
 				dto.setNoSolicitacao(rs.getString("no_solicitacao"));
+				dto.setDeSolicitacao(rs.getString("de_solicitacao"));
 				dto.setDhPrevista(rs.getTimestamp("dh_prevista"));
 				dto.setDhPrevistaPendencias(rs.getDate("dh_prevista_pendencias"));
 				dto.setDhEfetiva(rs.getTimestamp("dh_efetiva"));
 				dto.setIcServicoCompoeCalculoFns(rs.getString("ic_servico_compoe_calculo_fns"));
 				dto.setCoFalhaSolicitacao(rs.getString("co_falha_solicitacao"));
+				dto.setIcEntregaForaPeriodo(rs.getString("ic_entrega_fora_periodo"));
 
 				result.add(dto);
 			}
@@ -91,14 +87,18 @@ public class EntregaServiceQualidade {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select "); 
-		sb.append("  distinct s.co_solicitacao, "); 
+		sb.append("  distinct s.co_solicitacao, ");
+		sb.append("  s.de_situacao_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  s.no_solicitacao, "); 
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
 		sb.append("  se.ic_solicitacao_compoe_fns ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao "); 
+		sb.append("  se.co_falha_solicitacao, ");
+		sb.append("  case when ");
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -113,10 +113,7 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? ");
 		sb.append("  and se.nu_equipe = ? ");
-		sb.append("  and ( "); 
-		sb.append("    f.dt_inicio_fatura <= s.dh_prevista :: date "); 
-		sb.append("    and f.dt_final_fatura >= s.dh_prevista :: date "); 
-		sb.append("  ) "); 
+		sb.append("  and s.dh_prevista::date between f.dt_inicio_fatura and f.dt_final_fatura ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
@@ -126,7 +123,7 @@ public class EntregaServiceQualidade {
 		sb.append("      gct.gcttb192_servico_contratado se1 "); 
 		sb.append("    where "); 
 		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
+		sb.append("      and se1.nu_contrato = e.nu_contrato ");
 		sb.append("  ); ");
 
 		return sb.toString();
@@ -138,13 +135,17 @@ public class EntregaServiceQualidade {
 
 		sb.append("select "); 
 		sb.append("  distinct s.co_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  s.no_solicitacao, "); 
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
 		sb.append("  se.ic_solicitacao_compoe_fns ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao "); 
+		sb.append("  se.co_falha_solicitacao, "); 
+		sb.append("  case when ");
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -159,12 +160,9 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? "); 
-		sb.append("  and ( "); 
-		sb.append("    f.dt_inicio_fatura <= s.dh_efetiva :: date "); 
-		sb.append("    and f.dt_final_fatura >= s.dh_efetiva :: date "); 
-		sb.append("  ) "); 
+		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
-		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
+		sb.append("  and coalesce(se.co_falha_solicitacao,'NF') = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
 		sb.append("    select "); 
 		sb.append("      se1.nu_situacao_atendimento "); 
@@ -172,7 +170,7 @@ public class EntregaServiceQualidade {
 		sb.append("      gct.gcttb191_servico_entregue se1 "); 
 		sb.append("    where "); 
 		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
+		sb.append("      and se1.nu_contrato = e.nu_contrato ");
 		sb.append("  ); ");
 
 		return sb.toString();
@@ -183,14 +181,18 @@ public class EntregaServiceQualidade {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select "); 
-		sb.append("  distinct s.co_solicitacao, "); 
+		sb.append("  distinct s.co_solicitacao, ");
+		sb.append("  s.de_situacao_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  s.no_solicitacao, "); 
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
 		sb.append("  se.ic_solicitacao_compoe_fns ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao "); 
+		sb.append("  se.co_falha_solicitacao, "); 
+		sb.append("  case when ");
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -205,11 +207,8 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? ");
 		sb.append("  and se.nu_equipe = ? "); 
-		sb.append("  and ( "); 
-		sb.append("    f.dt_inicio_fatura <= s.dh_efetiva :: date "); 
-		sb.append("    and f.dt_final_fatura >= s.dh_efetiva :: date "); 
-		sb.append("  ) "); 
-		sb.append("  and s.dh_efetiva :: date > gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, s.dh_prevista :: date) "); 
+		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
+		sb.append("  and s.dh_efetiva::date > s.dh_prevista :: date "); 
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
@@ -220,7 +219,6 @@ public class EntregaServiceQualidade {
 		sb.append("    where "); 
 		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
 		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
-		sb.append("      and se1.nu_situacao_atendimento = s.nu_situacao_solicitacao "); 
 		sb.append("  ); ");
 		
 		return sb.toString();
@@ -234,6 +232,7 @@ public class EntregaServiceQualidade {
 		sb.append("  e.co_equipe, "); 
 		sb.append("  se.nu_fatura_amostra, "); 
 		sb.append("  s.co_solicitacao, ");
+		sb.append("  s.de_situacao_solicitacao, ");
 		sb.append("  s.no_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  f.dt_final_fatura, "); 
@@ -241,7 +240,10 @@ public class EntregaServiceQualidade {
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
 		sb.append("  sc.ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao "); 
+		sb.append("  se.co_falha_solicitacao, "); 
+		sb.append("  case when ");
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -275,7 +277,7 @@ public class EntregaServiceQualidade {
 		sb.append("      gct.gcttb194_servico_devolvido se1 "); 
 		sb.append("    where "); 
 		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
+		sb.append("      and se1.nu_contrato = e.nu_contrato ");
 		sb.append("  ); ");
 		
 		return sb.toString();
@@ -286,14 +288,18 @@ public class EntregaServiceQualidade {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select "); 
-		sb.append("  distinct s.co_solicitacao, "); 
+		sb.append("  distinct s.co_solicitacao, ");
+		sb.append("  s.de_situacao_solicitacao, ");
 		sb.append("  s.de_solicitacao, "); 
 		sb.append("  s.no_solicitacao, "); 
 		sb.append("  s.dh_prevista, "); 
 		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
 		sb.append("  s.dh_efetiva, "); 
 		sb.append("  se.ic_solicitacao_compoe_fns ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao "); 
+		sb.append("  se.co_falha_solicitacao, "); 
+		sb.append("  case when ");
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -308,12 +314,10 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? "); 
-		sb.append("  and ( "); 
-		sb.append("    f.dt_inicio_fatura <= s.dh_efetiva :: date "); 
-		sb.append("    and f.dt_final_fatura >= s.dh_efetiva :: date "); 
-		sb.append("  ) "); 
+		sb.append("  and s.dh_prevista::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
+		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
-		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
+		sb.append("  and coalesce(se.co_falha_solicitacao, 'NF') = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
 		sb.append("    select "); 
 		sb.append("      se1.nu_situacao_atendimento "); 

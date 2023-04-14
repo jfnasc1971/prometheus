@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -15,7 +17,6 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
-import org.prometheus.service.EntregaService;
 import org.prometheus.service.EntregaServiceQualidade;
 import org.prometheus.service.EquipeService;
 import org.prometheus.utils.Utils;
@@ -27,6 +28,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaServicosAcionamentoQualidade extends Relatorio {
 
+	private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamentoQualidade.class.getSimpleName());
+	
 	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
@@ -58,14 +61,14 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		sheet.setZoom(90);
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 75);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 80);
 
 		XSSFRow row = null;
 
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
+			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
 
@@ -120,7 +123,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -167,7 +170,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -203,7 +206,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
+		
 		if (Utils.isEmpty(servicosContratados)) {
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
@@ -212,10 +215,15 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		for (EntregaDTO e : servicosContratados) {
 			row = addNewRow(sheet);
 			pos = 0;
-			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFCell coSolicitacao = addCell(row, pos++, e.getCoSolicitacao());
+			
+			if("S".equalsIgnoreCase(e.getIcEntregaForaPeriodo())) {
+				setCellComment(coSolicitacao, "Entregue fora do período.");	
+			}
+			
+			addMergedRegion(sheet, row, pos++, pos + 2, Utils.isEmpty(e.getNoSolicitacao()) ? e.getDeSolicitacao() : e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -263,7 +271,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
@@ -311,7 +319,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao());
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());

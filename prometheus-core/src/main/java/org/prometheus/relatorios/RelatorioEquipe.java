@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.EquipeDTO;
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RelatorioEquipe extends Relatorio {
 
+	private static final Logger LOG = LogManager.getLogger(RelatorioEquipe.class.getSimpleName());
+	
 	public static final String ABA_CALCULOS = "Memória de Cálculo";
 	public static final String ABA_CALCULO_VALOR_DEVIDO = "Cálculo Valor Devido";
 	public static final String ABA_PAGAMENTOS = "Pagamentos";
@@ -123,7 +127,7 @@ public class RelatorioEquipe extends Relatorio {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		System.out.println(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
+		LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
 				" - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
 				" - " + equipe.getNoTipoGrupo() + //
 				" - " + equipe.getIcTipoAtendimento());

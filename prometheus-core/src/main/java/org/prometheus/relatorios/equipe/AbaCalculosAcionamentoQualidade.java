@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -34,6 +36,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
+	private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoQualidade.class.getSimpleName());
+	
 	private static final int LAYOUT_COLUMNS_COUNT = 12;
 
 	@Autowired
@@ -96,8 +100,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
-					equipe.getNuContrato(), equipe.getNuEquipe(), faturamento.getNuFatura(),
+			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
+					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
 					faturamento.getDeFatura()));
 
 			int pos = 0;
@@ -107,9 +111,13 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 			List<XSSFCell> listaQtEfetiva = new ArrayList<XSSFCell>();
 
 			InsumosFaturamentoDTO insumo = insumos.get(faturamento.getNuFatura());
-
+			
+			if (insumo == null) {
+				continue;
+			}
+			
 			insumo.setConsiderarFNS("S".equalsIgnoreCase(faturamento.getIcConsiderarFns()));
-
+			
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //

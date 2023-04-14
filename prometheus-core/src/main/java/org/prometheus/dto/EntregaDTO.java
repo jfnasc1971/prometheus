@@ -4,6 +4,7 @@ public class EntregaDTO {
 
 	private String coSolicitacao;
 	private String noSolicitacao;
+	private String deSolicitacao;
 	private java.util.Date dhPrevista;
 	private java.util.Date dhPrevistaPendencias;
 	private java.util.Date dhEfetiva;
@@ -11,6 +12,7 @@ public class EntregaDTO {
 	private String coFalhaSolicitacao;
 	private String deSituacaoSolicitacao;
 	private Long nuSituacaoSolicitacao;
+	private String icEntregaForaPeriodo;
 
 	public void setCoSolicitacao(String coSolicitacao) {
 		this.coSolicitacao = coSolicitacao;
@@ -102,4 +104,33 @@ public class EntregaDTO {
 		this.noSolicitacao = noSolicitacao;
 	}
 
+	/**
+	 * @return the icEntregaForaPeriodo
+	 */
+	public String getIcEntregaForaPeriodo() {
+		return icEntregaForaPeriodo;
+	}
+
+	/**
+	 * @param icEntregaForaPeriodo the icEntregaForaPeriodo to set
+	 */
+	public void setIcEntregaForaPeriodo(String icEntregaForaPeriodo) {
+		this.icEntregaForaPeriodo = icEntregaForaPeriodo;
+	}
+
+	/**
+	 * @return the deSolicitacao
+	 */
+	public String getDeSolicitacao() {
+		return deSolicitacao;
+	}
+
+	/**
+	 * @param deSolicitacao the deSolicitacao to set
+	 */
+	public void setDeSolicitacao(String deSolicitacao) {
+		this.deSolicitacao = deSolicitacao;
+	}
+
+	
 }

@@ -70,6 +70,7 @@ public class EntregaServiceQualidade {
 				dto.setIcServicoCompoeCalculoFns(rs.getString("ic_servico_compoe_calculo_fns"));
 				dto.setCoFalhaSolicitacao(rs.getString("co_falha_solicitacao"));
 				dto.setIcEntregaForaPeriodo(rs.getString("ic_entrega_fora_periodo"));
+				dto.setQtDiasPendencia(rs.getLong("qt_dias_pendencia"));
 
 				result.add(dto);
 			}
@@ -98,7 +99,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.co_falha_solicitacao, ");
 		sb.append("  case when ");
 		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, ");
+		sb.append("  ( ");
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) ");
+		sb.append("      from gct.gcttb225_pendencia_solicitacao ");
+		sb.append("     where nu_solicitacao = se.nu_solicitacao ");
+		sb.append("  ) qt_dias_pendencia ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -113,7 +119,7 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? ");
 		sb.append("  and se.nu_equipe = ? ");
-		sb.append("  and s.dh_prevista::date between f.dt_inicio_fatura and f.dt_final_fatura ");
+		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date between f.dt_inicio_fatura and f.dt_final_fatura ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
@@ -145,7 +151,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.co_falha_solicitacao, "); 
 		sb.append("  case when ");
 		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, ");
+		sb.append("  ( ");
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) ");
+		sb.append("      from gct.gcttb225_pendencia_solicitacao ");
+		sb.append("     where nu_solicitacao = se.nu_solicitacao ");
+		sb.append("  ) qt_dias_pendencia ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -192,7 +203,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.co_falha_solicitacao, "); 
 		sb.append("  case when ");
 		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, ");
+		sb.append("  ( ");
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) ");
+		sb.append("      from gct.gcttb225_pendencia_solicitacao ");
+		sb.append("     where nu_solicitacao = se.nu_solicitacao ");
+		sb.append("  ) qt_dias_pendencia ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -208,12 +224,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.nu_fatura_amostra = ? ");
 		sb.append("  and se.nu_equipe = ? "); 
 		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
-		sb.append("  and s.dh_efetiva::date > s.dh_prevista :: date "); 
+		sb.append("  and s.dh_efetiva::date > gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date "); 
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
 		sb.append("    select "); 
-		sb.append("      nu_situacao_solicitacao "); 
+		sb.append("      se1.nu_situacao_atendimento "); 
 		sb.append("    from "); 
 		sb.append("      gct.gcttb193_servico_atraso se1 "); 
 		sb.append("    where "); 
@@ -243,7 +259,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.co_falha_solicitacao, "); 
 		sb.append("  case when ");
 		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, ");
+		sb.append("  ( ");
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) ");
+		sb.append("      from gct.gcttb225_pendencia_solicitacao ");
+		sb.append("     where nu_solicitacao = se.nu_solicitacao ");
+		sb.append("  ) qt_dias_pendencia ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -261,13 +282,13 @@ public class EntregaServiceQualidade {
 		sb.append("  ) "); 
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = se.nu_fatura_amostra "); 
 		sb.append("  inner join gct.gcttb226_devolucao_solicitacao rs on ( "); 
-		sb.append("    rs.nu_solicitacao = s.nu_solicitacao "); 
+		sb.append("    rs.nu_solicitacao = s.nu_solicitacao ");
+		sb.append("    and coalesce(rs.qt_devolucao_manual,0) <> 0 ");
+		sb.append("    and rs.nu_fatura = f.nu_fatura ");
 		sb.append("  ) "); 
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? ");
-		sb.append("  and s.dh_resolucao :: date between f.dt_inicio_fatura and f.dt_final_fatura ");
-		sb.append("  and rs.dh_rejeicao between f.dt_inicio_fatura and f.dt_final_fatura "); 
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and se.co_falha_solicitacao = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 
@@ -299,7 +320,12 @@ public class EntregaServiceQualidade {
 		sb.append("  se.co_falha_solicitacao, "); 
 		sb.append("  case when ");
 		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date ");
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo ");
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, ");
+		sb.append("  ( ");
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) ");
+		sb.append("      from gct.gcttb225_pendencia_solicitacao ");
+		sb.append("     where nu_solicitacao = se.nu_solicitacao ");
+		sb.append("  ) qt_dias_pendencia ");
 		sb.append("from "); 
 		sb.append("  gct.gcttb177_amostra_solicitacao_equipe se "); 
 		sb.append("  inner join gct.gcttb175_amostra_equipe e on ( "); 
@@ -314,7 +340,7 @@ public class EntregaServiceQualidade {
 		sb.append("where "); 
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? "); 
-		sb.append("  and s.dh_prevista::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
+		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
 		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and coalesce(se.co_falha_solicitacao, 'NF') = 'NF' "); 

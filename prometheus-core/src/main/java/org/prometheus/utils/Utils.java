@@ -12,7 +12,13 @@ public class Utils {
 	}
 
 	public static final boolean isEmpty(Object o) {
-		if (o != null && o instanceof String) {
+        if (o != null && o instanceof String[]) {
+            if (((String[]) o).length > 0) {
+                return false;
+            }
+        }
+
+        if (o != null && o instanceof String) {
 			if (!((String) o).trim().equals("")) {
 				return false;
 			}
@@ -37,4 +43,7 @@ public class Utils {
 		return true;
 	}
 
+	public static void main(String[] args) {
+        System.out.println(Utils.isEmpty(new String[] {"A"}));
+    }
 }

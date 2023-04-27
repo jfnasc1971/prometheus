@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -33,6 +35,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaCalculosG4 extends Relatorio {
 
+    private static final Logger LOG = LogManager.getLogger(AbaCalculosG4.class.getSimpleName());
+    
 	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
@@ -87,7 +91,7 @@ public class AbaCalculosG4 extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
+			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
 					faturamento.getDeFatura()));
 
@@ -527,7 +531,6 @@ public class AbaCalculosG4 extends Relatorio {
 		}
 
 		if (s1.length() > 1) {
-			//System.out.println(String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)));
 			setCellFormula(cell, //
 					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);
@@ -571,9 +574,11 @@ public class AbaCalculosG4 extends Relatorio {
 			StringBuilder formula = new StringBuilder();
 
 			for (int i = 1; i <= qtFaixas; i++) {
-				formula.append(String.format("+if(and(%s>Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
-						cellDesempenho.getReference(), pos + i, cellDesempenho.getReference(), pos + i, pos + i));
-
+				formula.append(
+					String.format("+if(and(rounddown(%s,2)>=Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+							cellDesempenho.getReference(), pos + i, //
+							cellDesempenho.getReference(), pos + i, //
+							pos + i));				
 			}
 
 			setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);

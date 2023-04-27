@@ -30,7 +30,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 	private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamentoQualidade.class.getSimpleName());
 	
-	private static final int LAYOUT_COLUMNS_COUNT = 11;
+	private static final int LAYOUT_COLUMNS_COUNT = 12;
 
 	@Autowired
 	private EquipeService equipeService;
@@ -98,7 +98,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Serviços Atrasados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
@@ -107,6 +107,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Pend.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -114,7 +115,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntreguesComAtraso) {
@@ -125,6 +126,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getQtDiasPendencia());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
 			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
@@ -145,7 +147,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Estoque de Serviços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
@@ -154,6 +156,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Pend.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -161,7 +164,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntreguesEstoque)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntreguesEstoque) {
@@ -172,6 +175,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getQtDiasPendencia());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
 			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
@@ -193,7 +197,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Contratados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Serviços Contratados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
@@ -202,6 +206,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Pend.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -209,7 +214,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		
 		if (Utils.isEmpty(servicosContratados)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosContratados) {
@@ -225,6 +230,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getQtDiasPendencia());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
 			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
@@ -246,7 +252,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Serviços Devolvidos", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
@@ -255,6 +261,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Pend.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -262,7 +269,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		if (Utils.isEmpty(servicosDevolvidos)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosDevolvidos) {
@@ -273,6 +280,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getQtDiasPendencia());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
 			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
@@ -294,7 +302,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Entregues", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Serviços Entregues", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
@@ -303,6 +311,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Qt. Dias Pend.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -310,7 +319,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntregues)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntregues) {
@@ -321,6 +330,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
+			addCell(row, pos++, e.getQtDiasPendencia());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
 			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);

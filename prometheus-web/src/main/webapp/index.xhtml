@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html">
 <h:head>
-	<title>Prometheus</title>
-	<style>
+    <title>Prometheus</title>
+    <style>
 /* General Website Style rules */
 body {
 	font-family: "Arial";
@@ -15,12 +14,11 @@ input {
 </style>
 </h:head>
 <h:body>
-	<h:form id="formPrincipal">
-		<p>
-			<h:inputText value="#{principalBean.coEquipe}" />
-			<h:commandButton action="#{principalBean.baixarRelatorio()}"
-				value="Gerar" />
-		</p>
-	</h:form>
+    <h:form id="formPrincipal">
+        <p>
+            <h:inputText value="#{principalBean.coEquipe}" />
+            <h:commandButton action="#{principalBean.baixarRelatorio()}" value="Gerar" />
+        </p>
+    </h:form>
 </h:body>
 </html>

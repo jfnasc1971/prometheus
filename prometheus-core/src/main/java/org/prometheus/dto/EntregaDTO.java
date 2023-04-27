@@ -13,6 +13,7 @@ public class EntregaDTO {
 	private String deSituacaoSolicitacao;
 	private Long nuSituacaoSolicitacao;
 	private String icEntregaForaPeriodo;
+	private Long qtDiasPendencia;
 
 	public void setCoSolicitacao(String coSolicitacao) {
 		this.coSolicitacao = coSolicitacao;
@@ -132,5 +133,18 @@ public class EntregaDTO {
 		this.deSolicitacao = deSolicitacao;
 	}
 
-	
+	/**
+	 * @return the qtDiasPendencia
+	 */
+	public Long getQtDiasPendencia() {
+		return qtDiasPendencia;
+	}
+
+	/**
+	 * @param qtDiasPendencia the qtDiasPendencia to set
+	 */
+	public void setQtDiasPendencia(Long qtDiasPendencia) {
+		this.qtDiasPendencia = qtDiasPendencia;
+	}
+
 }

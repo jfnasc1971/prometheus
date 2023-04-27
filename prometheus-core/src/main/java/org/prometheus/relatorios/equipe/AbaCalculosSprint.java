@@ -250,7 +250,7 @@ public class AbaCalculosSprint extends Relatorio {
                     addBlank(sheet);
 
                     LOG.info(
-                            String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
+                            String.format("Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
                                     equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
                                     faturamento.getNuFatura(), faturamento.getDeFatura(), //
                                     ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));

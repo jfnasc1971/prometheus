@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -32,6 +34,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaCalculosAcionamento extends Relatorio {
 
+    private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamento.class.getSimpleName());
+    
 	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
@@ -88,12 +92,18 @@ public class AbaCalculosAcionamento extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			System.out.println(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
+			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
+            List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
+                    equipe.getNuEquipe());
+            if (Utils.isEmpty(vigencias)) {
+                continue;
+            }
+            
 			insumo.setNuFatura(faturamento.getNuFatura());
 			insumo.setConsiderarFNS("S".equalsIgnoreCase(faturamento.getIcConsiderarFns()));
 
@@ -117,9 +127,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 			addMergedRegion(sheet, row, 6, 10, "Vigência dos Membros do Faturamento", //
 					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-			List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
-					equipe.getNuEquipe());
 
 			XSSFCell cellQtEfetiva = null;
 
@@ -415,8 +422,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 		}
 
 		if (s1.length() > 1) {
-			// System.out.println(String.format("(%s)/sum(%s)", s1.toString().substring(1),
-			// s2.toString().substring(1)));
 			setCellFormula(cell, //
 					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);

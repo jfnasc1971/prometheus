@@ -125,9 +125,16 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 		row = addNewRow(sheet);
 		addCell(row, pos - 2, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		XSSFCell result = setCellFormula(sheet, row,
-				String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
-				pos - 1, STYLE_DECIMAL);
+		
+		XSSFCell result = null;
+		
+		if (primeiraFatura != null) {
+	        result = setCellFormula(sheet, row,
+	                String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
+	                pos - 1, STYLE_DECIMAL);
+		} else {
+            result = addCell(row, pos - 1, "N/A");
+		}
 
 		return result;
 

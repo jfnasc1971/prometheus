@@ -19,62 +19,62 @@ public class RelatorioDemanda extends Relatorio {
 
     public static void main(String[] args) {
 
-	(new File(PATH)).mkdirs();
+        (new File(PATH)).mkdirs();
 
-	RelatorioDemanda relatorio = AppConfig.getApplicationContext().getBean(RelatorioDemanda.class);
-	String coDemanda = null;
-	BufferedReader reader = null;
+        RelatorioDemanda relatorio = AppConfig.getApplicationContext().getBean(RelatorioDemanda.class);
+        String coDemanda = null;
+        BufferedReader reader = null;
 
-	if (args != null && args.length > 0) {
-	    coDemanda = args[0];
-	}
+        if (args != null && args.length > 0) {
+            coDemanda = args[0];
+        }
 
-	try {
+        try {
 
-	    if (coDemanda == null) {
-		reader = new BufferedReader(new FileReader("lista_demandas.properties"));
+            if (coDemanda == null) {
+                reader = new BufferedReader(new FileReader("lista_demandas.properties"));
 
-		while ((coDemanda = reader.readLine()) != null) {
-		    if (Utils.isNotEmpty(coDemanda) && !coDemanda.trim().startsWith("#")) {
-			relatorio.gerar(coDemanda);
-		    }
-		}
+                while ((coDemanda = reader.readLine()) != null) {
+                    if (Utils.isNotEmpty(coDemanda) && !coDemanda.trim().startsWith("#")) {
+                        relatorio.gerar(coDemanda);
+                    }
+                }
 
-	    } else {
+            } else {
 
-		relatorio.gerar(coDemanda);
+                relatorio.gerar(coDemanda);
 
-	    }
+            }
 
-	} catch (Exception e) {
-	    e.printStackTrace();
-	} finally {
-	    try {
-		if (reader != null) {
-		    reader.close();
-		}
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String gerar(String coDemanda) throws Exception {
-	(new File(PATH)).mkdirs();
+        (new File(PATH)).mkdirs();
 
-	File file = new File(PATH + "/SIGCT_Demonstrativo_" + coDemanda + ".xlsx");
-	file.delete();
-	FileOutputStream fos = new FileOutputStream(file);
-	System.out.println(file.getAbsolutePath());
+        File file = new File(PATH + "/SIGCT_Demonstrativo_" + coDemanda + ".xlsx");
+        file.delete();
+        FileOutputStream fos = new FileOutputStream(file);
+        System.out.println(file.getAbsolutePath());
 
-	XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
 
-	AbaDemanda abaDemanda = AppConfig.getApplicationContext().getBean(AbaDemanda.class);
-	abaDemanda.write(wb, coDemanda);
+        AbaDemanda abaDemanda = AppConfig.getApplicationContext().getBean(AbaDemanda.class);
+        abaDemanda.write(wb, coDemanda);
 
-	wb.write(fos);
-	wb.close();
+        wb.write(fos);
+        wb.close();
 
-	return file.getAbsolutePath();
+        return file.getAbsolutePath();
     }
 }

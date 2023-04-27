@@ -36,7 +36,7 @@ public class CicloTrabalhoService {
 		sb.append("    nu_ciclo_trabalho,");
 		sb.append("    qt_dias_sprint,");
 		sb.append("    sum(qt_dias_trab) as qt_dias_trab,");
-		sb.append("    sum((qt_dias_trab / qt_dias_sprint) * qt_membros_equipe) qt_efetiva");
+		sb.append("    sum((qt_dias_trab / case when qt_dias_sprint = 0 then 1 else qt_dias_sprint end) * qt_membros_equipe) qt_efetiva");
 		sb.append("  FROM");
 		sb.append("    (");
 		sb.append("      SELECT");

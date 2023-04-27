@@ -714,8 +714,6 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 		}
 
 		if (s1.length() > 1) {
-			// System.out.println(String.format("(%s)/sum(%s)", s1.toString().substring(1),
-			// s2.toString().substring(1)));
 			setCellFormula(cell, //
 					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);

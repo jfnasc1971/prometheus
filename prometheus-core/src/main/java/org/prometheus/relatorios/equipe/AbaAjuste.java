@@ -44,10 +44,10 @@ public class AbaAjuste extends Relatorio {
 		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
 		setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_PAGAMENTOS, //
 				cellValorPagamentos.getReference()), 2, STYLE_DECIMAL);
-
+		
 		row = addNewRow(sheet);
 		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", ALIGN_RIGHT_GREEN_BOLD);
-		setCellFormula(sheet, row, "C2-C3", 2, STYLE_DECIMAL);
+		setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, STYLE_DECIMAL);
 		setCellComment(cell, "Corresponde à diferença entre o valor devido calculado e que foi pago.\n" //
 				+ "Esse valor tende a 0(zero).");
 

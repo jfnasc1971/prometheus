@@ -56,174 +56,171 @@ public class RelatorioEquipe extends Relatorio {
 
     public static void main(String[] args) {
 
-	(new File(PATH)).mkdirs();
+        (new File(PATH)).mkdirs();
 
-	RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
-	String coEquipe = null;
-	BufferedReader reader = null;
+        RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
+        String coEquipe = null;
+        BufferedReader reader = null;
 
-	if (args != null && args.length > 0) {
-	    coEquipe = args[0];
-	}
+        if (args != null && args.length > 0) {
+            coEquipe = args[0];
+        }
 
-	try {
+        try {
 
-	    if (coEquipe == null) {
-		reader = new BufferedReader(new FileReader("lista_equipes.properties"));
+            if (coEquipe == null) {
+                reader = new BufferedReader(new FileReader("lista_equipes.properties"));
 
-		while ((coEquipe = reader.readLine()) != null) {
-		    if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
-			relatorio.gerar(coEquipe);// , DateUtil.parse("2018-08-20"));
-		    }
-		}
+                while ((coEquipe = reader.readLine()) != null) {
+                    if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
+                        relatorio.gerar(coEquipe);// , DateUtil.parse("2018-08-20"));
+                    }
+                }
 
-	    } else {
+            } else {
 
-		relatorio.gerar(coEquipe);
+                relatorio.gerar(coEquipe);
 
-	    }
+            }
 
-	} catch (Exception e) {
-	    e.printStackTrace();
-	} finally {
-	    try {
-		if (reader != null) {
-		    reader.close();
-		}
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String gerar(String coEquipe) {
-	(new File(PATH)).mkdirs();
-	return gerar(coEquipe, (Date) null);
+        (new File(PATH)).mkdirs();
+        return gerar(coEquipe, (Date) null);
     }
 
     public String gerar(String coEquipe, Date dtFinalFatura) {
 
-	List<FaturamentoDTO> faturamentos = service.listar(coEquipe, dtFinalFatura);
+        List<FaturamentoDTO> faturamentos = service.listar(coEquipe, dtFinalFatura);
 
-	try {
-	    return gerar(coEquipe, faturamentos);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+        try {
+            return gerar(coEquipe, faturamentos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	return null;
+        return null;
     }
 
     public String gerar(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
 
-	File file = new File(PATH + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
-	file.delete();
-	FileOutputStream fos = new FileOutputStream(file);
-	System.out.println(file.getAbsolutePath());
+        File file = new File(PATH + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
+        file.delete();
+        FileOutputStream fos = new FileOutputStream(file);
+        
+        LOG.info(file.getAbsolutePath());
 
-	XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
 
-	EquipeDTO equipe = equipeService.findBy(coEquipe);
+        EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-	LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
-		" - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
-		" - " + equipe.getNoTipoGrupo() + //
-		" - " + equipe.getIcTipoAtendimento());
+        LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
+                " - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
+                " - " + equipe.getNoTipoGrupo() + //
+                " - " + equipe.getIcTipoAtendimento());
 
-	Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
+        Map<Long, InsumosFaturamentoDTO> insumos = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
 
-	// Equipe
-	AbaEquipe abaEquipe = AppConfig.getApplicationContext().getBean(AbaEquipe.class);
-	abaEquipe.write(wb, coEquipe, faturamentos);
+        // Equipe
+        AbaEquipe abaEquipe = AppConfig.getApplicationContext().getBean(AbaEquipe.class);
+        abaEquipe.write(wb, coEquipe, faturamentos);
 
-	XSSFCell cellValorPagamentos = null;
+        XSSFCell cellValorPagamentos = null;
 
-	if ("D".equals(equipe.getIcDistribuiProfissional())) {
+        if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-	    AbaPagamentosQualidade abaPagamentos = AppConfig.getApplicationContext()
-		    .getBean(AbaPagamentosQualidade.class);
-	    cellValorPagamentos = abaPagamentos.gerar(wb, coEquipe, insumos);
+            AbaPagamentosQualidade abaPagamentos = AppConfig.getApplicationContext()
+                    .getBean(AbaPagamentosQualidade.class);
+            cellValorPagamentos = abaPagamentos.gerar(wb, coEquipe, insumos);
 
-	} else {
+        } else {
 
-	    AbaPagamentos abaPagamentos = AppConfig.getApplicationContext().getBean(AbaPagamentos.class);
-	    cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
+            AbaPagamentos abaPagamentos = AppConfig.getApplicationContext().getBean(AbaPagamentos.class);
+            cellValorPagamentos = abaPagamentos.write(wb, coEquipe);
 
-	}
+        }
 
-	//
-	// Cálculos
-	//
-	if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
-	    AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
-	    insumos = calculos.gerar(wb, coEquipe, faturamentos);
-	}
+        //
+        // Cálculos
+        //
+        if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
+            insumos = calculos.gerar(wb, coEquipe, faturamentos);
+        }
 
-	if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
-	    AbaCalculosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamento.class);
-	    insumos = calculos.write(wb, coEquipe, faturamentos);
-	}
+        if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamento.class);
+            insumos = calculos.write(wb, coEquipe, faturamentos);
+        }
 
-	if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
-	    AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-		    .getBean(AbaCalculosAcionamentoQualidade.class);
-	    calculos.gerar(wb, coEquipe, faturamentos, insumos);
-	}
+        if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
+                    .getBean(AbaCalculosAcionamentoQualidade.class);
+            calculos.gerar(wb, coEquipe, faturamentos, insumos);
+        }
 
-	if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
-	    AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-	    insumos = calculos.write(wb, coEquipe, faturamentos);
-	}
+        if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+            insumos = calculos.write(wb, coEquipe, faturamentos);
+        }
 
-	if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo())) {
-	    AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-	    insumos = calculos.write(wb, coEquipe, faturamentos);
-	}
+        if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+            insumos = calculos.write(wb, coEquipe, faturamentos);
+        }
 
-	//
-	// Serviços
-	//
-	if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())
-		|| Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
-	    AbaServicosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamento.class);
-	    calculos.write(wb, coEquipe, faturamentos);
-	}
+        //
+        // Serviços
+        //
+        if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())
+                || Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
+            AbaServicosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamento.class);
+            calculos.write(wb, coEquipe, faturamentos);
+        }
 
-	if ("D".equals(equipe.getIcDistribuiProfissional())) {
-	    AbaServicosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-		    .getBean(AbaServicosAcionamentoQualidade.class);
-	    calculos.write(wb, coEquipe, faturamentos);
-	}
+        if ("D".equals(equipe.getIcDistribuiProfissional())) {
+            AbaServicosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
+                    .getBean(AbaServicosAcionamentoQualidade.class);
+            calculos.write(wb, coEquipe, faturamentos);
+        }
 
-	if (Utils.isNotEmpty(insumos)) {
+        XSSFCell cellValorDevido = null;
 
-	    XSSFCell cellValorDevido = null;
+        // Calculos Valor Devido
+        if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-	    // Calculos Valor Devido
-	    if ("D".equals(equipe.getIcDistribuiProfissional())) {
+            AbaCalculoVrDevidoQualidade abaCalculoValorDevido = AppConfig.getApplicationContext()
+                    .getBean(AbaCalculoVrDevidoQualidade.class);
+            cellValorDevido = abaCalculoValorDevido.gerar(wb, coEquipe, faturamentos, insumos);
 
-		AbaCalculoVrDevidoQualidade abaCalculoValorDevido = AppConfig.getApplicationContext()
-			.getBean(AbaCalculoVrDevidoQualidade.class);
-		cellValorDevido = abaCalculoValorDevido.gerar(wb, coEquipe, faturamentos, insumos);
+        } else {
 
-	    } else {
+            AbaCalculoValorDevido abaCalculoValorDevido = AppConfig.getApplicationContext()
+                    .getBean(AbaCalculoValorDevido.class);
+            cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
 
-		AbaCalculoValorDevido abaCalculoValorDevido = AppConfig.getApplicationContext()
-			.getBean(AbaCalculoValorDevido.class);
-		cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+        }
 
-	    }
+        // Ajuste
+        AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
+        abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
 
-	    // Ajuste
-	    AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
-	    abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
+        wb.write(fos);
+        wb.close();
 
-	}
-
-	wb.write(fos);
-	wb.close();
-
-	return file.getAbsolutePath();
+        return file.getAbsolutePath();
     }
 
 }

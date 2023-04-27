@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -26,6 +28,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaMemoriaCalculo extends Relatorio {
 
+    private static final Logger LOG = LogManager.getLogger(AbaMemoriaCalculo.class.getSimpleName());
+    
 	private static final int LAYOUT_COLUMNS_COUNT = 8;
 
 	@Autowired
@@ -64,7 +68,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			System.out.println(String.format("Contrato: %s - Fatura: %s - %s", //
+			LOG.info(String.format("Contrato: %s - Fatura: %s - %s", //
 					equipe.getNuContrato(), faturamento.getNuFatura(), faturamento.getDeFatura()));
 
 			row = addNewRow(sheet);

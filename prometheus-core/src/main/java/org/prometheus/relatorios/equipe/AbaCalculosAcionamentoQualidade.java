@@ -36,736 +36,566 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
-	private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoQualidade.class.getSimpleName());
-	
-	private static final int LAYOUT_COLUMNS_COUNT = 12;
+    private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoQualidade.class.getSimpleName());
 
-	@Autowired
-	private AusenciaExtraFaturamentoService ausenciaExtraService;
+    private static final int LAYOUT_COLUMNS_COUNT = 12;
 
-	@Autowired
-	private PerfilService perfilService;
+    @Autowired
+    private AusenciaExtraFaturamentoService ausenciaExtraService;
 
-	@Autowired
-	private VigenciaMembrosService vigenciasMembrosService;
+    @Autowired
+    private PerfilService perfilService;
 
-	@Autowired
-	private EquipeService equipeService;
+    @Autowired
+    private VigenciaMembrosService vigenciasMembrosService;
 
-	@Autowired
-	private FaixaIndicadorService faixaIndicadorService;
+    @Autowired
+    private EquipeService equipeService;
 
-	@Autowired
-	private PrecosEquipeService precoEquipeService;
+    @Autowired
+    private FaixaIndicadorService faixaIndicadorService;
 
-	@Autowired
-	private EntregaServiceQualidade entregaService;
+    @Autowired
+    private PrecosEquipeService precoEquipeService;
 
-	Map<Long, List<XSSFCell>> listaIEQQL = null;
-	Map<Long, List<XSSFCell>> listaIEQQPZ = null;
-	Map<Long, List<XSSFCell>> listaIEQQET = null;
+    @Autowired
+    private EntregaServiceQualidade entregaService;
 
-	Map<Long, List<XSSFCell>> listaMediaIEQQL = null;
-	Map<Long, List<XSSFCell>> listaMediaIEQQPZ = null;
-	Map<Long, List<XSSFCell>> listaMediaIEQQET = null;
+    Map<Long, List<XSSFCell>> listaIEQQL = null;
+    Map<Long, List<XSSFCell>> listaIEQQPZ = null;
+    Map<Long, List<XSSFCell>> listaIEQQET = null;
 
-	public void gerar(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos,
-			Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
+    Map<Long, List<XSSFCell>> listaMediaIEQQL = null;
+    Map<Long, List<XSSFCell>> listaMediaIEQQPZ = null;
+    Map<Long, List<XSSFCell>> listaMediaIEQQET = null;
 
-		EquipeDTO equipe = equipeService.findBy(coEquipe);
+    public void gerar(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos,
+            Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
 
-		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
+        EquipeDTO equipe = equipeService.findBy(coEquipe);
 
-		carregarFontes(wb);
-		carregarEstilos(wb);
+        XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
-		sheet.setZoom(90);
-		sheet.setDisplayGridlines(false);
+        carregarFontes(wb);
+        carregarEstilos(wb);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
-		setColumnWidth(sheet, 3, 5); // Coluna D
-		setColumnWidth(sheet, 4, 75); // Coluna E
+        sheet.setZoom(90);
+        sheet.setDisplayGridlines(false);
 
-		XSSFRow row = null;
+        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+        setColumnWidth(sheet, 3, 5); // Coluna D
+        setColumnWidth(sheet, 4, 75); // Coluna E
 
-		listaIEQQL = new LinkedHashMap<Long, List<XSSFCell>>();
-		listaIEQQPZ = new LinkedHashMap<Long, List<XSSFCell>>();
-		listaIEQQET = new LinkedHashMap<Long, List<XSSFCell>>();
-		listaMediaIEQQL = new LinkedHashMap<Long, List<XSSFCell>>();
-		listaMediaIEQQPZ = new LinkedHashMap<Long, List<XSSFCell>>();
-		listaMediaIEQQET = new LinkedHashMap<Long, List<XSSFCell>>();
+        XSSFRow row = null;
 
-		int qtFaixas = faixaIndicadorService.listar(equipe.getNuEquipe()).size();
+        listaIEQQL = new LinkedHashMap<Long, List<XSSFCell>>();
+        listaIEQQPZ = new LinkedHashMap<Long, List<XSSFCell>>();
+        listaIEQQET = new LinkedHashMap<Long, List<XSSFCell>>();
+        listaMediaIEQQL = new LinkedHashMap<Long, List<XSSFCell>>();
+        listaMediaIEQQPZ = new LinkedHashMap<Long, List<XSSFCell>>();
+        listaMediaIEQQET = new LinkedHashMap<Long, List<XSSFCell>>();
 
-		// faturamentos
-		for (FaturamentoDTO faturamento : faturamentos) {
+        int qtFaixas = faixaIndicadorService.listar(equipe.getNuEquipe()).size();
 
-			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
-					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
-					faturamento.getDeFatura()));
+        // faturamentos
+        for (FaturamentoDTO faturamento : faturamentos) {
 
-			int pos = 0;
+            LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
+                    equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
+                    faturamento.getNuFatura(), faturamento.getDeFatura()));
 
-			XSSFCell cellQtDiasFaturamento = null;
-			List<XSSFCell> listaValorPrevisto = new ArrayList<XSSFCell>();
-			List<XSSFCell> listaQtEfetiva = new ArrayList<XSSFCell>();
+            int pos = 0;
 
-			InsumosFaturamentoDTO insumo = insumos.get(faturamento.getNuFatura());
-			
-			if (insumo == null) {
-				continue;
-			}
-			
-			insumo.setConsiderarFNS("S".equalsIgnoreCase(faturamento.getIcConsiderarFns()));
-			
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
-					faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-					ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            XSSFCell cellQtDiasFaturamento = null;
+            List<XSSFCell> listaValorPrevisto = new ArrayList<XSSFCell>();
+            List<XSSFCell> listaQtEfetiva = new ArrayList<XSSFCell>();
 
-			/**
-			 * Vigência dos Membros do Faturamento
-			 */
-			addBlank(sheet);
+            InsumosFaturamentoDTO insumo = insumos.get(faturamento.getNuFatura());
 
-			row = addNewRow(sheet);
+            if (insumo == null) {
+                continue;
+            }
 
-			int rowNumSecao1 = row.getRowNum(); // preciso guardar essa posicao
-			int rowNumSecao2 = row.getRowNum(); // preciso guardar essa posicao
+            insumo.setConsiderarFNS("S".equalsIgnoreCase(faturamento.getIcConsiderarFns()));
 
-			/**
-			 * Dias Trabalhados no Faturamento
-			 */
-			row = getRow(sheet, rowNumSecao1++);
-			addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-			row = getRow(sheet, rowNumSecao1++);
-			addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
-			addCell(row, 1, "Dt. Final", ALIGN_CENTER_BOLD);
-			addCell(row, 2, "Qt. Dias", ALIGN_CENTER_BOLD);
-
-			row = getRow(sheet, rowNumSecao1++);
-			addCell(row, 0, faturamento.getDtInicioFatura());
-			addCell(row, 1, faturamento.getDtFinalFatura());
-			cellQtDiasFaturamento = addCell(row, 2, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
-
-			/**
-			 * Ausências/Extras
-			 */
-			row = getRow(sheet, rowNumSecao2++);
-			addMergedRegion(sheet, row, 4, 9, "Ausências/Extras", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-			row = getRow(sheet, rowNumSecao2++);
-			pos = 4;
-			addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Qt. Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Qt. Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Valor Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Valor Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            row = addNewRow(sheet);
+            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+                    faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
+                    ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
-			List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
-
-			XSSFCell cellVrExtras = null;
-			XSSFCell cellVrAusencias = null;
-			List<XSSFCell> listaVrAusencias = new ArrayList<XSSFCell>();
-			List<XSSFCell> listaVrExtras = new ArrayList<XSSFCell>();
-
-			for (PerfilDTO perfil : perfis) {
-
-				AusenciaExtraFaturamentoDTO ausenciaExtra = ausenciaExtraService.findBy(equipe.getNuEquipe(), //
-						faturamento.getNuFatura(), perfil.getNuPerfil());
-
-				row = getRow(sheet, rowNumSecao2++);
-				pos = 4;
-
-				addCell(row, pos++, perfil.getDePerfil());
-
-				XSSFCell cellvrPrecoGrupo = null;
-				XSSFCell cellQtExtras = null;
-				XSSFCell cellQtAusencias = null;
-
-				if (ausenciaExtra == null) {
-					cellQtAusencias = addCell(row, pos++, BigDecimal.ZERO);
-					cellQtExtras = addCell(row, pos++, BigDecimal.ZERO);
-				} else {
-					cellQtAusencias = addCell(row, pos++, ausenciaExtra.getQtDiaAusencia());
-					cellQtExtras = addCell(row, pos++, ausenciaExtra.getQtDiaServicoExtra());
-				}
-
-				BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
-						faturamento.getNuFatura(), perfil.getNuPerfil());
-
-				cellvrPrecoGrupo = addCell(row, pos++, vrPrecoGrupo == null ? BigDecimal.ZERO : vrPrecoGrupo);
-
-				listaVrAusencias.add(setCellFormula(sheet, row, //
-						String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-						pos++));
-
-				listaVrExtras.add(setCellFormula(sheet, row, //
-						String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-						pos++));
-			}
-
-			// blank
-			row = getRow(sheet, rowNumSecao2++);
-
-			/**
-			 * Vigência dos Membros do Faturamento
-			 */
-			row = getRow(sheet, rowNumSecao2++);
-			addMergedRegion(sheet, row, 4, 11, "Vigência dos Membros do Faturamento", //
-					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-			List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
-					equipe.getNuEquipe());
-
-			if (Utils.isNotEmpty(vigencias)) {
-
-				pos = 4;
-
-				row = addNewRow(sheet);
-				addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Qt. Dias Trab.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Qt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-				for (VigenciaMembrosDTO vigencia : vigencias) {
-
-					BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(),
-							faturamento.getNuFatura(), vigencia.getNuPerfil());
-
-					insumo.addVrPrecoPerfil(vigencia.getNuPerfil(), vrPrecoGrupo);
-
-					pos = 4;
-					row = addNewRow(sheet);
-
-					addCell(row, pos++, vigencia.getDePerfil());
-					addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
-					addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
-					addCell(row, pos++, vigencia.getQtMembrosEquipe());
-					addCell(row, pos++, vigencia.getQtDiasTrabalhados(), STYLE_DECIMAL);
-					listaQtEfetiva.add(addCell(row, pos++, vigencia.getQtEfetiva(), STYLE_DECIMAL));
-					addCell(row, pos++, vrPrecoGrupo, STYLE_DECIMAL);
-
-					listaValorPrevisto.add(setCellFormula(sheet, row, //
-							String.format("%s*%s", row.getCell(row.getLastCellNum() - 2).getReference(), //
-									row.getCell(row.getLastCellNum() - 1).getReference()),
-							pos++));
-
-					insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getQtEfetiva());
-
-				}
-
-				row = addNewRow(sheet);
-
-				pos = 8;
-				addCell(row, pos++, "Qtd. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				insumo.setQtEfetivaTotal(setCellFormula(sheet, row, //
-						String.format("sum(%s:%s)", //
-								listaQtEfetiva.get(0).getReference(),
-								listaQtEfetiva.get(listaValorPrevisto.size() - 1).getReference()), //
-						pos++));
-
-				pos = 10;
-				addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				insumo.setVrEquipe(setCellFormula(sheet, row, //
-						String.format("sum(%s:%s)", //
-								listaValorPrevisto.get(0).getReference(),
-								listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference()), //
-						pos++));
-
-				if (Utils.isNotEmpty(listaVrExtras)) {
-					pos = 10;
-					row = addNewRow(sheet);
-					addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-					cellVrExtras = setCellFormula(sheet, row, //
-							"sum(" + listaVrExtras.get(0).getReference() + ":" + //
-									listaVrExtras.get(listaVrExtras.size() - 1).getReference() + ")",
-							pos++);
-					insumo.setVrExtras(cellVrExtras);
-				}
-
-				if (Utils.isNotEmpty(listaVrAusencias)) {
-					pos = 10;
-					row = addNewRow(sheet);
-					addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-					cellVrAusencias = setCellFormula(sheet, row, //
-							"sum(" + listaVrAusencias.get(0).getReference() + ":" + //
-									listaVrAusencias.get(listaVrAusencias.size() - 1).getReference() + ")",
-							pos++);
-					insumo.setVrAusencias(cellVrAusencias);
-				}
-
-				pos = 10;
-				row = addNewRow(sheet);
-				addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
-						"sum(" + listaValorPrevisto.get(0).getReference() + ":" + //
-								listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
-								cellVrExtras.getReference() + " - " + //
-								cellVrAusencias.getReference(),
-						pos++));
-
-				int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
-
-				/**
-				 * Indicadores
-				 */
-				if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 4, 7,
-							"Grupo configurado para aplicar Indicadores somente a partir de "
-									+ DateUtil.format(faturamento.getDtConsiderarFns()),
-							ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-				}
-
-				if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-
-					row = getRow(sheet, rownum);
-
-					addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
-
-					XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
-					XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
-					XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-					XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet,
-							faturamento);
-					XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-					/**
-					 * ICQL - Qualidade do Serviço
-					 */
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 4, 5, "ICQL - Qualidade", ALIGN_LEFT);
-
-					XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-					if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-							&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-						setCellFormula(cellFormulaIEQQL, //
-								String.format("1-(%s/%s)", //
-										cellQtServicosDevolvidos.getReference(), //
-										cellQtServicosEntregues.getReference()), //
-								STYLE_DECIMAL_5DIGITS);
-					}
-
-					addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-					/**
-					 * IEQQPZ - Prazo do Serviço
-					 */
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 4, 5, "ICPZ - Prazo", ALIGN_LEFT);
-
-					XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-					if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-							&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-						setCellFormula(cellFormulaIEQQPZ, //
-								String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
-										cellQtServicosEntregues.getReference()), //
-								STYLE_DECIMAL_5DIGITS);
-					}
-
-					addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-					/**
-					 * ICET - Estoque
-					 */
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
-
-					XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
-
-					if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
-							&& cellQtServicosContratados.getNumericCellValue() != 0) {
-						setCellFormula(cellFormulaIEQQET, //
-								String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
-										cellQtServicosContratados.getReference()), //
-								STYLE_DECIMAL_5DIGITS);
-					}
-
-					addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
-					/**
-					 * Média dos Indicadores
-					 */
-					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
-					cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
-					if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) != null) {
-						setCellFormula(cellFormulaIEQQL, //
-								"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) + ")", //
-								STYLE_DECIMAL_5DIGITS);
-					}
-					addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
-					cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
-					if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
-						setCellFormula(cellFormulaIEQQPZ, //
-								"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
-								STYLE_DECIMAL_5DIGITS);
-					}
-					addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
-					cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
-					if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) != null) {
-						setCellFormula(cellFormulaIEQQET, //
-								"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) + ")", //
-								STYLE_DECIMAL_5DIGITS);
-					}
-					addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
-					/**
-					 * Desempenho / Valor FNS
-					 */
-					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
-
-					row = getRow(sheet, rownum++);
-					addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
-					addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
-					addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
-
-					row = getRow(sheet, rownum++);
-
-					XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
-					XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
-					XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
-
-					setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
-					setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
-					setCellFormula(cellValorFinanceiro, //
-							String.format("%s*%s", //
-									"STRING".equalsIgnoreCase(cellValorFNS.getCellType().name()) ? //
-											BigDecimal.ONE : cellValorFNS.getReference(), //
-									insumo.getVrPrevistoTermo().getReference()), //
-							STYLE_DECIMAL);
-
-					insumo.setVrFns(cellValorFNS);
-
-				}
-
-				row = addNewRow(sheet);
-
-			}
-
-		} // faturamentos
-	}
-
-	private XSSFCell contarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
-				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Atrasados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
-	}
-
-	private XSSFCell listarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntreguesComAtraso = entregaService
-				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues com Atraso", //
-				ALIGN_CENTER_ORANGE_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosEntreguesComAtraso) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 2, Long.valueOf(servicosEntreguesComAtraso.size()));
-		return cellQtServicosEntreguesComAtraso;
-	}
-
-	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Entregues/Estoque", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
-	}
-
-	private XSSFCell listarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues/Estoque", //
-				ALIGN_CENTER_GREEN_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		for (EntregaDTO e : servicosEntreguesEstoque) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, Long.valueOf(servicosEntreguesEstoque.size()));
-		return cellQtServicosEntreguesEstoque;
-
-	}
-
-	private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Contratados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosContratados.size()));
-	}
-
-	private XSSFCell listarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Contratados", //
-				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosContratados)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosContratados) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosContratados = addCell(row, 2, Long.valueOf(servicosContratados.size()));
-		return cellQtServicosContratados;
-	}
-
-	private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Devolvidos", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
-	}
-
-	private XSSFCell listarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Devolvidos", //
-				ALIGN_CENTER_RED_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosDevolvidos)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosDevolvidos) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosDevolvidos = addCell(row, 2, Long.valueOf(servicosDevolvidos.size()));
-		return cellQtServicosDevolvidos;
-	}
-
-	private XSSFCell contarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addCell(row, 0, "Entregues", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosEntregues.size()));
-	}
-
-	private XSSFCell listarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-
-		List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
-				faturamento.getNuFatura());
-
-		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, "Serviços Entregues", //
-				ALIGN_CENTER_GREEN_BOLD);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-		addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		if (Utils.isEmpty(servicosEntregues)) {
-			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
-		}
-
-		for (EntregaDTO e : servicosEntregues) {
-			row = addNewRow(sheet);
-			addCell(row, 0, e.getCoSolicitacao());
-			addCell(row, 1, e.getDhPrevistaPendencias());
-			addCell(row, 2, e.getDhEfetiva());
-		}
-
-		row = addNewRow(sheet);
-		addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-
-		addBlank(sheet);
-
-		XSSFCell cellQtServicosEntregues = addCell(row, 2, Long.valueOf(servicosEntregues.size()));
-		return cellQtServicosEntregues;
-	}
-
-	private void setCellFormulaDesempenho(XSSFCell cell, Long nuFatura) {
-
-		StringBuilder s1 = new StringBuilder();
-		StringBuilder s2 = new StringBuilder();
-
-		String ieqql = parseFormulaDesempenho(listaMediaIEQQL, nuFatura, "Equipe!J6");
-		if (ieqql != null) {
-			s1.append("+" + ieqql.toString());
-			s2.append("," + "Equipe!J6");
-		}
-
-		String ieqqpz = parseFormulaDesempenho(listaMediaIEQQPZ, nuFatura, "Equipe!J5");
-		if (ieqqpz != null) {
-			s1.append("+" + ieqqpz.toString());
-			s2.append("," + "Equipe!J5");
-		}
-
-		String ieqqet = parseFormulaDesempenho(listaMediaIEQQET, nuFatura, "Equipe!J4");
-		if (ieqqet != null) {
-			s1.append("+" + ieqqet.toString());
-			s2.append("," + "Equipe!J4");
-		}
-
-		if (s1.length() > 1) {
-			setCellFormula(cell, //
-					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
-					STYLE_DECIMAL_5DIGITS);
-		}
-	}
-
-	private String parseFormulaDesempenho(Map<Long, List<XSSFCell>> lista, Long nuFatura, String cellPesoIndicador) {
-
-		StringBuilder p1 = new StringBuilder();
-
-		List<XSSFCell> indicadores = getIndicadoresMediaFNS(lista, nuFatura, 1);
-
-		for (XSSFCell c : indicadores) {
-			try {
-
-				if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
-					p1.append("," + c.getReference());
-				}
-			} catch (Exception e) {
-			}
-		}
-
-		if (p1.length() > 1) {
-			return String.format("(average(%s)*%s)", p1.toString().substring(1), cellPesoIndicador);
-		}
-
-		return null;
-	}
-
-	private void setCellFormulaValorFNS(XSSFCell cellValorFNS, XSSFCell cellDesempenho, int qtFaixas) {
-
-		// essa posição fixa é o número da primeira linha das faixas
-		// da seção "Valores Faixas Indicador" na aba equipe
-		int pos = 15;
-
-		if (!"N/A".equalsIgnoreCase(cellDesempenho.toString())) {
-
-			StringBuilder formula = new StringBuilder();
-
-			for (int i = 1; i <= qtFaixas; i++) {
-				formula.append(
-						String.format("+if(and(rounddown(%s,2)>=Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-								cellDesempenho.getReference(), pos + i, //
-								cellDesempenho.getReference(), pos + i, //
-								pos + i));
-
-			}
-
-			setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);
-
-		}
-
-	}
+            /**
+             * Vigência dos Membros do Faturamento
+             */
+            addBlank(sheet);
+
+            row = addNewRow(sheet);
+
+            int rowNumSecao1 = row.getRowNum(); // preciso guardar essa posicao
+            int rowNumSecao2 = row.getRowNum(); // preciso guardar essa posicao
+
+            /**
+             * Dias Trabalhados no Faturamento
+             */
+            row = getRow(sheet, rowNumSecao1++);
+            addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+            row = getRow(sheet, rowNumSecao1++);
+            addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Dt. Final", ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Qt. Dias", ALIGN_CENTER_BOLD);
+
+            row = getRow(sheet, rowNumSecao1++);
+            addCell(row, 0, faturamento.getDtInicioFatura());
+            addCell(row, 1, faturamento.getDtFinalFatura());
+            cellQtDiasFaturamento = addCell(row, 2, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
+
+            /**
+             * Ausências/Extras
+             */
+            row = getRow(sheet, rowNumSecao2++);
+            addMergedRegion(sheet, row, 4, 9, "Ausências/Extras", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+            row = getRow(sheet, rowNumSecao2++);
+            pos = 4;
+            addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Qt. Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Qt. Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Valor Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Valor Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+            List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
+
+            XSSFCell cellVrExtras = null;
+            XSSFCell cellVrAusencias = null;
+            List<XSSFCell> listaVrAusencias = new ArrayList<XSSFCell>();
+            List<XSSFCell> listaVrExtras = new ArrayList<XSSFCell>();
+
+            for (PerfilDTO perfil : perfis) {
+
+                AusenciaExtraFaturamentoDTO ausenciaExtra = ausenciaExtraService.findBy(equipe.getNuEquipe(), //
+                        faturamento.getNuFatura(), perfil.getNuPerfil());
+
+                row = getRow(sheet, rowNumSecao2++);
+                pos = 4;
+
+                addCell(row, pos++, perfil.getDePerfil());
+
+                XSSFCell cellvrPrecoGrupo = null;
+                XSSFCell cellQtExtras = null;
+                XSSFCell cellQtAusencias = null;
+
+                if (ausenciaExtra == null) {
+                    cellQtAusencias = addCell(row, pos++, BigDecimal.ZERO);
+                    cellQtExtras = addCell(row, pos++, BigDecimal.ZERO);
+                } else {
+                    cellQtAusencias = addCell(row, pos++, ausenciaExtra.getQtDiaAusencia());
+                    cellQtExtras = addCell(row, pos++, ausenciaExtra.getQtDiaServicoExtra());
+                }
+
+                BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
+                        faturamento.getNuFatura(), perfil.getNuPerfil());
+
+                cellvrPrecoGrupo = addCell(row, pos++, vrPrecoGrupo == null ? BigDecimal.ZERO : vrPrecoGrupo);
+
+                listaVrAusencias.add(setCellFormula(sheet, row, //
+                        String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+                        pos++));
+
+                listaVrExtras.add(setCellFormula(sheet, row, //
+                        String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+                        pos++));
+            }
+
+            // blank
+            row = getRow(sheet, rowNumSecao2++);
+
+            /**
+             * Vigência dos Membros do Faturamento
+             */
+            row = getRow(sheet, rowNumSecao2++);
+            addMergedRegion(sheet, row, 4, 11, "Vigência dos Membros do Faturamento", //
+                    ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+            List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
+                    equipe.getNuEquipe());
+
+            if (Utils.isNotEmpty(vigencias)) {
+
+                pos = 4;
+
+                row = addNewRow(sheet);
+                addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Qt. Dias Trab.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Qt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+                for (VigenciaMembrosDTO vigencia : vigencias) {
+
+                    BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(),
+                            faturamento.getNuFatura(), vigencia.getNuPerfil());
+
+                    insumo.addVrPrecoPerfil(vigencia.getNuPerfil(), vrPrecoGrupo);
+
+                    pos = 4;
+                    row = addNewRow(sheet);
+
+                    addCell(row, pos++, vigencia.getDePerfil());
+                    addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
+                    addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
+                    addCell(row, pos++, vigencia.getQtMembrosEquipe());
+                    addCell(row, pos++, vigencia.getQtDiasTrabalhados(), STYLE_DECIMAL);
+                    listaQtEfetiva.add(addCell(row, pos++, vigencia.getQtEfetiva(), STYLE_DECIMAL));
+                    addCell(row, pos++, vrPrecoGrupo, STYLE_DECIMAL);
+
+                    listaValorPrevisto.add(setCellFormula(sheet, row, //
+                            String.format("%s*%s", row.getCell(row.getLastCellNum() - 2).getReference(), //
+                                    row.getCell(row.getLastCellNum() - 1).getReference()),
+                            pos++));
+
+                    insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getQtEfetiva());
+
+                }
+
+                row = addNewRow(sheet);
+
+                pos = 8;
+                addCell(row, pos++, "Qtd. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                insumo.setQtEfetivaTotal(setCellFormula(sheet, row, //
+                        String.format("sum(%s:%s)", //
+                                listaQtEfetiva.get(0).getReference(),
+                                listaQtEfetiva.get(listaValorPrevisto.size() - 1).getReference()), //
+                        pos++));
+
+                pos = 10;
+                addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                insumo.setVrEquipe(setCellFormula(sheet, row, //
+                        String.format("sum(%s:%s)", //
+                                listaValorPrevisto.get(0).getReference(),
+                                listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference()), //
+                        pos++));
+
+                if (Utils.isNotEmpty(listaVrExtras)) {
+                    pos = 10;
+                    row = addNewRow(sheet);
+                    addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                    cellVrExtras = setCellFormula(sheet, row, //
+                            "sum(" + listaVrExtras.get(0).getReference() + ":" + //
+                                    listaVrExtras.get(listaVrExtras.size() - 1).getReference() + ")",
+                            pos++);
+                    insumo.setVrExtras(cellVrExtras);
+                }
+
+                if (Utils.isNotEmpty(listaVrAusencias)) {
+                    pos = 10;
+                    row = addNewRow(sheet);
+                    addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                    cellVrAusencias = setCellFormula(sheet, row, //
+                            "sum(" + listaVrAusencias.get(0).getReference() + ":" + //
+                                    listaVrAusencias.get(listaVrAusencias.size() - 1).getReference() + ")",
+                            pos++);
+                    insumo.setVrAusencias(cellVrAusencias);
+                }
+
+                pos = 10;
+                row = addNewRow(sheet);
+                addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
+                        "sum(" + listaValorPrevisto.get(0).getReference() + ":" + //
+                                listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
+                                cellVrExtras.getReference() + " - " + //
+                                cellVrAusencias.getReference(),
+                        pos++));
+
+                int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
+
+                /**
+                 * Indicadores
+                 */
+                if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 7,
+                            "Grupo configurado para aplicar Indicadores somente a partir de "
+                                    + DateUtil.format(faturamento.getDtConsiderarFns()),
+                            ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                }
+
+                if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+
+                    row = getRow(sheet, rownum);
+
+                    addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
+
+                    XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
+                    XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
+                    XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
+                    XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet,
+                            faturamento);
+                    XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+                    /**
+                     * ICQL - Qualidade do Serviço
+                     */
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 5, "ICQL - Qualidade", ALIGN_LEFT);
+
+                    XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+                    if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+                            && cellQtServicosEntregues.getNumericCellValue() != 0) {
+                        setCellFormula(cellFormulaIEQQL, //
+                                String.format("1-(%s/%s)", //
+                                        cellQtServicosDevolvidos.getReference(), //
+                                        cellQtServicosEntregues.getReference()), //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+
+                    addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+
+                    /**
+                     * IEQQPZ - Prazo do Serviço
+                     */
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 5, "ICPZ - Prazo", ALIGN_LEFT);
+
+                    XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+                    if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+                            && cellQtServicosEntregues.getNumericCellValue() != 0) {
+                        setCellFormula(cellFormulaIEQQPZ, //
+                                String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
+                                        cellQtServicosEntregues.getReference()), //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+
+                    addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+
+                    /**
+                     * ICET - Estoque
+                     */
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
+
+                    XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
+
+                    if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
+                            && cellQtServicosContratados.getNumericCellValue() != 0) {
+                        setCellFormula(cellFormulaIEQQET, //
+                                String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
+                                        cellQtServicosContratados.getReference()), //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+
+                    addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+
+                    /**
+                     * Média dos Indicadores
+                     */
+                    rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
+                    cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
+                    if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) != null) {
+                        setCellFormula(cellFormulaIEQQL, //
+                                "average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) + ")", //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+                    addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
+                    cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
+                    if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
+                        setCellFormula(cellFormulaIEQQPZ, //
+                                "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+                    addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
+                    cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
+                    if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) != null) {
+                        setCellFormula(cellFormulaIEQQET, //
+                                "average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) + ")", //
+                                STYLE_DECIMAL_5DIGITS);
+                    }
+                    addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+
+                    /**
+                     * Desempenho / Valor FNS
+                     */
+                    rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
+
+                    row = getRow(sheet, rownum++);
+                    addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
+                    addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
+                    addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
+
+                    row = getRow(sheet, rownum++);
+
+                    XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
+                    XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
+                    XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
+
+                    setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+                    setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
+                    setCellFormula(cellValorFinanceiro, //
+                            String.format("%s*%s", //
+                                    "STRING".equalsIgnoreCase(cellValorFNS.getCellType().name()) ? //
+                                            BigDecimal.ONE : cellValorFNS.getReference(), //
+                                    insumo.getVrPrevistoTermo().getReference()), //
+                            STYLE_DECIMAL);
+
+                    insumo.setVrFns(cellValorFNS);
+
+                }
+
+                row = addNewRow(sheet);
+
+            }
+
+        } // faturamentos
+    }
+
+    private XSSFCell contarServicosAtrasados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+        List<EntregaDTO> servicosEntreguesComAtraso = entregaService
+                .listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
+
+        XSSFRow row = addNewRow(sheet);
+        addCell(row, 0, "Atrasados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
+    }
+
+    private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+        List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+                faturamento.getNuFatura());
+
+        XSSFRow row = addNewRow(sheet);
+        addCell(row, 0, "Entregues/Estoque", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
+    }
+
+    private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+        List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
+                faturamento.getNuFatura());
+
+        XSSFRow row = addNewRow(sheet);
+        addCell(row, 0, "Contratados", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        return addCell(row, 1, Long.valueOf(servicosContratados.size()));
+    }
+
+    private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+        List<EntregaDTO> servicosDevolvidos = entregaService.listarServicosDevolvidos(equipe.getNuEquipe(),
+                faturamento.getNuFatura());
+
+        XSSFRow row = addNewRow(sheet);
+        addCell(row, 0, "Devolvidos", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        return addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
+    }
+
+    private XSSFCell contarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+
+        List<EntregaDTO> servicosEntregues = entregaService.listarServicosEntregues(equipe.getNuEquipe(),
+                faturamento.getNuFatura());
+
+        XSSFRow row = addNewRow(sheet);
+        addCell(row, 0, "Entregues", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        return addCell(row, 1, Long.valueOf(servicosEntregues.size()));
+    }
+
+    private void setCellFormulaDesempenho(XSSFCell cell, Long nuFatura) {
+
+        StringBuilder s1 = new StringBuilder();
+        StringBuilder s2 = new StringBuilder();
+
+        String ieqql = parseFormulaDesempenho(listaMediaIEQQL, nuFatura, "Equipe!J6");
+        if (ieqql != null) {
+            s1.append("+" + ieqql.toString());
+            s2.append("," + "Equipe!J6");
+        }
+
+        String ieqqpz = parseFormulaDesempenho(listaMediaIEQQPZ, nuFatura, "Equipe!J5");
+        if (ieqqpz != null) {
+            s1.append("+" + ieqqpz.toString());
+            s2.append("," + "Equipe!J5");
+        }
+
+        String ieqqet = parseFormulaDesempenho(listaMediaIEQQET, nuFatura, "Equipe!J4");
+        if (ieqqet != null) {
+            s1.append("+" + ieqqet.toString());
+            s2.append("," + "Equipe!J4");
+        }
+
+        if (s1.length() > 1) {
+            setCellFormula(cell, //
+                    String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
+                    STYLE_DECIMAL_5DIGITS);
+        }
+    }
+
+    private String parseFormulaDesempenho(Map<Long, List<XSSFCell>> lista, Long nuFatura, String cellPesoIndicador) {
+
+        StringBuilder p1 = new StringBuilder();
+
+        List<XSSFCell> indicadores = getIndicadoresMediaFNS(lista, nuFatura, 1);
+
+        for (XSSFCell c : indicadores) {
+            try {
+
+                if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
+                    p1.append("," + c.getReference());
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        if (p1.length() > 1) {
+            return String.format("(average(%s)*%s)", p1.toString().substring(1), cellPesoIndicador);
+        }
+
+        return null;
+    }
+
+    private void setCellFormulaValorFNS(XSSFCell cellValorFNS, XSSFCell cellDesempenho, int qtFaixas) {
+
+        // essa posição fixa é o número da primeira linha das faixas
+        // da seção "Valores Faixas Indicador" na aba equipe
+        int pos = 15;
+
+        if (!"N/A".equalsIgnoreCase(cellDesempenho.toString())) {
+
+            StringBuilder formula = new StringBuilder();
+
+            for (int i = 1; i <= qtFaixas; i++) {
+                formula.append(
+                        String.format("+if(and(rounddown(%s,2)>=Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+                                cellDesempenho.getReference(), pos + i, //
+                                cellDesempenho.getReference(), pos + i, //
+                                pos + i));
+
+            }
+
+            setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);
+
+        }
+
+    }
 
 }

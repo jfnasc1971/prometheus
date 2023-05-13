@@ -341,7 +341,7 @@ public class EntregaServiceQualidade {
 		sb.append("  se.nu_fatura_amostra = ? "); 
 		sb.append("  and se.nu_equipe = ? "); 
 		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
-		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura ");
+		sb.append("  and s.dh_efetiva::date is not null ");
 		sb.append("  and se.ic_solicitacao_compoe_fns = 'S' "); 
 		sb.append("  and coalesce(se.co_falha_solicitacao, 'NF') = 'NF' "); 
 		sb.append("  and s.nu_situacao_solicitacao in ( "); 

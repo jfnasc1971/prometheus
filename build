@@ -1,0 +1,9 @@
+#!/bin/bash
+clear
+mvn package
+#cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+cd /projetos/caixa/sigct/Sustentacao/Planilhas/
+ls -la
+git add -f prometheus.jar
+git commit -a -m "Prometheus - Melhorias e correções"
+git push

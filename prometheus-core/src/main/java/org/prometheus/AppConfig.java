@@ -10,25 +10,26 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @ComponentScan("br.gov.caixa.sigct")
 public class AppConfig {
 
-    private static GenericXmlApplicationContext ctx;
+	private static GenericXmlApplicationContext ctx;
 
-    public static final GenericXmlApplicationContext getApplicationContext() {
+	public static final GenericXmlApplicationContext getApplicationContext() {
 
-        if (ctx == null) {
-            
-            ctx = new GenericXmlApplicationContext();
+		if (ctx == null) {
 
-            ConfigurableEnvironment env = ctx.getEnvironment();
-            
-            if (Utils.isEmpty(env.getActiveProfiles())) {
-                ctx.load("des-profile.xml");    
-            } else {
-                ctx.load(env.getActiveProfiles()[0] + "-profile.xml");
-            }
-            
-            ctx.refresh();
-        }
+			ctx = new GenericXmlApplicationContext();
 
-        return ctx;
-    }
+			ConfigurableEnvironment env = ctx.getEnvironment();
+
+			if (Utils.isEmpty(env.getActiveProfiles())) {
+				System.out.println("-----------------------> des-profile.xml");
+				ctx.load("des-profile.xml");
+			} else {
+				ctx.load(env.getActiveProfiles()[0] + "-profile.xml");
+			}
+
+			ctx.refresh();
+		}
+
+		return ctx;
+	}
 }

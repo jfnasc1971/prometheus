@@ -53,7 +53,6 @@ public class PrincipalBean {
 			// finaliza ciclo de vida
 			ctx.responseComplete();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -567,7 +567,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
         }
 
         if (p1.length() > 1) {
-            return String.format("(average(%s)*%s)", p1.toString().substring(1), cellPesoIndicador);
+            return String.format("(%s*%s)", p1.toString().substring(1), cellPesoIndicador);
         }
 
         return null;

@@ -471,8 +471,9 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 			}
 
-			setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);
-
+			if (qtFaixas > 0) {
+				setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);	
+			}
 		}
 
 	}

@@ -13,16 +13,9 @@ if [ -n "$(git status --porcelain)" ];then
   git commit -a -m "Prometheus - Melhorias e correções"
 fi
 
-exit
-
+git push
 
 cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
 cd /projetos/caixa/sigct/Sustentacao/Planilhas/
-ls -la
-git add -f prometheus.jar
 git commit -a -m "Prometheus - Melhorias e correções"
-git push
-cp /projetos/prometheus/Fontes/prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
-cd /projetos/caixa/sigct/Sustentacao/Planilhas/
-git commit -a -m "Atualização da versão"
 git push

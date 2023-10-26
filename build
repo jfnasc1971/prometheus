@@ -1,8 +1,21 @@
 #!/bin/bash
 clear
+
 mvn -f prometheus-core/pom.xml clean install
-git commit -a -m "Prometheus - Melhorias e correções"
+
+if [ -n "$(git ls-files --others --exclude-standard)" ];then
+  for f in $(git ls-files --others --exclude-standard);do
+    git add "$f"
+  done
+fi
+
+if [ -n "$(git status --porcelain)" ];then
+  git commit -a -m "Prometheus - Melhorias e correções"
+fi
+
 exit
+
+
 cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
 cd /projetos/caixa/sigct/Sustentacao/Planilhas/
 ls -la

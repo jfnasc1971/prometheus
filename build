@@ -1,10 +1,15 @@
 #!/bin/bash
 clear
-cd prometheus-core
-mvn install
-# cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
-# cd /projetos/caixa/sigct/Sustentacao/Planilhas/
-# ls -la
-# git add -f prometheus.jar
-# git commit -a -m "Prometheus - Melhorias e correções"
-# git push
+mvn -f prometheus-core/pom.xml clean install
+git commit -a -m "Prometheus - Melhorias e correções"
+exit
+cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+cd /projetos/caixa/sigct/Sustentacao/Planilhas/
+ls -la
+git add -f prometheus.jar
+git commit -a -m "Prometheus - Melhorias e correções"
+git push
+cp /projetos/prometheus/Fontes/prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+cd /projetos/caixa/sigct/Sustentacao/Planilhas/
+git commit -a -m "Atualização da versão"
+git push

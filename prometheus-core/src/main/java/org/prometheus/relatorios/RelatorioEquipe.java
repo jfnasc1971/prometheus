@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.AppConfig;
@@ -97,7 +98,6 @@ public class RelatorioEquipe extends Relatorio {
     }
 
     public String gerar(String coEquipe) {
-        (new File(PATH)).mkdirs();
         return gerar(coEquipe, (Date) null);
     }
 
@@ -116,15 +116,19 @@ public class RelatorioEquipe extends Relatorio {
 
     public String gerar(String coEquipe, List<FaturamentoDTO> faturamentos) throws Exception {
 
-        File file = new File(PATH + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
+    	EquipeDTO equipe = equipeService.findBy(coEquipe);
+    	
+    	System.out.println(equipe.getNoContrato().replaceAll("[ /]" , "_"));
+    	
+        (new File(PATH + "/" + equipe.getNoContrato().replaceAll("[ /]" , "_"))).mkdirs();
+    	
+        File file = new File(PATH + "/" + equipe.getNoContrato().replaceAll("[ /]" , "_") + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
         file.delete();
         FileOutputStream fos = new FileOutputStream(file);
         
         LOG.info(file.getAbsolutePath());
 
         XSSFWorkbook wb = new XSSFWorkbook();
-
-        EquipeDTO equipe = equipeService.findBy(coEquipe);
 
         LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
                 " - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //

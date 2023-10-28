@@ -15,7 +15,7 @@
 		
 		<echo>Commit ID: ${revision.number}</echo>
 
-		<exec executable="/bin/bash" failonerror="true">
+		<exec executable="/bin/bash" failonerror="true" encoding="ISO-8859-1">
 			<arg value="-c" />
 			<arg value="git log -1 > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
 		</exec>
@@ -33,7 +33,7 @@
 		<buildnumber file="build.number"/>
 		<echo>Build Number: ${build.number}</echo>
 
-		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties">
+		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties" encoding="ISO-8859-1">
 			<entry key="build.date" type="date" value="now" />
 			<entry key="revision.number" value="${revision.number}" />
 			<entry key="build.number" value="${build.number}" />

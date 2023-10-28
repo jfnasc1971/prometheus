@@ -17,12 +17,12 @@
 
 		<exec executable="/bin/bash" failonerror="true">
 			<arg value="-c" />
-			<arg value="git log -1 > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
+			<arg value="git log -1 > /tmp/repoinfo.properties" />
 		</exec>
 		
 		<exec executable="/bin/bash" failonerror="true">
 			<arg value="-c" />
-			<arg value="iconv -t ISO-8859-1 -f UTF-8 ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
+			<arg value="iconv -t ISO-8859-1 -f UTF-8 /tmp/repoinfo.properties > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
 		</exec>
 	</target>
 

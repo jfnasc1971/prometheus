@@ -15,13 +15,14 @@
 		
 		<echo>Commit ID: ${revision.number}</echo>
 
-		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties">
-
-		</propertyfile>	
-
 		<exec executable="/bin/bash" failonerror="true">
 			<arg value="-c" />
 			<arg value="git log -1 > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
+		</exec>
+		
+		<exec executable="/bin/bash" failonerror="true">
+			<arg value="-c" />
+			<arg value="iconv -t ISO-8859-1 -f UTF-8 ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
 		</exec>
 	</target>
 

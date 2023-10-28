@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 
-mvn -f prometheus-core/pom.xml clean install
+ant
 
 if [ -n "$(git ls-files --others --exclude-standard)" ];then
   for f in $(git ls-files --others --exclude-standard);do

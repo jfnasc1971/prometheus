@@ -15,7 +15,7 @@
 		
 		<echo>Commit ID: ${revision.number}</echo>
 
-		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties" encoding="ISO-8859-1">
+		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties">
 
 		</propertyfile>	
 
@@ -37,7 +37,7 @@
 		<buildnumber file="build.number"/>
 		<echo>Build Number: ${build.number}</echo>
 
-		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties" encoding="ISO-8859-1">
+		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties">
 			<entry key="build.date" type="date" value="now" />
 			<entry key="revision.number" value="${revision.number}" />
 			<entry key="build.number" value="${build.number}" />

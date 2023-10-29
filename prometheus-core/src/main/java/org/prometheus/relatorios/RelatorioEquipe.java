@@ -84,7 +84,7 @@ public class RelatorioEquipe extends Relatorio {
 
                 while ((coEquipe = reader.readLine()) != null) {
                     if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
-                        relatorio.gerar(coEquipe);// , DateUtil.parse("2018-08-20"));
+                        relatorio.gerar(coEquipe.trim());// , DateUtil.parse("2018-08-20"));
                     }
                 }
 

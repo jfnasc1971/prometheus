@@ -8,10 +8,10 @@ if [ -n "$1" ];then
   $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
 else
   if [ -f lista_equipes.properties ];then
-    for e in $(cat lista_equipes.properties);do
-      echo $e
-      $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $e
-    done
+    #for e in $(cat lista_equipes.properties);do
+    #  echo $e
+      $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe
+    #done
   fi
 fi
 

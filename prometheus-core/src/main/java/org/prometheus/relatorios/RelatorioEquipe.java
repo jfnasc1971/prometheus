@@ -12,10 +12,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.xb.xsdschema.AppinfoDocument.Appinfo;
 import org.prometheus.AppConfig;
 import org.prometheus.AppInfo;
 import org.prometheus.dto.EquipeDTO;
@@ -59,6 +57,16 @@ public class RelatorioEquipe extends Relatorio {
 
     public static void main(String[] args) {
 
+        System.out.println("______                         _   _                      _____            _            ");
+        System.out.println("| ___ \\                       | | | |                    |  ___|          (_)           ");
+        System.out.println("| |_/ / __ ___  _ __ ___   ___| |_| |__   ___ _   _ ___  | |__ _ __   __ _ _ _ __   ___ ");
+        System.out.println("|  __/ '__/ _ \\| '_ ` _ \\ / _ \\ __| '_ \\ / _ \\ | | / __| |  __| '_ \\ / _` | | '_ \\ / _ \\");
+        System.out.println("| |  | | | (_) | | | | | |  __/ |_| | | |  __/ |_| \\__ \\ | |__| | | | (_| | | | | |  __/");
+        System.out.println("\\_|  |_|  \\___/|_| |_| |_|\\___|\\__|_| |_|\\___|\\__,_|___/ \\____/_| |_|\\__, |_|_| |_|\\___|");
+        System.out.println("                                                                      __/ |             ");
+        System.out.println("                                                                     |___/              ");
+        System.out.println(AppInfo.getVersion());
+        
         (new File(PATH)).mkdirs();
 
         RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);

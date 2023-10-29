@@ -16,6 +16,10 @@ public class AppConfig {
 	
 	private static GenericXmlApplicationContext ctx;
 
+	static {
+	    System.out.println(AppInfo.getVersion());
+	}
+	
 	public static final GenericXmlApplicationContext getApplicationContext() {
 
 		if (ctx == null) {

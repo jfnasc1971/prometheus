@@ -22,7 +22,7 @@ echo "----------------------------------------------------"
 
 for f in $(find Demonstrativos -name 'SIGCT_Demonstrativo_*.xlsx');do
   rm -f /tmp/1.txt
-  ssconvert -O 'sheet=Ajuste format=preserve' --recalc $f /tmp/1.txt &>/dev/null;
+  ssconvert -O 'sheet=Ajuste separator=; format=preserve' --recalc $f /tmp/1.txt &>/dev/null;
   op="$(cat /tmp/1.txt | grep 'Valor Ajuste')";
   echo "$f $op"|sed -e 's|"||gi'
 done;

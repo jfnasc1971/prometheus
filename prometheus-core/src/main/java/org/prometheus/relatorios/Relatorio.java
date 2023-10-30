@@ -240,7 +240,7 @@ public abstract class Relatorio {
 
     }
 
-    protected final XSSFCell addCell(XSSFRow row, int pos, Long value) {
+    protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value) {
         XSSFCell cell1 = row.createCell(pos);
         cell1.setCellStyle(estilos.get(STYLE_NUMBER));
         cell1.setCellValue(value == null ? BigDecimal.ZERO.doubleValue() : value.doubleValue());
@@ -288,13 +288,6 @@ public abstract class Relatorio {
 
     protected final XSSFCell addCell(XSSFRow row, int pos, Date value) {
         return addCell(row, pos, value, STYLE_DATE);
-    }
-
-    protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value) {
-        if (value == null) {
-            return addCell(row, pos);
-        }
-        return addCell(row, pos, value, STYLE_DECIMAL);
     }
 
     protected final XSSFCell addCell(XSSFRow row, int pos, Date value, String style) {
@@ -545,6 +538,11 @@ public abstract class Relatorio {
         addBorders(s26);
         estilos.put(STYLE_PERCENT, s26);
 
+    }
+
+    protected XSSFCell setCellFormula(XSSFCell cell, String formula) {
+        formula = formula.replaceAll("\\$1", String.valueOf(cell.getRow().getRowNum() + 1));
+        return evaluateFormula(cell, formula, null);
     }
 
     protected XSSFCell setCellFormula(XSSFCell cell, String formula, String style) {

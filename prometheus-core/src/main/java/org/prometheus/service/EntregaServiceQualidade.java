@@ -70,7 +70,7 @@ public class EntregaServiceQualidade {
 				dto.setIcServicoCompoeCalculoFns(rs.getString("ic_servico_compoe_calculo_fns"));
 				dto.setCoFalhaSolicitacao(rs.getString("co_falha_solicitacao"));
 				dto.setIcEntregaForaPeriodo(rs.getString("ic_entrega_fora_periodo"));
-				dto.setQtDiasPendencia(rs.getLong("qt_dias_pendencia"));
+				dto.setQtDiasPendencia(rs.getBigDecimal("qt_dias_pendencia"));
 
 				result.add(dto);
 			}

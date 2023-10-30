@@ -83,8 +83,8 @@ public class AbaSprints extends Relatorio {
 				for (CicloTrabalhoDTO ciclo : ciclos) {
 					pos = 0;
 					row = addNewRow(sheet);
-					addCell(row, pos++, ciclo.getNuCicloTrabalho());
-					addCell(row, pos++, ciclo.getNuSituacaoCicloTrabalho());
+					addCell(row, pos++, String.valueOf(ciclo.getNuCicloTrabalho()));
+					addCell(row, pos++, String.valueOf(ciclo.getNuSituacaoCicloTrabalho()));
 					addCell(row, pos++, ciclo.getDtInicioCicloTrabalho());
 					addCell(row, pos++, ciclo.getDtAlvoCicloTrabalho());
 					addCell(row, pos++, ciclo.getCoFalhaCicloTrabalho());

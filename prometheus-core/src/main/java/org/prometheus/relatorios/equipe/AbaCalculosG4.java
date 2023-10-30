@@ -215,7 +215,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             row = addNewRow(sheet);
             addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            XSSFCell cellQtServicosContratados = addCell(row, 2, Long.valueOf(servicosContratados.size()));
+            XSSFCell cellQtServicosContratados = addCell(row, 2, BigDecimal.valueOf(servicosContratados.size()));
 
             /**
              * Serviços Entregues
@@ -247,7 +247,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             row = addNewRow(sheet);
             addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            XSSFCell cellQtServicosEntregues = addCell(row, 2, Long.valueOf(servicosEntregues.size()));
+            XSSFCell cellQtServicosEntregues = addCell(row, 2, BigDecimal.valueOf(servicosEntregues.size()));
 
             /**
              * Serviços Entregues/Estoque
@@ -279,7 +279,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             row = addNewRow(sheet);
             addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, Long.valueOf(servicosEntreguesEstoque.size()));
+            XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
 
             /**
              * Serviços Entregues com Atraso
@@ -312,7 +312,7 @@ public class AbaCalculosG4 extends Relatorio {
             row = addNewRow(sheet);
             addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
             XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 2,
-                    Long.valueOf(servicosEntreguesComAtraso.size()));
+                    BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
 
             /**
              * Serviços Devolvidos
@@ -344,7 +344,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             row = addNewRow(sheet);
             addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            XSSFCell cellQtServicosDevolvidos = addCell(row, 2, Long.valueOf(servicosDevolvidos.size()));
+            XSSFCell cellQtServicosDevolvidos = addCell(row, 2, BigDecimal.valueOf(servicosDevolvidos.size()));
 
             addBlank(sheet);
 

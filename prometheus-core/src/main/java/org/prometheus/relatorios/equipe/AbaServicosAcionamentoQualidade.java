@@ -1,6 +1,7 @@
 package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
+		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
 		return cellQtServicosEntreguesComAtraso;
 	}
 
@@ -187,7 +188,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
+		XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 1, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
 		return cellQtServicosEntreguesEstoque;
 	}
 
@@ -242,7 +243,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosContratados = addCell(row, 1, Long.valueOf(servicosContratados.size()));
+		XSSFCell cellQtServicosContratados = addCell(row, 1, BigDecimal.valueOf(servicosContratados.size()));
 		return cellQtServicosContratados;
 	}
 
@@ -292,7 +293,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosDevolvidos = addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
+		XSSFCell cellQtServicosDevolvidos = addCell(row, 1, BigDecimal.valueOf(servicosDevolvidos.size()));
 		return cellQtServicosDevolvidos;
 	}
 
@@ -342,7 +343,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosEntregues = addCell(row, 1, Long.valueOf(servicosEntregues.size()));
+		XSSFCell cellQtServicosEntregues = addCell(row, 1, BigDecimal.valueOf(servicosEntregues.size()));
 		return cellQtServicosEntregues;
 	}
 

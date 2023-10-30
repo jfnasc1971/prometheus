@@ -354,7 +354,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Atrasados", ALIGN_CENTER_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosEntreguesComAtraso.size()));
+		return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
 	}
 
 	private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -364,7 +364,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Estoque", ALIGN_CENTER_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosEntreguesEstoque.size()));
+		return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
 	}
 
 	private XSSFCell contarServicosContratados(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -374,7 +374,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Contratados", ALIGN_CENTER_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosContratados.size()));
+		return addCell(row, 1, BigDecimal.valueOf(servicosContratados.size()));
 	}
 
 	private XSSFCell contarServicosDevolvidos(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -384,7 +384,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Devolvidos", ALIGN_CENTER_BOLD);
-		return addCell(row, 1, Long.valueOf(servicosDevolvidos.size()));
+		return addCell(row, 1, BigDecimal.valueOf(servicosDevolvidos.size()));
 	}
 
 	private XSSFCell contarServicosEntregues(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
@@ -395,7 +395,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 		XSSFRow row = addNewRow(sheet);
 		addCell(row, 0, "Entregues", ALIGN_CENTER_BOLD);
 
-		return addCell(row, 1, Long.valueOf(servicosEntregues.size()));
+		return addCell(row, 1, BigDecimal.valueOf(servicosEntregues.size()));
 	}
 
 	private void setCellFormulaDesempenho(XSSFCell cell, Long nuFatura) {
@@ -423,7 +423,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		if (s1.length() > 1) {
 			setCellFormula(cell, //
-					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
+					String.format("rounddown((%s)/sum(%s),5)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);
 		}
 	}

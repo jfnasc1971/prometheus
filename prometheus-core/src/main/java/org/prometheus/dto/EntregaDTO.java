@@ -1,5 +1,7 @@
 package org.prometheus.dto;
 
+import java.math.BigDecimal;
+
 public class EntregaDTO {
 
 	private String coSolicitacao;
@@ -11,9 +13,9 @@ public class EntregaDTO {
 	private String icServicoCompoeCalculoFns;
 	private String coFalhaSolicitacao;
 	private String deSituacaoSolicitacao;
-	private Long nuSituacaoSolicitacao;
+	private BigDecimal nuSituacaoSolicitacao;
 	private String icEntregaForaPeriodo;
-	private Long qtDiasPendencia;
+	private BigDecimal qtDiasPendencia;
 
 	public void setCoSolicitacao(String coSolicitacao) {
 		this.coSolicitacao = coSolicitacao;
@@ -80,14 +82,14 @@ public class EntregaDTO {
 	/**
 	 * @return the nuSituacaoSolicitacao
 	 */
-	public Long getNuSituacaoSolicitacao() {
+	public BigDecimal getNuSituacaoSolicitacao() {
 		return nuSituacaoSolicitacao;
 	}
 
 	/**
 	 * @param nuSituacaoSolicitacao the nuSituacaoSolicitacao to set
 	 */
-	public void setNuSituacaoSolicitacao(Long nuSituacaoSolicitacao) {
+	public void setNuSituacaoSolicitacao(BigDecimal nuSituacaoSolicitacao) {
 		this.nuSituacaoSolicitacao = nuSituacaoSolicitacao;
 	}
 
@@ -136,14 +138,14 @@ public class EntregaDTO {
 	/**
 	 * @return the qtDiasPendencia
 	 */
-	public Long getQtDiasPendencia() {
+	public BigDecimal getQtDiasPendencia() {
 		return qtDiasPendencia;
 	}
 
 	/**
 	 * @param qtDiasPendencia the qtDiasPendencia to set
 	 */
-	public void setQtDiasPendencia(Long qtDiasPendencia) {
+	public void setQtDiasPendencia(BigDecimal qtDiasPendencia) {
 		this.qtDiasPendencia = qtDiasPendencia;
 	}
 

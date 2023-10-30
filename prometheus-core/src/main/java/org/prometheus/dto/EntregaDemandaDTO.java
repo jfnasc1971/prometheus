@@ -13,16 +13,16 @@ public class EntregaDemandaDTO extends BaseDTO {
 	private java.math.BigDecimal pcExecutado;
 	private java.util.Date dhPrevistaInicioAtendimento;
 	private java.util.Date dhPrevistaEntrega;
-	private Long qtDiasPendencia;
+	private java.math.BigDecimal qtDiasPendencia;
 	private java.util.Date dhPrevistaEntregaPendencia;
 	private java.util.Date dhEfetivaEntrega;
 	private java.math.BigDecimal vrPrevistoEntrega;
 	private java.math.BigDecimal vrMensuracaoEfetiva;
 	private java.math.BigDecimal vrPreco;
-	private Long qtDiasAtraso;
+	private java.math.BigDecimal qtDiasAtraso;
 	private java.math.BigDecimal vrRedutorAtraso;
 	private java.math.BigDecimal vrDescontoAtraso;
-	private Long qtErros;
+	private java.math.BigDecimal qtErros;
 	private java.math.BigDecimal vrDescontoErros;
 	private java.math.BigDecimal vrLiquido;
 
@@ -98,11 +98,11 @@ public class EntregaDemandaDTO extends BaseDTO {
 		return this.dhPrevistaEntrega;
 	}
 
-	public void setQtDiasPendencia(Long qtDiasPendencia) {
+	public void setQtDiasPendencia(java.math.BigDecimal qtDiasPendencia) {
 		this.qtDiasPendencia = qtDiasPendencia;
 	}
 
-	public Long getQtDiasPendencia() {
+	public java.math.BigDecimal getQtDiasPendencia() {
 		return this.qtDiasPendencia;
 	}
 
@@ -161,14 +161,14 @@ public class EntregaDemandaDTO extends BaseDTO {
 	/**
 	 * @return the qtDiasAtraso
 	 */
-	public Long getQtDiasAtraso() {
+	public java.math.BigDecimal getQtDiasAtraso() {
 		return qtDiasAtraso;
 	}
 
 	/**
 	 * @param qtDiasAtraso the qtDiasAtraso to set
 	 */
-	public void setQtDiasAtraso(Long qtDiasAtraso) {
+	public void setQtDiasAtraso(java.math.BigDecimal qtDiasAtraso) {
 		this.qtDiasAtraso = qtDiasAtraso;
 	}
 
@@ -203,14 +203,14 @@ public class EntregaDemandaDTO extends BaseDTO {
 	/**
 	 * @return the qtErros
 	 */
-	public Long getQtErros() {
+	public java.math.BigDecimal getQtErros() {
 		return qtErros;
 	}
 
 	/**
 	 * @param qtErros the qtErros to set
 	 */
-	public void setQtErros(Long qtErros) {
+	public void setQtErros(java.math.BigDecimal qtErros) {
 		this.qtErros = qtErros;
 	}
 

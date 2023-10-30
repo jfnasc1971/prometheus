@@ -25,7 +25,7 @@ public class EntregaDemandaService {
 	@Autowired
 	private OrdemServicoService ordemServicoService;
 
-	public Long getQtDiasAtraso(EntregaDemandaDTO entrega) {
+	public BigDecimal getQtDiasAtraso(EntregaDemandaDTO entrega) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -40,7 +40,7 @@ public class EntregaDemandaService {
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
-				return rs.getLong("qt_dias_atraso");
+				return rs.getBigDecimal("qt_dias_atraso");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -48,7 +48,7 @@ public class EntregaDemandaService {
 			DBUtil.close(conn, pstmt, rs);
 		}
 
-		return 0L;
+		return BigDecimal.ZERO;
 	}
 	
 	public BigDecimal getVrPreco(EntregaDemandaDTO entrega) {
@@ -106,7 +106,7 @@ public class EntregaDemandaService {
 				dto.setPcExecutado(rs.getBigDecimal("pc_executado"));
 				dto.setDhPrevistaInicioAtendimento(rs.getTimestamp("dh_prevista_inicio_atendimento"));
 				dto.setDhPrevistaEntrega(rs.getTimestamp("dh_prevista_entrega"));
-				dto.setQtDiasPendencia(rs.getLong("qt_dias_pendencia"));
+				dto.setQtDiasPendencia(rs.getBigDecimal("qt_dias_pendencia"));
 				dto.setDhPrevistaEntregaPendencia(rs.getTimestamp("dh_prevista_entrega_pendencia"));
 				dto.setDhEfetivaEntrega(rs.getTimestamp("dh_efetiva_entrega"));
 				dto.setVrPrevistoEntrega(rs.getBigDecimal("vr_previsto_entrega"));

@@ -75,7 +75,7 @@ public class EntregaService {
 				dto.setIcServicoCompoeCalculoFns(rs.getString("ic_servico_compoe_calculo_fns"));
 				dto.setCoFalhaSolicitacao(rs.getString("co_falha_solicitacao"));
 				dto.setDeSituacaoSolicitacao(rs.getString("de_situacao_solicitacao"));
-				dto.setNuSituacaoSolicitacao(rs.getLong("nu_situacao_solicitacao"));
+				dto.setNuSituacaoSolicitacao(rs.getBigDecimal("nu_situacao_solicitacao"));
 
 				result.add(dto);
 			}

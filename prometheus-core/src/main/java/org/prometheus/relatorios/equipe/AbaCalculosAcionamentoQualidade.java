@@ -334,8 +334,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-                    XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet,
-                            faturamento);
+                    XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 
                     row = getRow(sheet, rownum++);

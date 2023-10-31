@@ -418,7 +418,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     cellFormulaIEQQPZ = addCell(row, 10, "N/A", STYLE_DECIMAL_5DIGITS);
                     if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
                         setCellFormula(cellFormulaIEQQPZ, //
-                                "rounddown(average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + "),5)", //
+                                "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
                                 STYLE_DECIMAL_5DIGITS);
                     }
                     addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
@@ -584,7 +584,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
             for (int i = 1; i <= qtFaixas; i++) {
                 formula.append(
-                        String.format("+if(and(rounddown(%s,2)>=Equipe!H%s,rounddown(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+                        String.format("+if(and(%s)>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));

@@ -423,7 +423,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		if (s1.length() > 1) {
 			setCellFormula(cell, //
-					String.format("rounddown((%s)/sum(%s),5)", s1.toString().substring(1), s2.toString().substring(1)), //
+					String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
 					STYLE_DECIMAL_5DIGITS);
 		}
 	}

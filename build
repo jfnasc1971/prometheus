@@ -3,28 +3,11 @@ clear
 
 BUILD_FILE="prometheus-core/src/main/resources/build.properties"
 
-# ant
-
-# cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
-# cd /projetos/caixa/sigct/Sustentacao/Planilhas/
-# git commit -a -m "Prometheus - Melhorias e correções"
-# git push
+ant
 
 if [ "$1" == commit ];then
 
   echo "Commit...."
-
-  LABEL="$(cat $BUILD_FILE |grep -e 'version'|awk -F '=' '{print $2}').$(cat $BUILD_FILE |grep -e 'build.number'|awk -F '=' '{print $2}')"
-  echo $LABEL
-
-  # existe?
-  if [ -n '$(git ls-remote --tags | "v$LABEL")' ];then
-    git tag -d v$LABEL
-    git push origin :refs/tags/v$LABEL
-  fi
-
-  git tag -a v$LABEL -m "Versão $LABEL"
-  git push -u origin v$LABEL 
 
   if [ -n "$(git ls-files --others --exclude-standard)" ];then
     for f in $(git ls-files --others --exclude-standard);do
@@ -38,4 +21,22 @@ if [ "$1" == commit ];then
 
   git push
 
+  LABEL="$(cat $BUILD_FILE |grep -e 'version'|awk -F '=' '{print $2}').$(cat $BUILD_FILE |grep -e 'build.number'|awk -F '=' '{print $2}')"
+  echo $LABEL
+
+  # existe?
+  if [ -n '$(git ls-remote --tags | "v$LABEL")' ];then
+    git tag -d v$LABEL
+    git push origin :refs/tags/v$LABEL
+  fi
+
+  git tag -a v$LABEL -m "Versão $LABEL"
+  git push -u origin v$LABEL 
+
 fi
+
+cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+cd /projetos/caixa/sigct/Sustentacao/Planilhas/
+git commit -a -m "Prometheus - Melhorias e correções"
+git push
+

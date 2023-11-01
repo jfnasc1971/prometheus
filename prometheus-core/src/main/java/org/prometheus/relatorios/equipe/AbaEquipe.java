@@ -256,11 +256,10 @@ public class AbaEquipe extends Relatorio {
 			pos = 7;
 			row = addNewRow(sheet, rownum++);
 
-			addMergedRegion(sheet, row, pos, pos + 1,
-					indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador());
-			setNoNull(row, pos + 2, indicador.getVrPesoTipoIndicador());
-			setNoNull(row, pos + 3, indicador.getVrFatorAjuste(), STYLE_DECIMAL_5DIGITS);
-			setNoNull(row, pos + 4, indicador.getVrLimiteMaximoIndicador());
+			addMergedRegion(sheet, row, pos, pos + 1, indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador());
+			setNoNull(row, pos + 2, indicador.getVrPesoTipoIndicador(), STYLE_DECIMAL);
+			setNoNull(row, pos + 3, indicador.getVrFatorAjuste(), STYLE_DECIMAL);
+			setNoNull(row, pos + 4, indicador.getVrLimiteMaximoIndicador(), STYLE_DECIMAL_5DIGITS);
 			setNoNull(row, pos + 5, indicador.getQtFaturamento());
 		}
 

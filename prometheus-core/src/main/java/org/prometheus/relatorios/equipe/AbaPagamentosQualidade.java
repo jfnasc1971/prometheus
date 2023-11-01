@@ -75,12 +75,15 @@ public class AbaPagamentosQualidade extends Relatorio {
 			addCell(row, pos++, termo.getDhEmissaoTermo());
 
 			XSSFCell cellVrPrevisto = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null);
-			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null);
+					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null, STYLE_DECIMAL);
+			
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null, STYLE_DECIMAL);
+			
 			XSSFCell cellVrAcrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null);
+					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null, STYLE_DECIMAL);
+			
 			XSSFCell cellVrDecrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null);
+					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null, STYLE_DECIMAL);
 
 			// FNS
 			XSSFCell cellVrFNS = null;
@@ -99,7 +102,7 @@ public class AbaPagamentosQualidade extends Relatorio {
 								cellVrAcrescimo.getReference(),
 								cellVrDecrescimo.getReference(), //
 								cellVrFNS.getReference()), //
-						pos++);
+						pos++,STYLE_DECIMAL);
 			}
 
 			if (termo.getNuTipoTermo() == 12) {
@@ -109,10 +112,10 @@ public class AbaPagamentosQualidade extends Relatorio {
 			addCell(row, pos++, termo.getNuFaturaPaga() + " - " + termo.getDeFaturaPaga());
 
 			if (primeiraFatura == null) {
-				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
+				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),STYLE_DECIMAL);
 				ultimaFatura = primeiraFatura;
 			} else {
-				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo());
+				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),STYLE_DECIMAL);
 			}
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();

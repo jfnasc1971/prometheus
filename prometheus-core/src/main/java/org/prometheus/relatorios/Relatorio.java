@@ -328,7 +328,7 @@ public abstract class Relatorio {
         cell.setCellFormula(formula);
 
         if (style == null) {
-            cell.setCellStyle(estilos.get(STYLE_DECIMAL));
+            //cell.setCellStyle(estilos.get(STYLE_DECIMAL));
         } else {
             cell.setCellStyle(estilos.get(style));
         }

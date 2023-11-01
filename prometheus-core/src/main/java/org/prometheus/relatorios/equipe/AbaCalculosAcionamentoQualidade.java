@@ -352,8 +352,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                             && cellQtServicosEntregues.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQL, //
                                 String.format("1-(%s/%s)", //
-                                        cellQtServicosDevolvidos.getReference(), //
-                                        cellQtServicosEntregues.getReference()), //
+                                        cellQtServicosDevolvidos.getNumericCellValue(), //
+                                        cellQtServicosEntregues.getNumericCellValue()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -370,8 +370,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
                             && cellQtServicosEntregues.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQPZ, //
-                                String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
-                                        cellQtServicosEntregues.getReference()), //
+                                String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getNumericCellValue(),
+                                        cellQtServicosEntregues.getNumericCellValue()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -388,8 +388,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
                             && cellQtServicosContratados.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQET, //
-                                String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
-                                        cellQtServicosContratados.getReference()), //
+                                String.format("%s/%s", cellQtServicosEntreguesEstoque.getNumericCellValue(),
+                                        cellQtServicosContratados.getNumericCellValue()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -544,8 +544,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
         if (s1.length() > 1) {
             setCellFormula(cell, //
-                    String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
-                    STYLE_DECIMAL_5DIGITS);
+                    String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)));
         }
     }
 
@@ -559,7 +558,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
             try {
 
                 if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
-                    p1.append("," + c.getReference());
+                    p1.append("," + c.getNumericCellValue());
                 }
             } catch (Exception e) {
             }
@@ -584,7 +583,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
             for (int i = 1; i <= qtFaixas; i++) {
                 formula.append(
-                        String.format("+if(and(%s)>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
+                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));

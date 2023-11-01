@@ -1,21 +1,41 @@
 #!/bin/bash
 clear
 
-ant
+BUILD_FILE="prometheus-core/src/main/resources/build.properties"
 
-if [ -n "$(git ls-files --others --exclude-standard)" ];then
-  for f in $(git ls-files --others --exclude-standard);do
-    git add "$f"
-  done
+# ant
+
+# cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+# cd /projetos/caixa/sigct/Sustentacao/Planilhas/
+# git commit -a -m "Prometheus - Melhorias e correções"
+# git push
+
+if [ "$1" == commit ];then
+
+  echo "Commit...."
+
+  LABEL="$(cat $BUILD_FILE |grep -e 'version'|awk -F '=' '{print $2}').$(cat $BUILD_FILE |grep -e 'build.number'|awk -F '=' '{print $2}')"
+  echo $LABEL
+
+  # existe?
+  if [ -z '$(git ls-remote --tags | "v$LABEL")' ];then
+    git tag -d v$LABEL
+    git push origin :refs/tags/v$LABEL
+  fi
+
+  git tag -a v$LABEL -m "Versão $LABEL"
+  git push -u origin v$LABEL 
+
+  if [ -n "$(git ls-files --others --exclude-standard)" ];then
+    for f in $(git ls-files --others --exclude-standard);do
+      git add "$f"
+    done
+  fi
+
+  if [ -n "$(git status --porcelain)" ];then
+    git commit -a -m "Prometheus - Melhorias e correções"
+  fi
+
+  git push
+
 fi
-
-if [ -n "$(git status --porcelain)" ];then
-  git commit -a -m "Prometheus - Melhorias e correções"
-fi
-
-git push
-
-cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
-cd /projetos/caixa/sigct/Sustentacao/Planilhas/
-git commit -a -m "Prometheus - Melhorias e correções"
-git push

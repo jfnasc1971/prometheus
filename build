@@ -18,7 +18,7 @@ if [ "$1" == commit ];then
   echo $LABEL
 
   # existe?
-  if [ -z '$(git ls-remote --tags | "v$LABEL")' ];then
+  if [ -n '$(git ls-remote --tags | "v$LABEL")' ];then
     git tag -d v$LABEL
     git push origin :refs/tags/v$LABEL
   fi

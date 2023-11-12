@@ -523,7 +523,7 @@ public class AbaCalculosSprint extends Relatorio {
 
             for (int i = 1; i <= qtFaixas; i++) {
                 formula.append(
-                        String.format("+if(and(%s)>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
+                        String.format("+if(and(%s>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));

@@ -66,7 +66,7 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 				addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
 				addCell(row, pos++, faturamento.getQtDiasFaturamento());
-				addCell(row, pos++, insumo.getVrPreco());
+				addCell(row, pos++, insumo.getVrPreco(), STYLE_DECIMAL);
 
 				if (insumo.getQtEfetiva() != null) {
 					setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULOS, //

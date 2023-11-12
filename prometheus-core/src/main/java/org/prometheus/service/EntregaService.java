@@ -169,6 +169,7 @@ public class EntregaService {
 		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( ");
 		sb.append("    sc.nu_tipo_servico = se.nu_tipo_servico ");
 		sb.append("    and e.nu_contrato = sc.nu_contrato ");
+		sb.append("    and e.nu_tipo_grupo = sc.nu_tipo_grupo ");
 		sb.append("  ) ");
 		sb.append("  inner join gct.gcttb102_fatura f on ( ");
 		sb.append("    f.nu_faturamento = c.nu_faturamento ");
@@ -209,6 +210,7 @@ public class EntregaService {
 		sb.append("     inner join gct.gcttb055_servico_contrato sc on (");
 		sb.append("         sc.nu_tipo_servico = se.nu_tipo_servico");
 		sb.append("         and e.nu_contrato = sc.nu_contrato");
+		sb.append("         and e.nu_tipo_grupo = sc.nu_tipo_grupo ");
 		sb.append("     )");
 		sb.append("     inner join gct.gcttb102_fatura f on f.nu_faturamento = c.nu_faturamento");
 		sb.append("     and f.co_sitio = ai.co_sitio");
@@ -248,6 +250,7 @@ public class EntregaService {
 		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( ");
 		sb.append("    sc.nu_tipo_servico = se.nu_tipo_servico ");
 		sb.append("    and e.nu_contrato = sc.nu_contrato ");
+		sb.append("    and e.nu_tipo_grupo = sc.nu_tipo_grupo ");
 		sb.append("  ) ");
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_faturamento = c.nu_faturamento ");
 		sb.append("  inner join gct.gcttb226_devolucao_solicitacao ds on ( ");
@@ -291,6 +294,7 @@ public class EntregaService {
 		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( ");
 		sb.append("    sc.nu_tipo_servico = se.nu_tipo_servico ");
 		sb.append("    and e.nu_contrato = sc.nu_contrato ");
+		sb.append("    and e.nu_tipo_grupo = sc.nu_tipo_grupo ");
 		sb.append("  ) ");
 		sb.append("  inner join gct.gcttb102_fatura f on ( ");
 		sb.append("    f.nu_faturamento = c.nu_faturamento ");

@@ -4,15 +4,15 @@ JAVA_CMD="/projetos/lib/jvm/jdk1.8.0_231/bin/java"
 CLASSPATH="/projetos/prometheus/Fontes/prometheus-core/target/prometheus.jar"
 
 if [ -n "$1" ];then
-  echo $1
   $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
+elif [ -f lista_equipes.properties ];then
+  $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe
 else
-  if [ -f lista_equipes.properties ];then
-    #for e in $(cat lista_equipes.properties);do
-    #  echo $e
-      $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe
-    #done
-  fi
+  clear
+  echo ""
+  echo "ERRO! NAO foi informada nenhum equipe e NAO encontrei o arquivo lista_equipes.properties. :("
+  echo ""
+  exit
 fi
 
 echo -e "\n\n"

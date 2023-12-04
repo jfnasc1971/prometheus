@@ -31,6 +31,7 @@ import org.prometheus.relatorios.equipe.AbaPagamentos;
 import org.prometheus.relatorios.equipe.AbaPagamentosQualidade;
 import org.prometheus.relatorios.equipe.AbaServicosAcionamento;
 import org.prometheus.relatorios.equipe.AbaServicosAcionamentoQualidade;
+import org.prometheus.relatorios.equipe.AbaVigenciaMembros;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaturamentoService;
 import org.prometheus.utils.Utils;
@@ -58,7 +59,7 @@ public class RelatorioEquipe extends Relatorio {
     public static void main(String[] args) {
 
         System.out.println("______                         _   _                      _____            _            ");
-        System.out.println("| ___ \\                       | | | |                    |  ___|          (_)           ");
+        System.out.println("| ___ \\                      | | | |                    |  ___|          (_)           ");
         System.out.println("| |_/ / __ ___  _ __ ___   ___| |_| |__   ___ _   _ ___  | |__ _ __   __ _ _ _ __   ___ ");
         System.out.println("|  __/ '__/ _ \\| '_ ` _ \\ / _ \\ __| '_ \\ / _ \\ | | / __| |  __| '_ \\ / _` | | '_ \\ / _ \\");
         System.out.println("| |  | | | (_) | | | | | |  __/ |_| | | |  __/ |_| \\__ \\ | |__| | | | (_| | | | | |  __/");
@@ -151,6 +152,10 @@ public class RelatorioEquipe extends Relatorio {
         AbaEquipe abaEquipe = AppConfig.getApplicationContext().getBean(AbaEquipe.class);
         abaEquipe.write(wb, coEquipe, faturamentos);
 
+        // VIGENCIAS DOS MEMBROS
+        AbaVigenciaMembros abaVigencias= AppConfig.getApplicationContext().getBean(AbaVigenciaMembros.class);
+        abaVigencias.write(wb, coEquipe, faturamentos);
+        
         XSSFCell cellValorPagamentos = null;
 
         if ("D".equals(equipe.getIcDistribuiProfissional())) {

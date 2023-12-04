@@ -157,7 +157,7 @@ public class AbaEquipe extends Relatorio {
 			}
 			addCell(row, pos++, preco.getDtInicioVigencia());
 			addCell(row, pos++, preco.getDtFinalVigencia());
-			addCell(row, pos++, preco.getVrPrecoGrupo());
+			addCell(row, pos++, preco.getVrPrecoGrupo(), STYLE_DECIMAL);
 
 		}
 
@@ -311,7 +311,7 @@ public class AbaEquipe extends Relatorio {
 
 		if (Utils.isEmpty(situacoes)) {
 			row = addNewRow(sheet, rownum++);
-			addMergedRegion(sheet, row, pos, pos + 5, "Nenhuma situação configurada.", ALIGN_CENTER_RED_BOLD);
+			addMergedRegion(sheet, row, pos, pos + 3, "Nenhuma situação configurada.", ALIGN_CENTER_RED_BOLD);
 		}
 
 		if (Utils.isNotEmpty(situacoes)) {

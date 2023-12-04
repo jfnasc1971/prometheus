@@ -240,6 +240,13 @@ public abstract class Relatorio {
 
     }
 
+    protected final XSSFCell addCell(XSSFRow row, int pos, Long value) {
+        XSSFCell cell1 = row.createCell(pos);
+        cell1.setCellStyle(estilos.get(STYLE_NUMBER));
+        cell1.setCellValue(value == null ? 0L : value.doubleValue());
+        return cell1;
+    }
+
     protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value) {
         XSSFCell cell1 = row.createCell(pos);
         cell1.setCellStyle(estilos.get(STYLE_NUMBER));

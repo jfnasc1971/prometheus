@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseService {
 
-    private DataSource dataSource;
+	private DataSource dataSource;
 
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-	this.dataSource = dataSource;
-    }
+	@Autowired
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
-    public DataSource getDataSource() {
-	return dataSource;
-    }
+	public DataSource getDataSource() {
+		return dataSource;
+	}
 
 }

@@ -9,16 +9,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.prometheus.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GerarServicoDB {
 
-	private static final String PREFIX = "EntregaDemanda";
+	private static final String PREFIX = "VigenciaMembrosEquipe";
 	private static final String VIEW_NAME = PREFIX + "DTO";
 	private static final String SERVICE_NAME = PREFIX + "Service";
 
@@ -27,15 +25,11 @@ public class GerarServicoDB {
 
 	public static void main(String[] args) {
 
-		ApplicationContext ctxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-
-		GerarDTO gto = ctxt.getBean(GerarDTO.class);
+		GerarDTO gto = AppConfig.getApplicationContext().getBean(GerarDTO.class);
 		gto.gerar(VIEW_NAME);
 
-		GerarServicoDB g = ctxt.getBean(GerarServicoDB.class);
+		GerarServicoDB g = AppConfig.getApplicationContext().getBean(GerarServicoDB.class);
 		g.gerar(SERVICE_NAME, VIEW_NAME);
-
-		((ConfigurableApplicationContext) ctxt).close();
 
 	}
 
@@ -47,7 +41,7 @@ public class GerarServicoDB {
 
 		try {
 
-			File f = new File("target/" + name + ".java");
+			File f = new File(name + ".java");
 
 			FileWriter fw = new FileWriter(f);
 

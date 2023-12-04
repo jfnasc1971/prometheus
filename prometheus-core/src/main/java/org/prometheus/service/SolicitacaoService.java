@@ -66,7 +66,7 @@ public class SolicitacaoService {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select "); 
-		sb.append("  e.nu_equipe, "); 
+		sb.append("  distinct e.nu_equipe, "); 
 		sb.append("  cct.nu_ciclo_trabalho, "); 
 		sb.append("  s.co_solicitacao, "); 
 		sb.append("  s.de_tipo_solicitacao, "); 

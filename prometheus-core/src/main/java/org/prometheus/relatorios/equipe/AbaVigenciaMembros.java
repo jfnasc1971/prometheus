@@ -48,8 +48,8 @@ public class AbaVigenciaMembros extends Relatorio {
 		sheet.setDisplayGridlines(false);
 
 		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 60);
-		setColumnWidth(sheet, 3, 10);
-		setColumnWidth(sheet, 5, 180);
+		setColumnWidth(sheet, 5, 10);
+		setColumnWidth(sheet, 7, 180);
 
 		int pos = 0;
 		int rownum = 0;
@@ -63,16 +63,11 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		pos = 0;
 
-		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		} else {
-			addMergedRegion(sheet, row, 0, 2, "Total Membros por Vigência", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		}
+		addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 
 		row = addNewRow(sheet, rownum++);
-		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		}
+
+		addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -81,9 +76,7 @@ public class AbaVigenciaMembros extends Relatorio {
 			pos = 0;
 			row = addNewRow(sheet, rownum++);
 
-			if ("D".equals(equipe.getIcDistribuiProfissional())) {
-				addMergedRegion(sheet, row, pos++, pos++, membro.getDePerfil());
-			}
+			addMergedRegion(sheet, row, pos++, pos++, Utils.isEmpty(membro.getDePerfil()) ? "-":membro.getDePerfil());
 			addCell(row, pos++, membro.getDtInicioVigenciaMembros());
 			addCell(row, pos++, membro.getDtFinalVigenciaMembros());
 			addCell(row, pos++, membro.getQtMembrosEquipe());
@@ -100,16 +93,13 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		row = addNewRow(sheet, rownum++);
 		
-		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, 4, 10, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		} else {
-			addMergedRegion(sheet, row, 4, 8, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		}
+		addMergedRegion(sheet, row, 6, 10, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
 		
 		List<VigenciaMembrosEquipeDTO> vigencias = vigenciaMembrosEquipeService.listar(equipe.getNuEquipe());
 
-		pos = 4;
 		row = addNewRow(sheet, rownum++);
+		pos = 6;
+		
 		addCell(row, pos++, "Matrícula", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Nome", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		addCell(row, pos++, "Posição", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
@@ -117,11 +107,12 @@ public class AbaVigenciaMembros extends Relatorio {
 		addCell(row, pos++, "Dt. Fim", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 		
 		for (VigenciaMembrosEquipeDTO vigencia : vigencias) {
-			pos = 4;
+			
 			row = addNewRow(sheet, rownum++);
+			pos = 6;
 
 			addCell(row, pos++, vigencia.getCoMatricula());
-			addCell(row, pos++, Utils.isEmpty(vigencia.getNoMembro()) ? "NAO INFORMADO.":vigencia.getNoMembro());
+			addCell(row, pos++, Utils.isEmpty(vigencia.getNoMembro()) ? "-":vigencia.getNoMembro());
 			addCell(row, pos++, vigencia.getNuPosicaoMembro());
 			addCell(row, pos++, vigencia.getDtInicioMembro());
 			addCell(row, pos++, vigencia.getDtFimMembro());

@@ -129,11 +129,13 @@ public class RelatorioEquipe extends Relatorio {
 
     	EquipeDTO equipe = equipeService.findBy(coEquipe);
     	
-    	System.out.println(equipe.getNoContrato().replaceAll("[ /]" , "_"));
+    	String dir = equipe.getNoContrato().replaceAll("[ /]" , "_");
     	
-        (new File(PATH + "/" + equipe.getNoContrato().replaceAll("[ /]" , "_"))).mkdirs();
+    	System.out.println(dir);
     	
-        File file = new File(PATH + "/" + equipe.getNoContrato().replaceAll("[ /]" , "_") + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
+        (new File(PATH + "/" + dir)).mkdirs();
+    	
+        File file = new File(PATH + "/" + dir + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
         file.delete();
         FileOutputStream fos = new FileOutputStream(file);
         

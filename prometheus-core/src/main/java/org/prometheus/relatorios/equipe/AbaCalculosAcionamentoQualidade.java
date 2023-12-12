@@ -352,8 +352,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                             && cellQtServicosEntregues.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQL, //
                                 String.format("1-(%s/%s)", //
-                                        cellQtServicosDevolvidos.getNumericCellValue(), //
-                                        cellQtServicosEntregues.getNumericCellValue()), //
+                                        cellQtServicosDevolvidos.getReference(), //
+                                        cellQtServicosEntregues.getReference()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -370,8 +370,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
                             && cellQtServicosEntregues.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQPZ, //
-                                String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getNumericCellValue(),
-                                        cellQtServicosEntregues.getNumericCellValue()), //
+                                String.format("1-(%s/%s)", //
+                                		cellQtServicosEntreguesComAtraso.getReference(),
+                                        cellQtServicosEntregues.getReference()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -382,14 +383,15 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                      */
                     row = getRow(sheet, rownum++);
                     addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
-
+                    
                     XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
 
                     if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
                             && cellQtServicosContratados.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQET, //
-                                String.format("%s/%s", cellQtServicosEntreguesEstoque.getNumericCellValue(),
-                                        cellQtServicosContratados.getNumericCellValue()), //
+                                String.format("%s/%s", //
+                                		cellQtServicosEntreguesEstoque.getReference(),
+                                        cellQtServicosContratados.getReference()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -485,7 +487,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Entregues/Estoque", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+        addCell(row, 0, "Estoque", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
     }
 

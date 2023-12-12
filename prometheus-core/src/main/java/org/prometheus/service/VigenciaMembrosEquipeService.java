@@ -34,6 +34,7 @@ public class VigenciaMembrosEquipeService {
 
 			pstmt = conn.prepareStatement(getDML());
 			pstmt.setLong(1, nuEquipe);
+			pstmt.setLong(2, nuEquipe);
 
 			rs = pstmt.executeQuery();
 
@@ -62,26 +63,47 @@ public class VigenciaMembrosEquipeService {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" select");
-		sb.append("   m.tp_matricula || m.nu_matricula co_matricula,");
-		sb.append("   m.no_membro,");
-		sb.append("   vme.nu_posicao_membro,");
-		sb.append("   vme.dt_inicio_membro,");
-		sb.append("   vme.dt_fim_membro");
-		sb.append(" from");
-		sb.append("   gct.gcttb087_equipe e");
-		sb.append("   inner join gct.gcttb097_qntde_membros_equipe qme on qme.nu_equipe = e.nu_equipe");
-		sb.append("   inner join gct.gcttb419_vigencia_membros_equipe vme on (");
-		sb.append("     vme.nu_equipe = qme.nu_equipe");
-		sb.append("     and vme.dt_inicio_membro = qme.dt_inicio_vigencia_membros");
-		sb.append("   )");
-		sb.append("   inner join gct.gcttb418_membros m on m.nu_membro = vme.nu_membro");
-		sb.append(" where");
-		sb.append("   e.nu_equipe = ?");
-		sb.append(" order by");
-		sb.append("   m.tp_matricula || m.nu_matricula,");
-		sb.append("   vme.dt_inicio_membro");
-
+		sb.append(" select "); 
+		sb.append("   m.tp_matricula || m.nu_matricula co_matricula, "); 
+		sb.append("   m.no_membro, "); 
+		sb.append("   vme.nu_posicao_membro, "); 
+		sb.append("   vme.dt_inicio_membro, "); 
+		sb.append("   vme.dt_fim_membro, "); 
+		sb.append("   m.tp_matricula, "); 
+		sb.append("   m.nu_matricula "); 
+		sb.append(" from "); 
+		sb.append("   gct.gcttb087_equipe e "); 
+		sb.append("   inner join gct.gcttb097_qntde_membros_equipe qme on qme.nu_equipe = e.nu_equipe "); 
+		sb.append("   inner join gct.gcttb419_vigencia_membros_equipe vme on ( "); 
+		sb.append("     vme.nu_equipe = qme.nu_equipe "); 
+		sb.append("     and vme.dt_inicio_membro = qme.dt_inicio_vigencia_membros "); 
+		sb.append("   ) "); 
+		sb.append("   inner join gct.gcttb418_membros m on m.nu_membro = vme.nu_membro "); 
+		sb.append(" where "); 
+		sb.append("   e.nu_equipe = ? "); 
+		sb.append("union "); 
+		sb.append("select "); 
+		sb.append("   m.tp_matricula || m.nu_matricula co_matricula, "); 
+		sb.append("   m.no_membro, "); 
+		sb.append("   vme.nu_posicao_membro, "); 
+		sb.append("   vme.dt_inicio_membro, "); 
+		sb.append("   vme.dt_fim_membro, "); 
+		sb.append("   m.tp_matricula, "); 
+		sb.append("   m.nu_matricula "); 
+		sb.append(" from "); 
+		sb.append("   gct.gcttb087_equipe e "); 
+		sb.append("   inner join gct.gcttb523_qntde_membro_equipe_perfil qme on qme.nu_equipe = e.nu_equipe "); 
+		sb.append("   inner join gct.gcttb419_vigencia_membros_equipe vme on ( "); 
+		sb.append("     vme.nu_equipe = qme.nu_equipe "); 
+		sb.append("     and vme.dt_inicio_membro = qme.dt_inicio_vigencia "); 
+		sb.append("     and vme.nu_perfil = qme.nu_perfil "); 
+		sb.append("   ) "); 
+		sb.append("   inner join gct.gcttb418_membros m on m.nu_membro = vme.nu_membro "); 
+		sb.append(" where "); 
+		sb.append("   e.nu_equipe = ? "); 
+		sb.append(" order by "); 
+		sb.append("   co_matricula, dt_inicio_membro ");
+		
 		return sb.toString();
 	}
 

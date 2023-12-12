@@ -140,7 +140,8 @@ public class TermoService {
 		sb.append(" where "); 
 		sb.append("     e.nu_equipe = ? "); 
 		sb.append("     and t.nu_situacao_termo in (1, 3) "); 
-		sb.append("     and t.nu_tipo_termo in (11, 12) "); 
+		sb.append("     and t.nu_tipo_termo in (11, 12) ");
+		sb.append("     and t.vr_financeiro_termo <> 0 ");
 		sb.append(" order by "); 
 		sb.append("     f.dt_final_fatura ");
 

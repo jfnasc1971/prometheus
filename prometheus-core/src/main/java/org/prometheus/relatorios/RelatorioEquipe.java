@@ -129,6 +129,11 @@ public class RelatorioEquipe extends Relatorio {
 
     	EquipeDTO equipe = equipeService.findBy(coEquipe);
     	
+    	if (Utils.isEmpty(equipe)) {
+    	    LOG.info(String.format("A equipe informada %s não existe.", coEquipe));
+    	    return null;
+    	}
+    	
     	String dir = equipe.getNoContrato().replaceAll("[ /]" , "_");
     	
     	System.out.println(dir);

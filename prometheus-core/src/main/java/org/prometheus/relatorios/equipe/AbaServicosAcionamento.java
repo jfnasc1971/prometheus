@@ -69,7 +69,7 @@ public class AbaServicosAcionamento extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
-			LOG.info(String.format("Calculos - Contrato: %s Equipe: %s Fatura: %s - %s", //
+			LOG.info(String.format("Servicos - Contrato: %s Equipe: %s Fatura: %s - %s", //
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
 

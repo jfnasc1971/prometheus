@@ -6,7 +6,7 @@ public class IndicadorContratoDTO {
     private String noTipoIndicador;
     private java.math.BigDecimal vrPesoTipoIndicador;
     private java.math.BigDecimal vrFatorAjuste;
-    private java.math.BigDecimal qtFaturamento;
+    private Integer qtFaturamento;
     private java.math.BigDecimal vrLimiteMaximoIndicador;
     private String icApenasFaturamentoAtual;
 
@@ -42,11 +42,11 @@ public class IndicadorContratoDTO {
         return this.vrFatorAjuste;
     }
 
-    public void setQtFaturamento(java.math.BigDecimal qtFaturamento){
+    public void setQtFaturamento(Integer qtFaturamento){
         this.qtFaturamento = qtFaturamento;
     }
 
-    public java.math.BigDecimal getQtFaturamento(){
+    public Integer getQtFaturamento(){
         return this.qtFaturamento;
     }
 

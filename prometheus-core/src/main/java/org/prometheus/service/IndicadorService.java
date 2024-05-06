@@ -64,6 +64,42 @@ public class IndicadorService {
 		
 	}
 	
+    public IndicadorContratoDTO getIndicadorContratoFNS(String coEquipe) {
+        IndicadorContratoDTO dto = new IndicadorContratoDTO();
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            conn = databaseService.getDataSource().getConnection();
+
+            pstmt = conn.prepareStatement(getIndicadoresContratoDML(true));
+            pstmt.setString(1, coEquipe);
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+
+                dto.setSgTipoIndicador(rs.getString("sg_tipo_indicador"));
+                dto.setNoTipoIndicador(rs.getString("no_tipo_indicador"));
+                dto.setVrPesoTipoIndicador(rs.getBigDecimal("vr_peso_tipo_indicador"));
+                dto.setVrFatorAjuste(rs.getBigDecimal("vr_fator_ajuste"));
+                dto.setQtFaturamento(rs.getInt("qt_faturamento"));
+                dto.setVrLimiteMaximoIndicador(rs.getBigDecimal("vr_limite_maximo_indicador"));
+                dto.setIcApenasFaturamentoAtual(rs.getString("ic_apenas_faturamento_atual"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn, pstmt, rs);
+        }
+
+        return dto;
+    }	
+	
 	public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe) {
 		List<IndicadorContratoDTO> result = new ArrayList<IndicadorContratoDTO>();
 
@@ -88,7 +124,7 @@ public class IndicadorService {
 				dto.setNoTipoIndicador(rs.getString("no_tipo_indicador"));
 				dto.setVrPesoTipoIndicador(rs.getBigDecimal("vr_peso_tipo_indicador"));
 				dto.setVrFatorAjuste(rs.getBigDecimal("vr_fator_ajuste"));
-				dto.setQtFaturamento(rs.getBigDecimal("qt_faturamento"));
+				dto.setQtFaturamento(rs.getInt("qt_faturamento"));
 				dto.setVrLimiteMaximoIndicador(rs.getBigDecimal("vr_limite_maximo_indicador"));
 				dto.setIcApenasFaturamentoAtual(rs.getString("ic_apenas_faturamento_atual"));
 
@@ -265,6 +301,10 @@ public class IndicadorService {
 	}
 
 	public String getIndicadoresContratoDML() {
+	    return getIndicadoresContratoDML(false);
+	}
+	
+	public String getIndicadoresContratoDML(boolean somenteFNS) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -290,6 +330,9 @@ public class IndicadorService {
 		sb.append("  INNER JOIN gct.gcttb112_tipo_indicador ti ON ti.nu_tipo_indicador = gi.nu_tipo_indicador ");
 		sb.append("WHERE ");
 		sb.append("  e.co_equipe = ? ");
+		if(somenteFNS) {
+		    sb.append("  and gi.ic_aplica_indicador = 'S'");
+		}
 
 		return sb.toString();
 	}

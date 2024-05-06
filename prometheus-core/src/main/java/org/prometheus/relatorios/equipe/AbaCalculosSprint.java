@@ -16,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.CicloTrabalhoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
+import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.SolicitacaoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
@@ -25,6 +26,7 @@ import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.CicloTrabalhoService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
+import org.prometheus.service.IndicadorService;
 import org.prometheus.service.PrecosEquipeService;
 import org.prometheus.service.SolicitacaoService;
 import org.prometheus.service.VigenciaMembrosService;
@@ -63,6 +65,9 @@ public class AbaCalculosSprint extends Relatorio {
     @Autowired
     private PrecosEquipeService precoEquipeService;
 
+    @Autowired
+    private IndicadorService indicadorService;
+    
     private Map<Long, List<XSSFCell>> indicadoresProdutividade;
     private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
     private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
@@ -127,6 +132,8 @@ public class AbaCalculosSprint extends Relatorio {
         XSSFCell cellDesempenho = null;
         XSSFCell cellValorFNS = null;
 
+        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
+        
         InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
         insumo.setNuFatura(faturamento.getNuFatura());
@@ -470,21 +477,21 @@ public class AbaCalculosSprint extends Relatorio {
             addMergedRegion(sheet, row, 0, 3, "Produtividade", ALIGN_CENTER);
             cellMediaProdutividade = addCell(row, 4, "N/A", ALIGN_CENTER);
 
-            if (getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), 3) != null) {
+            if (getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaProdutividade, //
-                        "average(" + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), 3) + ")", //
+                        "average(" + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
-            if (getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), 3) != null) {
+            if (getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaQualidadeProduto, //
-                        "average(" + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), 3) + ")", //
+                        "average(" + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
-            if (getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), 3) != null) {
+            if (getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaValorAgregado, //
-                        "average(" + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), 3) + ")", //
+                        "average(" + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
@@ -523,7 +530,7 @@ public class AbaCalculosSprint extends Relatorio {
 
             for (int i = 1; i <= qtFaixas; i++) {
                 formula.append(
-                        String.format("+if(and(%s>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
+                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));

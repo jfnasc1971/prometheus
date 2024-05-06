@@ -91,7 +91,7 @@ public class AbaCalculosG4 extends Relatorio {
         // faturamentos
         for (FaturamentoDTO faturamento : faturamentos) {
 
-            LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
+            LOG.info(String.format("Memoria de Calculo - Contrato: %s Equipe: %s Fatura: %s - %s", //
                     equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
                     faturamento.getNuFatura(), faturamento.getDeFatura()));
 
@@ -575,8 +575,9 @@ public class AbaCalculosG4 extends Relatorio {
             StringBuilder formula = new StringBuilder();
 
             for (int i = 1; i <= qtFaixas; i++) {
+
                 formula.append(
-                        String.format("+if(and(%s>=Equipe!H%s,%s<=Equipe!I%s),Equipe!J%s)", //
+                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));

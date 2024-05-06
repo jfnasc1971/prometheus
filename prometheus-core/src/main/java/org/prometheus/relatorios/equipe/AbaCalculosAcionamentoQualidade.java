@@ -16,6 +16,7 @@ import org.prometheus.dto.AusenciaExtraFaturamentoDTO;
 import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
+import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.PerfilDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
@@ -25,6 +26,7 @@ import org.prometheus.service.AusenciaExtraFaturamentoService;
 import org.prometheus.service.EntregaServiceQualidade;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
+import org.prometheus.service.IndicadorService;
 import org.prometheus.service.PerfilService;
 import org.prometheus.service.PrecosEquipeService;
 import org.prometheus.service.VigenciaMembrosService;
@@ -61,6 +63,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
     @Autowired
     private EntregaServiceQualidade entregaService;
 
+    @Autowired
+    private IndicadorService indicadorService;
+    
     Map<Long, List<XSSFCell>> listaIEQQL = null;
     Map<Long, List<XSSFCell>> listaIEQQPZ = null;
     Map<Long, List<XSSFCell>> listaIEQQET = null;
@@ -73,6 +78,8 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
             Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
 
         EquipeDTO equipe = equipeService.findBy(coEquipe);
+        
+        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(coEquipe);
 
         XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
@@ -408,9 +415,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     row = getRow(sheet, rownum++);
                     addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
                     cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
-                    if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) != null) {
+                    if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) != null) {
                         setCellFormula(cellFormulaIEQQL, //
-                                "average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), 3) + ")", //
+                                "average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) + ")", //
                                 STYLE_DECIMAL_5DIGITS);
                     }
                     addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
@@ -418,9 +425,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     row = getRow(sheet, rownum++);
                     addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
                     cellFormulaIEQQPZ = addCell(row, 10, "N/A", STYLE_DECIMAL_5DIGITS);
-                    if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) != null) {
+                    if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
                         setCellFormula(cellFormulaIEQQPZ, //
-                                "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), 3) + ")", //
+                                "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) + ")", //
                                 STYLE_DECIMAL_5DIGITS);
                     }
                     addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
@@ -428,9 +435,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     row = getRow(sheet, rownum++);
                     addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
                     cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
-                    if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) != null) {
+                    if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) != null) {
                         setCellFormula(cellFormulaIEQQET, //
-                                "average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), 3) + ")", //
+                                "average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) + ")", //
                                 STYLE_DECIMAL_5DIGITS);
                     }
                     addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
@@ -584,12 +591,12 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
             StringBuilder formula = new StringBuilder();
 
             for (int i = 1; i <= qtFaixas; i++) {
+
                 formula.append(
                         String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
                                 cellDesempenho.getReference(), pos + i, //
                                 cellDesempenho.getReference(), pos + i, //
                                 pos + i));
-
             }
 
             setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);

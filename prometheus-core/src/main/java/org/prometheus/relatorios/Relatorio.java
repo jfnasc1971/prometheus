@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
@@ -594,7 +595,7 @@ public abstract class Relatorio {
         indicadores.get(nuFatura).add(cell);
     }
 
-    protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura, int qtFaturamentos) {
+    protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura, IndicadorContratoDTO indicadorFNS) {
 
         List<Long> i = new ArrayList<>();
 
@@ -607,8 +608,8 @@ public abstract class Relatorio {
 
         List<Long> cells = new ArrayList<>();
 
-        if (i.size() > 2) {
-            cells.addAll(i.subList(0, 3));
+        if (i.size() > (indicadorFNS.getQtFaturamento() - 1)) {
+            cells.addAll(i.subList(0, indicadorFNS.getQtFaturamento()));
         } else {
             cells.addAll(i);
         }
@@ -673,6 +674,14 @@ public abstract class Relatorio {
     protected XSSFCell getIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura) {
         indicadores.get(nuFatura);
         return null;
+    }
+
+    protected void setNoNull(XSSFRow row, int pos, Number value) {
+        if (value != null) {
+            setNoNull(row, pos, BigDecimal.valueOf(value.doubleValue()), null);
+        } else {
+            setNoNull(row, pos, (BigDecimal)null, null);    
+        }
     }
 
     protected void setNoNull(XSSFRow row, int pos, BigDecimal value) {

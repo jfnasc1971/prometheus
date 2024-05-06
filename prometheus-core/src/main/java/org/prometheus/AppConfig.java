@@ -25,11 +25,11 @@ public class AppConfig {
 			ConfigurableEnvironment env = ctx.getEnvironment();
 
 			if (Utils.isEmpty(env.getActiveProfiles())) {
-				LOG.info("ARQUIVO DE CONFIGURACAO: des-profile.xml");
-				ctx.load("des-profile.xml");
+				LOG.info("ARQUIVO DE CONFIGURACAO: profile-des.xml");
+				ctx.load("profile-des.xml");
 			} else {
-				LOG.info("ARQUIVO DE CONFIGURACAO: " + env.getActiveProfiles()[0] + "-profile.xml");
-				ctx.load(env.getActiveProfiles()[0] + "-profile.xml");
+				LOG.info("ARQUIVO DE CONFIGURACAO: profile-" + env.getActiveProfiles()[0] + ".xml");
+				ctx.load("profile-" + env.getActiveProfiles()[0] + ".xml");
 			}
 
 			ctx.refresh();

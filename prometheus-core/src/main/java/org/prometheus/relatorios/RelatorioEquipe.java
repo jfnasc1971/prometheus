@@ -57,16 +57,17 @@ public class RelatorioEquipe extends Relatorio {
     private FaturamentoService service;
 
     public static void main(String[] args) {
-
-        System.out.println("______                         _   _                      _____            _            ");
-        System.out.println("| ___ \\                      | | | |                    |  ___|          (_)           ");
-        System.out.println("| |_/ / __ ___  _ __ ___   ___| |_| |__   ___ _   _ ___  | |__ _ __   __ _ _ _ __   ___ ");
-        System.out.println("|  __/ '__/ _ \\| '_ ` _ \\ / _ \\ __| '_ \\ / _ \\ | | / __| |  __| '_ \\ / _` | | '_ \\ / _ \\");
-        System.out.println("| |  | | | (_) | | | | | |  __/ |_| | | |  __/ |_| \\__ \\ | |__| | | | (_| | | | | |  __/");
-        System.out.println("\\_|  |_|  \\___/|_| |_| |_|\\___|\\__|_| |_|\\___|\\__,_|___/ \\____/_| |_|\\__, |_|_| |_|\\___|");
-        System.out.println("                                                                      __/ |             ");
-        System.out.println("                                                                     |___/              ");
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(" ____                           _ \n"); 
+        sb.append("|  _ \\ _ __ ___  _ __ ___   ___| |_ ___ _   _ ___ \n"); 
+        sb.append("| |_) | '__/ _ \\| '_ ` _ \\ / _ \\ __/ _ \\ | | / __| \n"); 
+        sb.append("|  __/| | | (_) | | | | | |  __/ ||  __/ |_| \\__ \\ \n"); 
+        sb.append("|_|   |_|  \\___/|_| |_| |_|\\___|\\__\\___|\\__,_|___/ \n");
+        System.out.println(sb.toString());
         System.out.println(AppInfo.getVersion());
+        System.out.println("Da mitologia grega: um semideus que roubou o fogo do Olimpo para entregar aos homens e liberta-los do medo do desconhecido.");
+        System.out.println("");
         
         (new File(PATH)).mkdirs();
 
@@ -106,6 +107,8 @@ public class RelatorioEquipe extends Relatorio {
                 e.printStackTrace();
             }
         }
+        
+        System.out.println("Encerrado! :)");
     }
 
     public String gerar(String coEquipe) {
@@ -116,10 +119,12 @@ public class RelatorioEquipe extends Relatorio {
 
         List<FaturamentoDTO> faturamentos = service.listar(coEquipe, dtFinalFatura);
 
-        try {
-            return gerar(coEquipe, faturamentos);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Utils.isNotEmpty(faturamentos)) {
+            try {
+                return gerar(coEquipe, faturamentos);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
@@ -134,9 +139,7 @@ public class RelatorioEquipe extends Relatorio {
     	    return null;
     	}
     	
-    	String dir = equipe.getNoContrato().replaceAll("[ /]" , "_");
-    	
-    	System.out.println(dir);
+    	String dir = equipe.getCoContrato().replaceAll("[ /]" , "_");
     	
         (new File(PATH + "/" + dir)).mkdirs();
     	
@@ -202,7 +205,7 @@ public class RelatorioEquipe extends Relatorio {
             insumos = calculos.write(wb, coEquipe, faturamentos);
         }
 
-        if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo())) {
+        if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(97L).equals(equipe.getNuTipoGrupo())) {
             AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
             insumos = calculos.write(wb, coEquipe, faturamentos);
         }

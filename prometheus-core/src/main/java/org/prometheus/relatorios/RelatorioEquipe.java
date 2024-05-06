@@ -184,6 +184,7 @@ public class RelatorioEquipe extends Relatorio {
         //
         // Cálculos
         //
+        
         if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
             AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
             insumos = calculos.gerar(wb, coEquipe, faturamentos);
@@ -200,7 +201,7 @@ public class RelatorioEquipe extends Relatorio {
             calculos.gerar(wb, coEquipe, faturamentos, insumos);
         }
 
-        if (Long.valueOf(65L).equals(equipe.getNoTipoGrupo())) {
+        if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
             AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
             insumos = calculos.write(wb, coEquipe, faturamentos);
         }

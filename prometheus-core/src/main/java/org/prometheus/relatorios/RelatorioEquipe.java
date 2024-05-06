@@ -200,7 +200,7 @@ public class RelatorioEquipe extends Relatorio {
             calculos.gerar(wb, coEquipe, faturamentos, insumos);
         }
 
-        if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
+        if (Long.valueOf(65L).equals(equipe.getNoTipoGrupo())) {
             AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
             insumos = calculos.write(wb, coEquipe, faturamentos);
         }
@@ -214,15 +214,15 @@ public class RelatorioEquipe extends Relatorio {
         // Serviços
         //
         if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())
-                || Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
-            AbaServicosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamento.class);
-            calculos.write(wb, coEquipe, faturamentos);
+                || Long.valueOf(65L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(97L).equals(equipe.getNuTipoGrupo())) {
+            AbaServicosAcionamento servicos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamento.class);
+            servicos.write(wb, coEquipe, faturamentos);
         }
 
         if ("D".equals(equipe.getIcDistribuiProfissional())) {
-            AbaServicosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
+            AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext()
                     .getBean(AbaServicosAcionamentoQualidade.class);
-            calculos.write(wb, coEquipe, faturamentos);
+            servicos.write(wb, coEquipe, faturamentos);
         }
 
         XSSFCell cellValorDevido = null;

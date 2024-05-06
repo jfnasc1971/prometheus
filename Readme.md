@@ -1,1 +1,8 @@
-Prometeu (em grego: Προμηθεύς, transl.: Promēthéus, "antevisão"), na mitologia grega,[nota 1] é um titã (da segunda geração), filho de Jápeto (filho de Urano; um incesto entre Urano e Gaia[4]) e irmão de Atlas, Epimeteu e Menoécio.[5][6] Algumas fontes citam sua mãe como sendo Tétis, enquanto outras, como Pseudo-Apolodoro, apontam para Ásia[5] oriental, também chamada de Clímene, filha de Oceano. Foi um defensor da humanidade, conhecido por sua astuta inteligência, responsável por roubar o fogo de Héstia e dá-lo aos mortais.[nota 2] Zeus, que temia que os mortais ficassem tão poderosos quanto os próprios deuses o teria então punido por este crime, deixando-o amarrado a uma rocha por toda a eternidade enquanto uma grande águia comia todo dia seu fígado — que se regenerava no dia seguinte. O mito foi abordado por diversas fontes antigas (entre elas dois dos principais autores gregos, Hesíodo e Ésquilo[10]), nas quais Prometeu é creditado — ou culpado — por ter desempenhado um papel crucial na história da humanidade.
+ ____                           _ 
+|  _ \ _ __ ___  _ __ ___   ___| |_ ___ _   _ ___ 
+| |_) | '__/ _ \| '_ ` _ \ / _ \ __/ _ \ | | / __| 
+|  __/| | | (_) | | | | | |  __/ ||  __/ |_| \__ \ 
+|_|   |_|  \___/|_| |_| |_|\___|\__\___|\__,_|___/ 
+
+Prometheus Engine - Versão 1.0.67 [63996e0a3ff3d94a47d72d7b8039d53bcb160657]
+Da mitologia grega: um semideus que roubou o fogo do Olimpo para entregar aos homens e liberta-los do medo do desconhecido.

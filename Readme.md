@@ -7,4 +7,4 @@
 
 ```
 * Prometheus Engine - Gerador de Memórias de Cálculo
-* Da mitologia grega: um semideus que roubou o fogo do Olimpo para entregar aos homens e liberta-los do medo do desconhecido.
+Da mitologia grega: um semideus que roubou o fogo do Olimpo para entregar aos homens e liberta-los do medo do desconhecido.

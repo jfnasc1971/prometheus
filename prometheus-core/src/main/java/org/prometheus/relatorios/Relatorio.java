@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -563,6 +564,19 @@ public abstract class Relatorio {
         return evaluateFormula(sheet, row, pos, formula, style);
     }
 
+    protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, List<XSSFCell> listaValoresPrevistos, int pos) {
+        
+        if (Utils.isEmpty(listaValoresPrevistos)) {
+            return row.createCell(pos);    
+        }
+        
+        formula = String.format(formula, //
+                        listaValoresPrevistos.get(0).getReference(), //
+                        listaValoresPrevistos.get(listaValoresPrevistos.size() - 1).getReference());
+        
+        return setCellFormula(sheet, row, formula, pos, null);
+    }
+
     protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, int pos) {
         return setCellFormula(sheet, row, formula, pos, null);
     }
@@ -597,6 +611,10 @@ public abstract class Relatorio {
 
     protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura, IndicadorContratoDTO indicadorFNS) {
 
+        if (indicadorFNS == null) {
+            return null;
+        }
+        
         List<Long> i = new ArrayList<>();
 
         for (Long key : indicadores.keySet()) {

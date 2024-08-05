@@ -51,6 +51,7 @@ public class EquipeService {
 				dto.setNoSituacaoEquipe(rs.getString("no_situacao_equipe"));
 				dto.setIcDiasCalculoPagamento(rs.getString("ic_dias_calculo_pagamento"));
 				dto.setIcCalculoProRata(rs.getString("ic_calculo_pro_rata"));
+				dto.setNoTipoAtendimento(rs.getString("no_tipo_atendimento"));
 				dto.setIcTipoAtendimento(rs.getString("ic_tipo_atendimento"));
 				dto.setIcPermiteServicoExtra(rs.getString("ic_permite_servico_extra"));
 				dto.setIcPermiteRegistroAusencia(rs.getString("ic_permite_registro_ausencia"));
@@ -86,10 +87,11 @@ public class EquipeService {
 		sb.append("  tse.no_situacao_equipe, "); 
 		sb.append("  gc.ic_dias_calculo_pagamento, "); 
 		sb.append("  gc.ic_calculo_pro_rata, "); 
-		sb.append("  CASE "); 
+        sb.append("  gc.ic_tipo_atendimento, "); 		
+        sb.append("  CASE "); 
 		sb.append("    WHEN gc.ic_tipo_atendimento = 'S' THEN 'Sprint' "); 
 		sb.append("    ELSE 'Acionamento' "); 
-		sb.append("  END AS ic_tipo_atendimento, "); 
+		sb.append("  END AS no_tipo_atendimento, "); 
 		sb.append("  gc.ic_permite_servico_extra, "); 
 		sb.append("  gc.ic_permite_registro_ausencia, "); 
 		sb.append("  gc.ic_calculo_pro_rata, "); 

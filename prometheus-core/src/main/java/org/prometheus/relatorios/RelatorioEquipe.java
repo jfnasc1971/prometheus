@@ -59,37 +59,74 @@ public class RelatorioEquipe extends Relatorio {
     public static void main(String[] args) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" ____                           _ \n");
+        sb.append(" ____                            _ \n");
         sb.append("|  _ \\ _ __ ___  _ __ ___   ___| |_ ___ _   _ ___ \n");
         sb.append("| |_) | '__/ _ \\| '_ ` _ \\ / _ \\ __/ _ \\ | | / __| \n");
         sb.append("|  __/| | | (_) | | | | | |  __/ ||  __/ |_| \\__ \\ \n");
         sb.append("|_|   |_|  \\___/|_| |_| |_|\\___|\\__\\___|\\__,_|___/ \n");
         System.out.println(sb.toString());
         System.out.println(AppInfo.getVersion());
-        System.out.println(
-                "Da mitologia grega: um semideus que roubou o fogo do Olimpo para entregar aos homens e liberta-los do medo do desconhecido.");
+        System.out.println("Da mitologia grega: um semideus que roubou o fogo do Olimpo ");
+        System.out.println("para entregar aos homens e liberta-los do medo do desconhecido.");
         System.out.println("");
 
         (new File(PATH)).mkdirs();
 
-        RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
         String coEquipe = null;
-        BufferedReader reader = null;
 
         if (args != null && args.length > 0) {
             coEquipe = args[0];
         }
+        
+        RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
+        relatorio.gerarRelatorios(coEquipe);
+    }
+    
+    public void gerarRelatorios(String coEquipe) {
 
+        String mensagemErro = null;
+        RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
+        BufferedReader reader = null;
+        
         try {
 
             if (coEquipe == null) {
-                reader = new BufferedReader(new FileReader("lista_equipes.properties"));
 
-                while ((coEquipe = reader.readLine()) != null) {
-                    if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
-                        relatorio.gerar(coEquipe.trim());// , DateUtil.parse("2018-08-20"));
+                if (!(new File("equipes.txt")).exists() && !(new File("contratos.txt")).exists()) {
+                    mensagemErro = "Erro! Nao foi encontrado o arquivo equipes.txt ou contratos.txt :(";
+                }
+                ;
+
+                if (mensagemErro != null) {
+                    System.out.println();
+                    System.out.println(mensagemErro);
+                    System.out.println();
+                    return;
+                }
+
+                if ((new File("contratos.txt")).exists()) {
+                    reader = new BufferedReader(new FileReader("contratos.txt"));
+
+                    while ((coEquipe = reader.readLine()) != null) {
+                        if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
+                            List<EquipeDTO> equipes = equipeService.findByContrato(coEquipe);
+                            for (EquipeDTO equipe : equipes) {
+                                relatorio.gerar(equipe.getCoEquipe().trim());
+                            }
+                        }
+                    }
+                }                
+                
+                if ((new File("equipes.txt")).exists()) {
+                    reader = new BufferedReader(new FileReader("equipes.txt"));
+
+                    while ((coEquipe = reader.readLine()) != null) {
+                        if (Utils.isNotEmpty(coEquipe) && !coEquipe.trim().startsWith("#")) {
+                            relatorio.gerar(coEquipe.trim());// , DateUtil.parse("2018-08-20"));
+                        }
                     }
                 }
+
 
             } else {
 
@@ -230,7 +267,7 @@ public class RelatorioEquipe extends Relatorio {
             }
 
         }
-        
+
         XSSFCell cellValorDevido = null;
 
         // Calculos Valor Devido

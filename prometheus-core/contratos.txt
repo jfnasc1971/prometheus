@@ -1,1 +1,9 @@
-06837/2021
+#
+# LISTA DE CONTRATOS A SEREM PROCESSADOS
+#
+# Informar o código do contrato, um em cada linha.
+# Para comentar um determinado contrato, usar o #
+#
+ 
+03776/2023
+#06837/2021

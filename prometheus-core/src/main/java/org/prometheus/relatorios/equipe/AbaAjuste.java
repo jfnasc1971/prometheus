@@ -2,6 +2,8 @@ package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -15,6 +17,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaAjuste extends Relatorio {
 
+    private static final Logger LOG = LogManager.getLogger(AbaAjuste.class.getSimpleName());
+    
 	private static final int LAYOUT_COLUMNS_COUNT = 14;
 
 	public XSSFCell write(XSSFWorkbook workBook, String coEquipe, XSSFCell cellValorDevido,
@@ -47,11 +51,13 @@ public class AbaAjuste extends Relatorio {
 		
 		row = addNewRow(sheet);
 		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", ALIGN_RIGHT_GREEN_BOLD);
-		setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, STYLE_DECIMAL);
+		XSSFCell result = setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, STYLE_DECIMAL);
 		setCellComment(cell, "Corresponde à diferença entre o valor devido calculado e que foi pago.\n" //
 				+ "Esse valor tende a 0(zero).");
 
-		return null;
+		LOG.info(coEquipe + ";" + result.getNumericCellValue());
+		
+		return result;
 
 	}
 

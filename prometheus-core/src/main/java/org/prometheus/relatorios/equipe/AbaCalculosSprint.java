@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 public class AbaCalculosSprint extends Relatorio {
 
     private static final Logger LOG = LogManager.getLogger(AbaCalculosSprint.class.getSimpleName());
-    
+
     private static final int LAYOUT_COLUMNS_COUNT = 15;
 
     @Autowired
@@ -67,7 +67,7 @@ public class AbaCalculosSprint extends Relatorio {
 
     @Autowired
     private IndicadorService indicadorService;
-    
+
     private Map<Long, List<XSSFCell>> indicadoresProdutividade;
     private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
     private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
@@ -133,7 +133,7 @@ public class AbaCalculosSprint extends Relatorio {
         XSSFCell cellValorFNS = null;
 
         IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
-        
+
         InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
         insumo.setNuFatura(faturamento.getNuFatura());
@@ -256,11 +256,10 @@ public class AbaCalculosSprint extends Relatorio {
 
                     addBlank(sheet);
 
-                    LOG.info(
-                            String.format("Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
-                                    equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
-                                    faturamento.getNuFatura(), faturamento.getDeFatura(), //
-                                    ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
+                    LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
+                            equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
+                            faturamento.getNuFatura(), faturamento.getDeFatura(), //
+                            ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 
                     CicloTrabalhoDTO diasTrabalhados = cicloTrabalhoService.getDiasTrabalhados(
                             faturamento.getNuFatura(), equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
@@ -479,19 +478,25 @@ public class AbaCalculosSprint extends Relatorio {
 
             if (getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaProdutividade, //
-                        "average(" + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
             if (getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaQualidadeProduto, //
-                        "average(" + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
             if (getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaValorAgregado, //
-                        "average(" + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         STYLE_DECIMAL_5DIGITS);
             }
 
@@ -529,11 +534,10 @@ public class AbaCalculosSprint extends Relatorio {
             StringBuilder formula = new StringBuilder();
 
             for (int i = 1; i <= qtFaixas; i++) {
-                formula.append(
-                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-                                cellDesempenho.getReference(), pos + i, //
-                                cellDesempenho.getReference(), pos + i, //
-                                pos + i));
+                formula.append(String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+                        cellDesempenho.getReference(), pos + i, //
+                        cellDesempenho.getReference(), pos + i, //
+                        pos + i));
             }
 
             setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);
@@ -557,7 +561,7 @@ public class AbaCalculosSprint extends Relatorio {
             s2.append("," + "Equipe!J4");
         }
 
-        String ieqpr = parseFormulaDesempenho(indicadoresProdutividade, nuFatura, "Equipe!J5");
+        String ieqpr = parseFormulaDesempenho(indicadoresProdutividade, nuFatura, "Equipe!J5", "Equipe!L5");
         if (ieqpr != null) {
             s1.append("+" + ieqpr.toString());
             s2.append("," + "Equipe!J5");
@@ -595,12 +599,49 @@ public class AbaCalculosSprint extends Relatorio {
     }
 
     private void setCellFormulaProdutividade(XSSFCell cell1, XSSFCell cell2) {
+//        String formula = "if(%s > Equipe!L5, Equipe!L5, %s)";
+//        formula = String.format(formula, cell1.getReference(), cell1.getReference());
+//        setCellFormula(cell2, formula, STYLE_DECIMAL_5DIGITS);
 
-        String formula = "if(%s > Equipe!L5, Equipe!L5, %s)";
-
-        formula = String.format(formula, cell1.getReference(), cell1.getReference());
-
+        String formula = "%s";
+        formula = String.format(cell1.getReference());
         setCellFormula(cell2, formula, STYLE_DECIMAL_5DIGITS);
+    }
+
+    private String parseFormulaDesempenho(Map<Long, List<XSSFCell>> lista, Long nuFatura, String cellPesoIndicador,
+            String cellLimiteIndicador) {
+
+        String result = null;
+
+        StringBuilder p1 = new StringBuilder();
+
+        List<XSSFCell> indicadores = null;
+
+        indicadores = getIndicadoresMediaFNS(lista, nuFatura, 3);
+        for (XSSFCell c : indicadores) {
+            try {
+                // if (c != null && c.getNumericCellValue() != 0) {
+                if (c != null && c.getCellType() == CellType.FORMULA) {
+                    p1.append("," + c.getReference());
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        if (p1.length() > 1) {
+
+            result = String.format("average(%s)", p1.toString().substring(1));
+
+            if (cellLimiteIndicador == null) {
+                result = String.format("(%s*%s)", result, cellPesoIndicador);
+            } else {
+                result = String.format("(if(%s>%s,%s,%s)*%s)", result, cellLimiteIndicador, cellLimiteIndicador, result,
+                        cellPesoIndicador);
+            }
+
+        }
+
+        return result;
     }
 
     private void setCellFormulaProdAuferida(XSSFCell cell) {

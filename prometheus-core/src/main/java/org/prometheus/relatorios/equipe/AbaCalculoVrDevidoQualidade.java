@@ -19,109 +19,107 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
-	private static final int LAYOUT_COLUMNS_COUNT = 14;
+    private static final int LAYOUT_COLUMNS_COUNT = 14;
 
-	public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, List<FaturamentoDTO> faturamentos,
-			Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
+    public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, List<FaturamentoDTO> faturamentos,
+            Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
 
-		carregarFontes(workBook);
+        carregarFontes(workBook);
 
-		carregarEstilos(workBook);
+        carregarEstilos(workBook);
 
-		XSSFSheet sheet = workBook.createSheet(RelatorioEquipe.ABA_CALCULO_VALOR_DEVIDO);
+        XSSFSheet sheet = workBook.createSheet(RelatorioEquipe.ABA_CALCULO_VALOR_DEVIDO);
 
-		sheet.setDisplayGridlines(false);
+        sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
 
-		XSSFRow row = addNewRow(sheet);
+        XSSFRow row = addNewRow(sheet);
 
-		int pos = 0;
+        int pos = 0;
 
-		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-		addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
+        addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
+        addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
-		List<XSSFCell> listaValoresPrevistos = new ArrayList<XSSFCell>();
+        List<XSSFCell> listaValoresPrevistos = new ArrayList<XSSFCell>();
 
-		XSSFCell cellVrPrevisto = null;
-		XSSFCell cellVrEquipe = null;
-		XSSFCell cellVrAusencias = null;
-		XSSFCell cellVrExtras = null;
-		XSSFCell cellVrFns = null;
+        XSSFCell cellVrPrevisto = null;
+        XSSFCell cellVrEquipe = null;
+        XSSFCell cellVrAusencias = null;
+        XSSFCell cellVrExtras = null;
+        XSSFCell cellVrFns = null;
 
-		for (FaturamentoDTO faturamento : faturamentos) {
+        for (FaturamentoDTO faturamento : faturamentos) {
 
-			InsumosFaturamentoDTO insumo = insumos.get(faturamento.getNuFatura());
+            InsumosFaturamentoDTO insumo = insumos.get(faturamento.getNuFatura());
 
-			if (insumo != null) {
+            if (insumo != null) {
 
-				row = addNewRow(sheet);
+                row = addNewRow(sheet);
 
-				pos = 0;
+                pos = 0;
 
-				addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
-				addCell(row, pos++, faturamento.getQtDiasFaturamento());
-				
-				if (insumo.getQtEfetivaTotal() != null) {
+                addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
+                addCell(row, pos++, faturamento.getQtDiasFaturamento());
 
-					setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getQtEfetivaTotal()), pos++);
+                if (insumo.getQtEfetivaTotal() != null) {
 
-					cellVrEquipe = setCellFormula(sheet, row, //
-							XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
+                    setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getQtEfetivaTotal()), pos++);
 
-					cellVrExtras = setCellFormula(sheet, row, //
-							String.format("'%s'!%s", //
-									insumo.getVrExtras().getSheet().getSheetName(), //
-									insumo.getVrExtras().getReference()), //
-							pos++);
+                    cellVrEquipe = setCellFormula(sheet, row, //
+                            XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
 
-					cellVrAusencias = setCellFormula(sheet, row, //
-							String.format("'%s'!%s", //
-									insumo.getVrAusencias().getSheet().getSheetName(), //
-									insumo.getVrAusencias().getReference()), //
-							pos++);
+                    cellVrExtras = setCellFormula(sheet, row, //
+                            String.format("'%s'!%s", //
+                                    insumo.getVrExtras().getSheet().getSheetName(), //
+                                    insumo.getVrExtras().getReference()), //
+                            pos++);
 
-					if (insumo.getVrFns() != null && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
-						cellVrFns = setCellFormula(sheet, row, //
-								String.format("'%s'!%s", //
-										insumo.getVrFns().getSheet().getSheetName(), //
-										insumo.getVrFns().getReference()), //
-								pos++);
-					} else {
-						cellVrFns = addCell(row, pos++, BigDecimal.ONE);
-					}
+                    cellVrAusencias = setCellFormula(sheet, row, //
+                            String.format("'%s'!%s", //
+                                    insumo.getVrAusencias().getSheet().getSheetName(), //
+                                    insumo.getVrAusencias().getReference()), //
+                            pos++);
 
-					cellVrPrevisto = setCellFormula(sheet, row, //
-							String.format("(%s+%s-%s)*%s", //
-									cellVrEquipe.getReference(), //
-									cellVrExtras.getReference(), //
-									cellVrAusencias.getReference(), //
-									cellVrFns.getReference()), //
-							pos++);
+                    if (insumo.getVrFns() != null
+                            && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
+                        cellVrFns = setCellFormula(sheet, row, //
+                                String.format("'%s'!%s", //
+                                        insumo.getVrFns().getSheet().getSheetName(), //
+                                        insumo.getVrFns().getReference()), //
+                                pos++);
+                    } else {
+                        cellVrFns = addCell(row, pos++, BigDecimal.ONE);
+                    }
 
-					listaValoresPrevistos.add(cellVrPrevisto);
-					
-				}
+                    cellVrPrevisto = setCellFormula(sheet, row, //
+                            String.format("(%s+%s-%s)*%s", //
+                                    cellVrEquipe.getReference(), //
+                                    cellVrExtras.getReference(), //
+                                    cellVrAusencias.getReference(), //
+                                    cellVrFns.getReference()), //
+                            pos++);
 
-			}
-		}
+                    listaValoresPrevistos.add(cellVrPrevisto);
 
-		row = addNewRow(sheet);
-		pos = 6;
-		addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
-		XSSFCell result = setCellFormula(sheet, row, //
-				String.format("sum(%s:%s)", //
-						listaValoresPrevistos.get(0).getReference(), //
-						listaValoresPrevistos.get(listaValoresPrevistos.size() - 1).getReference()), //
-				pos++);
+                }
 
-		return result;
-	}
+            }
+        }
+
+        row = addNewRow(sheet);
+        pos = 6;
+        addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+
+        XSSFCell result = setCellFormula(sheet, row, "sum(%s:%s)", listaValoresPrevistos, pos++);
+
+        return result;
+    }
 
 }

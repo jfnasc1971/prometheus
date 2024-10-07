@@ -566,7 +566,7 @@ public class AbaCalculosG4 extends Relatorio {
 
     private void setCellFormulaValorFNS(XSSFCell cellValorFNS, XSSFCell cellDesempenho, int qtFaixas) {
 
-        if (!"N/A".equalsIgnoreCase(cellDesempenho.toString())) {
+        if (!"N/A".equalsIgnoreCase(cellDesempenho.toString()) && qtFaixas > 0) {
 
             // essa posição fixa é o número da primeira linha das faixas
             // da seção "Valores Faixas Indicador" na aba equipe

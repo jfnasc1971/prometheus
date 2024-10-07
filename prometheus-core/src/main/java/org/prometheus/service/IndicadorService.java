@@ -65,7 +65,7 @@ public class IndicadorService {
 	}
 	
     public IndicadorContratoDTO getIndicadorContratoFNS(String coEquipe) {
-        IndicadorContratoDTO dto = new IndicadorContratoDTO();
+        IndicadorContratoDTO dto = null;
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -82,6 +82,7 @@ public class IndicadorService {
 
             if (rs.next()) {
 
+                dto = new IndicadorContratoDTO();
                 dto.setSgTipoIndicador(rs.getString("sg_tipo_indicador"));
                 dto.setNoTipoIndicador(rs.getString("no_tipo_indicador"));
                 dto.setVrPesoTipoIndicador(rs.getBigDecimal("vr_peso_tipo_indicador"));

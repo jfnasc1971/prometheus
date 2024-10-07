@@ -181,7 +181,7 @@ public class RelatorioEquipe extends Relatorio {
 
         (new File(PATH + "/" + dir)).mkdirs();
 
-        File file = new File(PATH + "/" + dir + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
+        File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + coEquipe + ".xlsx");
         file.delete();
         FileOutputStream fos = new FileOutputStream(file);
 

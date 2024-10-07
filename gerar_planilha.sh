@@ -1,19 +1,9 @@
 #!/bin/bash
 IFS=$'\n'
 JAVA_CMD="/projetos/lib/jvm/jdk1.8.0_231/bin/java"
-CLASSPATH="/projetos/m2/repository/org/prometheus/prometheus-core/1.0/prometheus-core-1.0.jar"
+CLASSPATH="/projetos/prometheus/dist/prometheus-core/target/prometheus.jar"
 
-if [ -n "$1" ];then
-  $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
-elif [ -f lista_equipes.properties ];then
-  $JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe
-else
-  clear
-  echo ""
-  echo "ERRO! NAO foi informada nenhum equipe e NAO encontrei o arquivo lista_equipes.properties. :("
-  echo ""
-  exit
-fi
+$JAVA_CMD -Dfile.encoding=UTF-8 -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
 
 echo -e "\n\n"
 echo "----------------------------------------------------"

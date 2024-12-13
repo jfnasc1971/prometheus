@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AbaPagamentosQualidade extends Relatorio {
+public class AbaPagamentosPerfil extends Relatorio {
 
 	private static final int LAYOUT_COLUMNS_COUNT = 15;
 

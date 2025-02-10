@@ -2,244 +2,106 @@ package org.prometheus.dto;
 
 public class EntregaDemandaDTO extends BaseDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String coDemanda;
-	private Long nuDemanda;
-	private Long nuOrdemServico;
-	private Long nuEntrega;
-	private String coEntrega;
-	private java.math.BigDecimal pcEntrega;
-	private java.math.BigDecimal pcExecutado;
-	private java.util.Date dhPrevistaInicioAtendimento;
-	private java.util.Date dhPrevistaEntrega;
-	private java.math.BigDecimal qtDiasPendencia;
-	private java.util.Date dhPrevistaEntregaPendencia;
-	private java.util.Date dhEfetivaEntrega;
-	private java.math.BigDecimal vrPrevistoEntrega;
-	private java.math.BigDecimal vrMensuracaoEfetiva;
-	private java.math.BigDecimal vrPreco;
-	private java.math.BigDecimal qtDiasAtraso;
-	private java.math.BigDecimal vrRedutorAtraso;
-	private java.math.BigDecimal vrDescontoAtraso;
-	private java.math.BigDecimal qtErros;
-	private java.math.BigDecimal vrDescontoErros;
-	private java.math.BigDecimal vrLiquido;
+    private Long nuOrdemServico;
+    private String coOrdemServico;
+    private Long nuEntrega;
+    private String coEntrega;
+    private java.util.Date dhPrevistaEntrega;
+    private java.util.Date dhEfetivaEntrega;
+    private String deSituacaoEntrega;
+    private java.math.BigDecimal pcEntrega;
+    private java.math.BigDecimal pcExecutado;
+    private Long nuSituacaoEntrega;
+    private java.math.BigDecimal vrPreco;
 
-	public void setCoDemanda(String coDemanda) {
-		this.coDemanda = coDemanda;
-	}
+    public void setNuOrdemServico(Long nuOrdemServico){
+        this.nuOrdemServico = nuOrdemServico;
+    }
 
-	public String getCoDemanda() {
-		return this.coDemanda;
-	}
+    public Long getNuOrdemServico(){
+        return this.nuOrdemServico;
+    }
 
-	public void setNuDemanda(Long nuDemanda) {
-		this.nuDemanda = nuDemanda;
-	}
+    public void setCoOrdemServico(String coOrdemServico){
+        this.coOrdemServico = coOrdemServico;
+    }
 
-	public Long getNuDemanda() {
-		return this.nuDemanda;
-	}
+    public String getCoOrdemServico(){
+        return this.coOrdemServico;
+    }
 
-	public void setNuOrdemServico(Long nuOrdemServico) {
-		this.nuOrdemServico = nuOrdemServico;
-	}
+    public void setNuEntrega(Long nuEntrega){
+        this.nuEntrega = nuEntrega;
+    }
 
-	public Long getNuOrdemServico() {
-		return this.nuOrdemServico;
-	}
+    public Long getNuEntrega(){
+        return this.nuEntrega;
+    }
 
-	public void setNuEntrega(Long nuEntrega) {
-		this.nuEntrega = nuEntrega;
-	}
+    public void setCoEntrega(String coEntrega){
+        this.coEntrega = coEntrega;
+    }
 
-	public Long getNuEntrega() {
-		return this.nuEntrega;
-	}
+    public String getCoEntrega(){
+        return this.coEntrega;
+    }
 
-	public void setCoEntrega(String coEntrega) {
-		this.coEntrega = coEntrega;
-	}
+    public void setDhPrevistaEntrega(java.util.Date dhPrevistaEntrega){
+        this.dhPrevistaEntrega = dhPrevistaEntrega;
+    }
 
-	public String getCoEntrega() {
-		return this.coEntrega;
-	}
+    public java.util.Date getDhPrevistaEntrega(){
+        return this.dhPrevistaEntrega;
+    }
 
-	public void setPcEntrega(java.math.BigDecimal pcEntrega) {
-		this.pcEntrega = pcEntrega;
-	}
+    public void setDhEfetivaEntrega(java.util.Date dhEfetivaEntrega){
+        this.dhEfetivaEntrega = dhEfetivaEntrega;
+    }
 
-	public java.math.BigDecimal getPcEntrega() {
-		return this.pcEntrega;
-	}
+    public java.util.Date getDhEfetivaEntrega(){
+        return this.dhEfetivaEntrega;
+    }
 
-	public void setPcExecutado(java.math.BigDecimal pcExecutado) {
-		this.pcExecutado = pcExecutado;
-	}
+    public void setDeSituacaoEntrega(String deSituacaoEntrega){
+        this.deSituacaoEntrega = deSituacaoEntrega;
+    }
 
-	public java.math.BigDecimal getPcExecutado() {
-		return this.pcExecutado;
-	}
+    public String getDeSituacaoEntrega(){
+        return this.deSituacaoEntrega;
+    }
 
-	public void setDhPrevistaInicioAtendimento(java.util.Date dhPrevistaInicioAtendimento) {
-		this.dhPrevistaInicioAtendimento = dhPrevistaInicioAtendimento;
-	}
+    public void setPcEntrega(java.math.BigDecimal pcEntrega){
+        this.pcEntrega = pcEntrega;
+    }
 
-	public java.util.Date getDhPrevistaInicioAtendimento() {
-		return this.dhPrevistaInicioAtendimento;
-	}
+    public java.math.BigDecimal getPcEntrega(){
+        return this.pcEntrega;
+    }
 
-	public void setDhPrevistaEntrega(java.util.Date dhPrevistaEntrega) {
-		this.dhPrevistaEntrega = dhPrevistaEntrega;
-	}
+    public void setPcExecutado(java.math.BigDecimal pcExecutado){
+        this.pcExecutado = pcExecutado;
+    }
 
-	public java.util.Date getDhPrevistaEntrega() {
-		return this.dhPrevistaEntrega;
-	}
+    public java.math.BigDecimal getPcExecutado(){
+        return this.pcExecutado;
+    }
 
-	public void setQtDiasPendencia(java.math.BigDecimal qtDiasPendencia) {
-		this.qtDiasPendencia = qtDiasPendencia;
-	}
+    public void setNuSituacaoEntrega(Long nuSituacaoEntrega){
+        this.nuSituacaoEntrega = nuSituacaoEntrega;
+    }
 
-	public java.math.BigDecimal getQtDiasPendencia() {
-		return this.qtDiasPendencia;
-	}
+    public Long getNuSituacaoEntrega(){
+        return this.nuSituacaoEntrega;
+    }
 
-	public void setDhPrevistaEntregaPendencia(java.util.Date dhPrevistaEntregaPendencia) {
-		this.dhPrevistaEntregaPendencia = dhPrevistaEntregaPendencia;
-	}
+    public void setVrPreco(java.math.BigDecimal vrPreco){
+        this.vrPreco = vrPreco;
+    }
 
-	public java.util.Date getDhPrevistaEntregaPendencia() {
-		return this.dhPrevistaEntregaPendencia;
-	}
-
-	public void setDhEfetivaEntrega(java.util.Date dhEfetivaEntrega) {
-		this.dhEfetivaEntrega = dhEfetivaEntrega;
-	}
-
-	public java.util.Date getDhEfetivaEntrega() {
-		return this.dhEfetivaEntrega;
-	}
-
-	public void setVrPrevistoEntrega(java.math.BigDecimal vrPrevistoEntrega) {
-		this.vrPrevistoEntrega = vrPrevistoEntrega;
-	}
-
-	public java.math.BigDecimal getVrPrevistoEntrega() {
-		return this.vrPrevistoEntrega;
-	}
-
-	/**
-	 * @return the vrMensuracaoEfetiva
-	 */
-	public java.math.BigDecimal getVrMensuracaoEfetiva() {
-		return vrMensuracaoEfetiva;
-	}
-
-	/**
-	 * @param vrMensuracaoEfetiva the vrMensuracaoEfetiva to set
-	 */
-	public void setVrMensuracaoEfetiva(java.math.BigDecimal vrMensuracaoEfetiva) {
-		this.vrMensuracaoEfetiva = vrMensuracaoEfetiva;
-	}
-
-	/**
-	 * @return the vrPreco
-	 */
-	public java.math.BigDecimal getVrPreco() {
-		return vrPreco;
-	}
-
-	/**
-	 * @param vrPreco the vrPreco to set
-	 */
-	public void setVrPreco(java.math.BigDecimal vrPreco) {
-		this.vrPreco = vrPreco;
-	}
-
-	/**
-	 * @return the qtDiasAtraso
-	 */
-	public java.math.BigDecimal getQtDiasAtraso() {
-		return qtDiasAtraso;
-	}
-
-	/**
-	 * @param qtDiasAtraso the qtDiasAtraso to set
-	 */
-	public void setQtDiasAtraso(java.math.BigDecimal qtDiasAtraso) {
-		this.qtDiasAtraso = qtDiasAtraso;
-	}
-
-	/**
-	 * @return the vrRedutorAtraso
-	 */
-	public java.math.BigDecimal getVrRedutorAtraso() {
-		return vrRedutorAtraso;
-	}
-
-	/**
-	 * @param vrRedutorAtraso the vrRedutorAtraso to set
-	 */
-	public void setVrRedutorAtraso(java.math.BigDecimal vrRedutorAtraso) {
-		this.vrRedutorAtraso = vrRedutorAtraso;
-	}
-
-	/**
-	 * @return the vrDescontoAtraso
-	 */
-	public java.math.BigDecimal getVrDescontoAtraso() {
-		return vrDescontoAtraso;
-	}
-
-	/**
-	 * @param vrDescontoAtraso the vrDescontoAtraso to set
-	 */
-	public void setVrDescontoAtraso(java.math.BigDecimal vrDescontoAtraso) {
-		this.vrDescontoAtraso = vrDescontoAtraso;
-	}
-
-	/**
-	 * @return the qtErros
-	 */
-	public java.math.BigDecimal getQtErros() {
-		return qtErros;
-	}
-
-	/**
-	 * @param qtErros the qtErros to set
-	 */
-	public void setQtErros(java.math.BigDecimal qtErros) {
-		this.qtErros = qtErros;
-	}
-
-	/**
-	 * @return the vrDescontoErros
-	 */
-	public java.math.BigDecimal getVrDescontoErros() {
-		return vrDescontoErros;
-	}
-
-	/**
-	 * @param vrDescontoErros the vrDescontoErros to set
-	 */
-	public void setVrDescontoErros(java.math.BigDecimal vrDescontoErros) {
-		this.vrDescontoErros = vrDescontoErros;
-	}
-
-	/**
-	 * @return the vrLiquido
-	 */
-	public java.math.BigDecimal getVrLiquido() {
-		return vrLiquido;
-	}
-
-	/**
-	 * @param vrLiquido the vrLiquido to set
-	 */
-	public void setVrLiquido(java.math.BigDecimal vrLiquido) {
-		this.vrLiquido = vrLiquido;
-	}
+    public java.math.BigDecimal getVrPreco(){
+        return this.vrPreco;
+    }
 
 }

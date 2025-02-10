@@ -8,52 +8,49 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.DemandaDTO;
 import org.prometheus.dto.EntregaDemandaDTO;
+import org.prometheus.dto.MensuracaoDTO;
 import org.prometheus.dto.OrdemServicoDTO;
-import org.prometheus.dto.SolicitacaoDemandaDTO;
-import org.prometheus.dto.TipoQuantidadeDemandaDTO;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.DemandaService;
 import org.prometheus.service.EntregaDemandaService;
+import org.prometheus.service.MensuracaoService;
 import org.prometheus.service.OrdemServicoService;
-import org.prometheus.service.SolicitacaoDemandaService;
-import org.prometheus.service.TipoQuantidadeDemandaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AbaDemanda extends Relatorio {
 
-	private static final int LAYOUT_COLUMNS_COUNT = 11;
+	private static final int LAYOUT_COLUMNS_COUNT = 10;
 
 	@Autowired
 	private DemandaService demandaService;
 
 	@Autowired
-	private SolicitacaoDemandaService solicitacaoDemandaService;
-
-	@Autowired
 	private OrdemServicoService ordemServicoService;
-
-	@Autowired
-	private TipoQuantidadeDemandaService tipoQuantidadeDemandaService;
 
 	@Autowired
 	private EntregaDemandaService entregaDemandaService;
 
-	public void write(XSSFWorkbook workBook, String coDemanda) throws Exception {
+    @Autowired
+    private MensuracaoService mensuracaoService;	
+	
+	public XSSFCell write(XSSFWorkbook workBook, String coDemanda) throws Exception {
 
-		DemandaDTO demanda = demandaService.listar(coDemanda);
+	    XSSFCell result = null;
+	    
+		DemandaDTO demanda = demandaService.findByDemanda(coDemanda);
 
 		carregarFontes(workBook);
 
 		carregarEstilos(workBook);
 
-		XSSFSheet sheet = workBook.createSheet(coDemanda);
+		XSSFSheet sheet = workBook.createSheet("Demanda");
 
-		sheet.setZoom(90);
+		sheet.setZoom(100);
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT + 1, 70);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT + 1, 80);
 
 		XSSFRow row = null;
 
@@ -63,160 +60,165 @@ public class AbaDemanda extends Relatorio {
 		addBlank(sheet);
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Sistema", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, 1, demanda.getSgSistema());
-
-		addBlank(sheet);
-
-		List<SolicitacaoDemandaDTO> solicitacoes = solicitacaoDemandaService.listar(coDemanda);
-
-		row = addNewRow(sheet);
-		addCell(row, 0, "Código", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, 1, 8, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-		for (SolicitacaoDemandaDTO solicitacao : solicitacoes) {
-			row = addNewRow(sheet);
-			addCell(row, 0, solicitacao.getCoSolicitacao());
-			addMergedRegion(sheet, row, 1, 8, solicitacao.getNoSolicitacao());
-		}
-
-		addBlank(sheet);
-
-		/**
-		 * 
-		 */
-		List<OrdemServicoDTO> ordens = ordemServicoService.listar(coDemanda);
+		//co_demanda    no_modulo       sg_sistema  no_sistema      de_situacao_demanda
+		addCell(row, 0, "Demanda", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 1, 3, "Módulo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, 4, "Sigla", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 5, 7, "Sistema", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, 8, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "OS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, 1, 2, "Grupo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, 3, 4, "Serviço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, 5, 7, "Forma Contratação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, 8, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        //co_demanda    no_modulo       sg_sistema  no_sistema      de_situacao_demanda
+        addCell(row, 0, demanda.getCoDemanda(), ALIGN_CENTER);
+        addMergedRegion(sheet, row, 1, 3, demanda.getNoModulo(), ALIGN_CENTER);
+        addCell(row, 4, demanda.getSgSistema(), ALIGN_CENTER);
+        addMergedRegion(sheet, row, 5, 7, demanda.getNoSistema(), ALIGN_CENTER);
+        addCell(row, 8, demanda.getDeSituacaoDemanda(), ALIGN_CENTER);
+		
+        addBlank(sheet);
 
-		for (OrdemServicoDTO os : ordens) {
-			row = addNewRow(sheet);
-			addCell(row, 0, os.getCoOrdemServico(), ALIGN_CENTER);
-			addMergedRegion(sheet, row, 1, 2, os.getNoTipoGrupo(), ALIGN_CENTER);
-			addMergedRegion(sheet, row, 3, 4, os.getNoTipoServico(), ALIGN_CENTER);
-			addMergedRegion(sheet, row, 5, 7, os.getDeTipoForma(), ALIGN_CENTER);
-			addCell(row, 8, os.getVrEstmoOrdemServico());
+        row = addNewRow(sheet);
+        addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "Ordens de Serviço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        
+		List<OrdemServicoDTO> ordensServico = ordemServicoService.listar(coDemanda);
 
-			addBlank(sheet);
-			processarMensuracoes(sheet, demanda, os, solicitacoes);
+        row = addNewRow(sheet);
+        // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
+        addCell(row, 0, "Código", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addMergedRegion(sheet, row, 1, 3, "Grupo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addMergedRegion(sheet, row, 4, 6, "Serviço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addMergedRegion(sheet, row, 7, 9, "Forma", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, 10, "Valor previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);  		
+		
+        int posPrimeiraOS = row.getRowNum() + 2;
+        int posUltimaOS = posPrimeiraOS - 1;
+        
+		for (OrdemServicoDTO ordemServico : ordensServico) {
 
-			addBlank(sheet);
-			processarEntregas(sheet, os);
-
+		    row = addNewRow(sheet);
+	        // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
+	        addCell(row, 0, ordemServico.getCoOrdemServico(), ALIGN_CENTER);
+	        addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), ALIGN_CENTER);
+	        addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), ALIGN_CENTER);
+	        addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), ALIGN_CENTER);
+	        addCell(row, 10, ordemServico.getVrEstmoOrdemServico(), STYLE_DECIMAL);
+	        posUltimaOS++;
 		}
+		
+        row = addNewRow(sheet);
+        addCell(row, 9, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);		
+        result = setCellFormula(sheet, row, //
+                String.format("SUM(K%s:K%s)", posPrimeiraOS, posUltimaOS), //
+                10, STYLE_DECIMAL);        
+        
+        addBlank(sheet);
 
+        for (OrdemServicoDTO ordemServico : ordensServico) {
+            
+            row = addNewRow(sheet);
+            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "OS: " + //
+                    ordemServico.getCoOrdemServico(), ALIGN_CENTER_LIGHT_BLUE_BOLD);
+            
+            row = addNewRow(sheet);
+            // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
+            addCell(row, 0, "Código", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addMergedRegion(sheet, row, 1, 3, "Grupo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addMergedRegion(sheet, row, 4, 6, "Serviço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addMergedRegion(sheet, row, 7, 9, "Forma", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 10, "Valor previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);          
+            
+            row = addNewRow(sheet);
+            // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
+            addCell(row, 0, ordemServico.getCoOrdemServico(), ALIGN_CENTER);
+            addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), ALIGN_CENTER);
+            addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), ALIGN_CENTER);
+            addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), ALIGN_CENTER);
+            addCell(row, 10, ordemServico.getVrEstmoOrdemServico(), STYLE_DECIMAL);
+            
+            //
+            // MENSURACAO
+            //
+            addBlank(sheet);
+
+            row = addNewRow(sheet);
+            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 4, "Mensuração", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            
+            row = addNewRow(sheet);
+            // OS   Solicitação Qt. PF  Fator Ajuste    Qt. PF Efetiva
+            addCell(row, 0, "Código", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addMergedRegion(sheet, row, 2, 3, "Tipo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 4, "Qt. PF", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 5, "Fator Ajuste", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 6, "Qt. PF Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);           
+            
+            List<MensuracaoDTO> mensuracoes = mensuracaoService.listar(ordemServico.getNuOrdemServico());
+            
+            for (MensuracaoDTO mensuracao : mensuracoes) {
+                row = addNewRow(sheet);
+                addCell(row, 0, mensuracao.getCoOrdemServico(), ALIGN_CENTER);
+                addCell(row, 1, mensuracao.getCoSolicitacao(), ALIGN_CENTER);
+                addMergedRegion(sheet, row, 2, 3, mensuracao.getNoTipoQuantidade());
+                addCell(row, 4, mensuracao.getQtSolicitacao(), STYLE_DECIMAL);
+                addCell(row, 5, mensuracao.getVrAjusteFinanceiro(), STYLE_DECIMAL);
+                addCell(row, 6, mensuracao.getQtSolicitacaoAjustado(), STYLE_DECIMAL);           
+            }
+
+            //
+            // ETREGAS
+            //
+            addBlank(sheet);
+
+            row = addNewRow(sheet);
+            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT -1 , "Entregas", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+
+            row = addNewRow(sheet);
+            // co_ordem_servico co_entrega  de_situacao_entrega dh_prevista_entrega dh_efetiva_entrega  
+            // % Entrega   % Executado de_situacao_entrega vr_preco    qt_solicitacao  vr_financeiro_entrega
+            addCell(row, 0, "OS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 2, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 3, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 4, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 5, "% Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 6, "% Executado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 7, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 8, "QT. PF Ajustado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 9, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            
+            List<EntregaDemandaDTO> entregas = entregaDemandaService.listar(ordemServico.getNuOrdemServico());
+            
+            int posPrimeiraEntrega = row.getRowNum() + 2;
+            int posUltimaEntrega = posPrimeiraEntrega - 1;
+            
+            for (EntregaDemandaDTO entrega : entregas) {
+                row = addNewRow(sheet);
+                addCell(row, 0, entrega.getCoOrdemServico(), ALIGN_CENTER);
+                addCell(row, 1, entrega.getCoEntrega(), ALIGN_CENTER);
+                addCell(row, 2, entrega.getDeSituacaoEntrega(), ALIGN_CENTER);
+                addCell(row, 3, entrega.getDhEfetivaEntrega(), STYLE_DATE_TIME);
+                addCell(row, 4, entrega.getDhEfetivaEntrega(), STYLE_DATE_TIME);
+                addCell(row, 5, entrega.getPcEntrega(), STYLE_PERCENT);
+                addCell(row, 6, entrega.getPcExecutado(), STYLE_PERCENT);
+                addCell(row, 7, entrega.getVrPreco(), STYLE_DECIMAL);
+                addCell(row, 8, mensuracaoService.calcularQtTotalPFAjustado(ordemServico.getNuOrdemServico()), STYLE_DECIMAL);
+                
+                // =I17*H17*G17*F17
+                setCellFormula(sheet, row, //
+                        String.format("I#*H#*G#*F#").replaceAll("#", String.valueOf(row.getRowNum()+1)), //
+                        9, STYLE_DECIMAL);
+                
+                posUltimaEntrega++;
+            }
+            
+            row = addNewRow(sheet);
+            setCellFormula(sheet, row, //
+                    String.format("SUM(J%s:J%s)", posPrimeiraEntrega, posUltimaEntrega), //
+                    9, STYLE_DECIMAL);
+            
+            addBlank(sheet);
+        }
+		
+        return result;
 	}
-
-	private void processarEntregas(XSSFSheet sheet, OrdemServicoDTO os) {
-
-		XSSFRow row = addNewRow(sheet);
-		row.setHeight((short) 600);
-
-		int pos = 0;
-		addCell(row, pos++, "Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "% Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "% Executado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Início Atendimento", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qt. Dias Pendência", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Prevista c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-		List<EntregaDemandaDTO> entregas = entregaDemandaService.listar(os);
-
-		for (EntregaDemandaDTO entrega : entregas) {
-
-			row = addNewRow(sheet);
-
-			pos = 0;
-			addCell(row, pos++, entrega.getCoEntrega());
-			addCell(row, pos++, entrega.getPcEntrega(), STYLE_PERCENT);
-			addCell(row, pos++, entrega.getPcExecutado(), STYLE_PERCENT);
-			addCell(row, pos++, entrega.getDhPrevistaInicioAtendimento(), STYLE_DATE_TIME);
-			addCell(row, pos++, entrega.getDhPrevistaEntrega(), STYLE_DATE_TIME);
-			addCell(row, pos++, entrega.getQtDiasPendencia());
-			addCell(row, pos++, entrega.getDhPrevistaEntregaPendencia(), STYLE_DATE_TIME);
-			addCell(row, pos++, entrega.getDhEfetivaEntrega(), STYLE_DATE_TIME);
-
-		}
-
-		addBlank(sheet);
-
-		row = addNewRow(sheet);
-		row.setHeight((short) 600);
-
-		pos = 0;
-		addCell(row, pos++, "Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "% Entrega", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "% Executado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Mensuração Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dias de Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Redutor Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Desconto Atraso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Quantidade de Erros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Desconto Erros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Líquido", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-
-		for (EntregaDemandaDTO entrega : entregas) {
-
-			row = addNewRow(sheet);
-
-			pos = 0;
-			addCell(row, pos++, entrega.getCoEntrega());
-			XSSFCell pcEntrega = addCell(row, pos++, entrega.getPcEntrega(), STYLE_PERCENT);
-			XSSFCell pcExecutado = addCell(row, pos++, entrega.getPcExecutado(), STYLE_PERCENT);
-			XSSFCell vrMensuracao = addCell(row, pos++, entrega.getVrMensuracaoEfetiva());
-			XSSFCell vrPreco = addCell(row, pos++, entrega.getVrPreco());
-
-			setCellFormula(sheet, row, //
-					String.format("%s*%s*%s*%s", //
-							pcEntrega.getReference(), //
-							pcExecutado.getReference(), //
-							vrMensuracao.getReference(), //
-							vrPreco.getReference()),
-					pos++);
-			
-			addCell(row, pos++, entrega.getQtDiasAtraso());
-			addCell(row, pos++, entrega.getVrRedutorAtraso());
-			addCell(row, pos++, entrega.getVrDescontoAtraso());
-			addCell(row, pos++, entrega.getQtErros());
-			addCell(row, pos++, entrega.getVrDescontoErros());
-			addCell(row, pos++, entrega.getVrLiquido());
-		}
-
-	}
-
-	private void processarMensuracoes(XSSFSheet sheet, DemandaDTO demanda, OrdemServicoDTO os,
-			List<SolicitacaoDemandaDTO> solicitacoes) {
-
-		XSSFRow row = addNewRow(sheet);
-		row.setHeight((short) 900);
-
-		List<TipoQuantidadeDemandaDTO> tiposQuantidade = tipoQuantidadeDemandaService.listar(demanda.getCoDemanda());
-
-		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Mensuração", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		for (TipoQuantidadeDemandaDTO tipo : tiposQuantidade) {
-			addCell(row, pos++, tipo.getNoTipoQuantidade(), ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		}
-
-		for (SolicitacaoDemandaDTO solicitacao : solicitacoes) {
-			row = addNewRow(sheet);
-			pos = 0;
-			addCell(row, pos++, solicitacao.getCoSolicitacao());
-			addCell(row, pos++, solicitacaoDemandaService.getMensuracao(demanda, os, solicitacao));
-			for (TipoQuantidadeDemandaDTO tipo : tiposQuantidade) {
-				addCell(row, pos++, solicitacaoDemandaService.getQuantidade(demanda, os, solicitacao, tipo));
-			}
-		}
-	}
-
 }

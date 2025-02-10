@@ -4,7 +4,7 @@
 # Informar o código do contrato, um em cada linha.
 # Para comentar um determinado contrato, usar o #
 #
-
-6837/2021
-13994/2020
-08718_2023
+#6837/2021
+#13994/2020
+#08718_2023
+15396/2020

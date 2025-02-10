@@ -2,94 +2,70 @@ package org.prometheus.dto;
 
 public class OrdemServicoDTO extends BaseDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long nuOrdemServico;
-	private String coOrdemServico;
-	private Long nuTipoGrupo;
-	private String noTipoGrupo;
-	private Long nuTipoServico;
-	private String noTipoServico;
-	private Long nuTipoForma;
-	private String deTipoForma;
-	private java.math.BigDecimal vrEstmoOrdemServico;
+    private Long nuOrdemServico;
+    private String coOrdemServico;
+    private String noTipoGrupo;
+    private String noTipoServico;
+    private String deTipoForma;
+    private java.math.BigDecimal vrEstmoOrdemServico;
+    private java.math.BigDecimal qtOrdemServico;
 
-	public void setCoOrdemServico(String coOrdemServico) {
-		this.coOrdemServico = coOrdemServico;
-	}
+    public void setNuOrdemServico(Long nuOrdemServico) {
+        this.nuOrdemServico = nuOrdemServico;
+    }
 
-	public String getCoOrdemServico() {
-		return this.coOrdemServico;
-	}
+    public Long getNuOrdemServico() {
+        return this.nuOrdemServico;
+    }
 
-	public void setNuTipoGrupo(Long nuTipoGrupo) {
-		this.nuTipoGrupo = nuTipoGrupo;
-	}
+    public void setCoOrdemServico(String coOrdemServico) {
+        this.coOrdemServico = coOrdemServico;
+    }
 
-	public Long getNuTipoGrupo() {
-		return this.nuTipoGrupo;
-	}
+    public String getCoOrdemServico() {
+        return this.coOrdemServico;
+    }
 
-	public void setNoTipoGrupo(String noTipoGrupo) {
-		this.noTipoGrupo = noTipoGrupo;
-	}
+    public void setNoTipoGrupo(String noTipoGrupo) {
+        this.noTipoGrupo = noTipoGrupo;
+    }
 
-	public String getNoTipoGrupo() {
-		return this.noTipoGrupo;
-	}
+    public String getNoTipoGrupo() {
+        return this.noTipoGrupo;
+    }
 
-	public void setNuTipoServico(Long nuTipoServico) {
-		this.nuTipoServico = nuTipoServico;
-	}
+    public void setNoTipoServico(String noTipoServico) {
+        this.noTipoServico = noTipoServico;
+    }
 
-	public Long getNuTipoServico() {
-		return this.nuTipoServico;
-	}
+    public String getNoTipoServico() {
+        return this.noTipoServico;
+    }
 
-	public void setNoTipoServico(String noTipoServico) {
-		this.noTipoServico = noTipoServico;
-	}
+    public void setDeTipoForma(String deTipoForma) {
+        this.deTipoForma = deTipoForma;
+    }
 
-	public String getNoTipoServico() {
-		return this.noTipoServico;
-	}
+    public String getDeTipoForma() {
+        return this.deTipoForma;
+    }
 
-	public void setNuTipoForma(Long nuTipoForma) {
-		this.nuTipoForma = nuTipoForma;
-	}
+    public void setVrEstmoOrdemServico(java.math.BigDecimal vrEstmoOrdemServico) {
+        this.vrEstmoOrdemServico = vrEstmoOrdemServico;
+    }
 
-	public Long getNuTipoForma() {
-		return this.nuTipoForma;
-	}
+    public java.math.BigDecimal getVrEstmoOrdemServico() {
+        return this.vrEstmoOrdemServico;
+    }
 
-	public void setDeTipoForma(String deTipoForma) {
-		this.deTipoForma = deTipoForma;
-	}
+    public java.math.BigDecimal getQtOrdemServico() {
+        return qtOrdemServico;
+    }
 
-	public String getDeTipoForma() {
-		return this.deTipoForma;
-	}
-
-	public void setVrEstmoOrdemServico(java.math.BigDecimal vrEstmoOrdemServico) {
-		this.vrEstmoOrdemServico = vrEstmoOrdemServico;
-	}
-
-	public java.math.BigDecimal getVrEstmoOrdemServico() {
-		return this.vrEstmoOrdemServico;
-	}
-
-	/**
-	 * @return the nuOrdemServico
-	 */
-	public Long getNuOrdemServico() {
-		return nuOrdemServico;
-	}
-
-	/**
-	 * @param nuOrdemServico the nuOrdemServico to set
-	 */
-	public void setNuOrdemServico(Long nuOrdemServico) {
-		this.nuOrdemServico = nuOrdemServico;
-	}
+    public void setQtOrdemServico(java.math.BigDecimal qtOrdemServico) {
+        this.qtOrdemServico = qtOrdemServico;
+    }
 
 }

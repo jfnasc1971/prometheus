@@ -20,15 +20,16 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
-import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.IndicadorContratoDTO;
+import org.prometheus.enums.RGBColorsEnum;
 import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
@@ -42,6 +43,7 @@ public abstract class Relatorio {
     public static final String ALIGN_CENTER_GREY_25_PERCENT_BOLD = "ALIGN_CENTER_GREY_25_PERCENT_BOLD";
     public static final String ALIGN_CENTER_GREY_40_PERCENT_BOLD = "ALIGN_CENTER_GREY_40_PERCENT_BOLD";
     public static final String ALIGN_CENTER_ORANGE_BOLD = "ALIGN_CENTER_ORANGE_BOLD";
+    public static final String ALIGN_CENTER_LIGHT_BLUE_BOLD = "ALIGN_CENTER_LIGHT_BLUE_BOLD";
     public static final String ALIGN_CENTER_RED_BOLD = "ALIGN_CENTER_RED_BOLD";
     public static final String ALIGN_CENTER_WHITE = "ALIGN_CENTER_WHITE";
     public static final String ALIGN_CENTER_WHITE_BOLD = "ALIGN_CENTER_WHITE_BOLD";
@@ -158,10 +160,10 @@ public abstract class Relatorio {
         RegionUtil.setBorderRight(BorderStyle.THIN, cellRangeAddress, sheet);
         RegionUtil.setBorderLeft(BorderStyle.THIN, cellRangeAddress, sheet);
 
-        RegionUtil.setTopBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-        RegionUtil.setRightBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-        RegionUtil.setBottomBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-        RegionUtil.setLeftBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+        RegionUtil.setTopBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+        RegionUtil.setRightBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+        RegionUtil.setBottomBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+        RegionUtil.setLeftBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
 
     }
 
@@ -199,18 +201,25 @@ public abstract class Relatorio {
             RegionUtil.setBorderRight(BorderStyle.THIN, cellRangeAddress, sheet);
             RegionUtil.setBorderLeft(BorderStyle.THIN, cellRangeAddress, sheet);
 
-            RegionUtil.setTopBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-            RegionUtil.setRightBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-            RegionUtil.setBottomBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
-            RegionUtil.setLeftBorderColor(IndexedColors.BLACK.index, cellRangeAddress, sheet);
+            RegionUtil.setTopBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+            RegionUtil.setRightBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+            RegionUtil.setBottomBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
+            RegionUtil.setLeftBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
         }
-
+        
+        row.setHeight((short)300);
+        
         return cell1;
     }
 
     private void setFillForeground(XSSFCellStyle s0, short color) {
         s0.setFillForegroundColor(color);
         s0.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    }
+
+    private void setFillForeground(XSSFCellStyle s0, XSSFColor color) {
+        s0.setFillForegroundColor(color);
+        s0.setFillPattern(FillPatternType.SOLID_FOREGROUND);        
     }
 
     private void setAlignLeft(final XSSFCellStyle s0) {
@@ -235,10 +244,10 @@ public abstract class Relatorio {
         style.setBorderRight(BorderStyle.THIN);
         style.setBorderLeft(BorderStyle.THIN);
 
-        style.setTopBorderColor(IndexedColors.GREY_80_PERCENT.index);
-        style.setRightBorderColor(IndexedColors.GREY_80_PERCENT.index);
-        style.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.index);
-        style.setLeftBorderColor(IndexedColors.GREY_80_PERCENT.index);
+        style.setTopBorderColor(IndexedColors.GREY_40_PERCENT.index);
+        style.setRightBorderColor(IndexedColors.GREY_40_PERCENT.index);
+        style.setBottomBorderColor(IndexedColors.GREY_40_PERCENT.index);
+        style.setLeftBorderColor(IndexedColors.GREY_40_PERCENT.index);
 
     }
 
@@ -381,6 +390,20 @@ public abstract class Relatorio {
 
         CreationHelper createHelper = wb.getCreationHelper();
 
+        XSSFCellStyle s30 = wb.createCellStyle();
+        setAlignCenter(s30);
+        setFillForeground(s30, IndexedColors.LIGHT_BLUE.index);
+        s30.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        addBorders(s30);
+        estilos.put(ALIGN_CENTER_LIGHT_BLUE_BOLD, s30);    
+        
+        XSSFCellStyle s18 = wb.createCellStyle();
+        setAlignCenter(s18);
+        setFillForeground(s18, IndexedColors.ORANGE.index);
+        s18.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        addBorders(s18);
+        estilos.put(ALIGN_CENTER_ORANGE_BOLD, s18);        
+        
         XSSFCellStyle s1 = wb.createCellStyle();
         setAlignCenter(s1);
         s1.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
@@ -396,7 +419,7 @@ public abstract class Relatorio {
         XSSFCellStyle s3 = wb.createCellStyle();
         s3.setWrapText(true);
         setAlignCenter(s3);
-        setFillForeground(s3, IndexedColors.GREY_25_PERCENT.index);
+        setFillForeground(s3, RGBColorsEnum.LIGHT_GREY.color());
         s3.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
         addBorders(s3);
         estilos.put(ALIGN_CENTER_GREY_25_PERCENT_BOLD, s3);
@@ -490,19 +513,13 @@ public abstract class Relatorio {
         s17.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
         estilos.put(ALIGN_CENTER_BLUE_BOLD, s17);
 
-        XSSFCellStyle s18 = wb.createCellStyle();
-        setAlignCenter(s18);
-        setFillForeground(s18, IndexedColors.ORANGE.index);
-        s18.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
-        estilos.put(ALIGN_CENTER_ORANGE_BOLD, s18);
-
         XSSFCellStyle s19 = wb.createCellStyle();
         setAlignRight(s19);
         setFillForeground(s19, IndexedColors.RED.index);
         s19.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
         addBorders(s19);
         estilos.put(ALIGN_RIGHT_RED_BOLD, s19);
-
+        
         XSSFCellStyle s20 = wb.createCellStyle();
         setAlignRight(s20);
         setFillForeground(s20, IndexedColors.GREEN.index);

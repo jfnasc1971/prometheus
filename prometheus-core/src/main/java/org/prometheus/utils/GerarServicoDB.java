@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class GerarServicoDB {
 
-	private static final String PREFIX = "VigenciaMembrosEquipe";
+    public static final String TEMPLATE = "/projetos/prometheus/src/template.sql";
+    private static final String PATH = ".";
+	private static final String PREFIX = "Demanda";
 	private static final String VIEW_NAME = PREFIX + "DTO";
 	private static final String SERVICE_NAME = PREFIX + "Service";
 
@@ -41,7 +43,7 @@ public class GerarServicoDB {
 
 		try {
 
-			File f = new File(name + ".java");
+			File f = new File(PATH + File.separatorChar + name + ".java");
 
 			FileWriter fw = new FileWriter(f);
 
@@ -197,8 +199,7 @@ public class GerarServicoDB {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			BufferedReader reader = new BufferedReader(
-					new FileReader(new File("/projetos/caixa/sigct/Trabalho/template.sql")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(TEMPLATE)));
 
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -218,8 +219,7 @@ public class GerarServicoDB {
 		sb.append("	  StringBuilder sb = new StringBuilder();\n\n");
 
 		try {
-			BufferedReader reader = new BufferedReader(
-					new FileReader(new File("/projetos/caixa/sigct/Trabalho/template.sql")));
+		    BufferedReader reader = new BufferedReader(new FileReader(new File(TEMPLATE)));
 
 			String line = null;
 			while ((line = reader.readLine()) != null) {

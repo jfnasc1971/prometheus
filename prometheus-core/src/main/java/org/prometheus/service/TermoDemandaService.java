@@ -1,0 +1,107 @@
+package org.prometheus.service;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import org.prometheus.dto.TermoDemandaDTO;
+
+import org.prometheus.utils.DBUtil;
+import org.prometheus.utils.DatabaseService;
+
+@Component
+public class TermoDemandaService {
+
+    @Autowired
+    private DatabaseService databaseService;
+
+    public List<TermoDemandaDTO> listar(String coDemanda) {
+        List<TermoDemandaDTO> result = new ArrayList<TermoDemandaDTO>();
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            conn = databaseService.getDataSource().getConnection();
+
+            pstmt = conn.prepareStatement(getDML());
+            pstmt.setString(1, coDemanda);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                TermoDemandaDTO dto = new TermoDemandaDTO();
+
+                dto.setNuDemanda(rs.getLong("nu_demanda"));
+                dto.setCoDemanda(rs.getString("co_demanda"));
+                dto.setNuOrdemServico(rs.getLong("nu_ordem_servico"));
+                dto.setCoOrdemServico(rs.getString("co_ordem_servico"));
+                dto.setNuTermo(rs.getLong("nu_termo"));
+                dto.setCoTermo(rs.getString("co_termo"));
+                dto.setDhEmissaoTermo(rs.getTimestamp("dh_emissao_termo"));
+                dto.setDtFinalFaturaPaga(rs.getDate("dt_final_fatura_paga"));
+                dto.setNuFaturaPaga(rs.getLong("nu_fatura_paga"));
+                dto.setDeFaturaPaga(rs.getString("de_fatura_paga"));
+                dto.setDtFinalFaturaGerada(rs.getDate("dt_final_fatura_gerada"));
+                dto.setNuFaturaGerada(rs.getLong("nu_fatura_gerada"));
+                dto.setDeFaturaGerada(rs.getString("de_fatura_gerada"));
+                dto.setVrFinanceiroTermo(rs.getBigDecimal("vr_financeiro_termo"));
+
+                result.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn, pstmt, rs);
+        }
+
+        return result;
+    }
+
+    public String getDML() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" select");
+        sb.append("   d.nu_demanda,");
+        sb.append("   d.co_demanda,");
+        sb.append("   os.nu_ordem_servico,");
+        sb.append("   os.co_ordem_servico,");
+        sb.append("   t.nu_termo,");
+        sb.append("   t.co_termo,");
+        sb.append("   t.dh_emissao_termo,");
+        sb.append("   f.dt_final_fatura dt_final_fatura_paga,");
+        sb.append("   f.nu_fatura nu_fatura_paga,");
+        sb.append("   f.de_fatura de_fatura_paga,");
+        sb.append("   fg.dt_final_fatura dt_final_fatura_gerada,");
+        sb.append("   fg.nu_fatura nu_fatura_gerada,");
+        sb.append("   fg.de_fatura de_fatura_gerada,");
+        sb.append("   t.vr_financeiro_termo");
+        sb.append(" from");
+        sb.append("   gct.gcttb021_demanda d");
+        sb.append("   inner join gct.gcttb023_ordem_servico os on os.nu_demanda = d.nu_demanda");
+        sb.append("   inner join gct.gcttb100_termo t on t.nu_ordem_servico = os.nu_ordem_servico");
+        sb.append("   inner join gct.gcttb102_fatura f on f.nu_fatura = t.nu_fatura_paga");
+        sb.append("   inner join gct.gcttb102_fatura fg on fg.nu_fatura = t.nu_fatura_gerada");
+        sb.append(" where");
+        sb.append("   d.co_demanda = ?");
+        sb.append("   and os.nu_contrato = 649");
+        sb.append("   and t.nu_situacao_termo in(1, 3)");
+        sb.append(" order by");
+        sb.append("   d.co_demanda,");
+        sb.append("   os.co_ordem_servico,");
+        sb.append("   t.co_termo");
+
+        return sb.toString();
+    }
+
+}

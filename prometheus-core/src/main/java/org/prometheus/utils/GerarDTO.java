@@ -9,22 +9,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.prometheus.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GerarDTO {
 
-	private static final String DTO_NAME = "VigenciaMembrosEquipeDTO";
-
+    private static final String PATH = ".";
+    
 	@Autowired
 	private DatabaseService databaseService;
-
-	public static void main(String[] args) {
-		GerarDTO gerarDTO = AppConfig.getApplicationContext().getBean(GerarDTO.class);
-		gerarDTO.gerar(DTO_NAME);
-	}
 
 	public void gerar(String name) {
 
@@ -34,7 +28,7 @@ public class GerarDTO {
 
 		try {
 
-			File f = new File(name + ".java");
+		    File f = new File(PATH + File.separatorChar + name + ".java");
 			System.out.println(f.getAbsolutePath());
 
 			FileWriter fw = new FileWriter(f);
@@ -159,8 +153,7 @@ public class GerarDTO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			BufferedReader reader = new BufferedReader(
-					new FileReader(new File("/projetos/caixa/sigct/Trabalho/template.sql")));
+		    BufferedReader reader = new BufferedReader(new FileReader(new File(GerarServicoDB.TEMPLATE)));
 
 			String line = null;
 			while ((line = reader.readLine()) != null) {

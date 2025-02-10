@@ -2,79 +2,133 @@ package org.prometheus.dto;
 
 public class DemandaDTO extends BaseDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long nuSistema;
-	private String sgSistema;
-	private String noSistema;
-	private Long nuDemanda;
-	private String coDemanda;
-	private Long nuAreaContratante;
-	private String noSiglaContratante;
-	private String noAreaContratante;
+    private String coDemanda;
+    private String noTipoGrupo;
+    private String noModulo;
+    private String sgSistema;
+    private String noSistema;
+    private String deSituacaoDemanda;
+    private Long nuDemanda;
+    private Long nuModulo;
+    private Long nuSistema;
+    private String icOrdemServicoAcionamento;
+    private String icQuantidade;
+    private String icValorOsInformado;
+    private String icCalculoQuantidadeOs;
+    private String icQuantidadeOs;
 
-	public void setNuSistema(Long nuSistema) {
-		this.nuSistema = nuSistema;
-	}
+    public void setCoDemanda(String coDemanda) {
+        this.coDemanda = coDemanda;
+    }
 
-	public Long getNuSistema() {
-		return this.nuSistema;
-	}
+    public String getCoDemanda() {
+        return this.coDemanda;
+    }
 
-	public void setSgSistema(String sgSistema) {
-		this.sgSistema = sgSistema;
-	}
+    public void setNoModulo(String noModulo) {
+        this.noModulo = noModulo;
+    }
 
-	public String getSgSistema() {
-		return this.sgSistema;
-	}
+    public String getNoModulo() {
+        return this.noModulo;
+    }
 
-	public void setNoSistema(String noSistema) {
-		this.noSistema = noSistema;
-	}
+    public void setSgSistema(String sgSistema) {
+        this.sgSistema = sgSistema;
+    }
 
-	public String getNoSistema() {
-		return this.noSistema;
-	}
+    public String getSgSistema() {
+        return this.sgSistema;
+    }
 
-	public void setNuDemanda(Long nuDemanda) {
-		this.nuDemanda = nuDemanda;
-	}
+    public void setNoSistema(String noSistema) {
+        this.noSistema = noSistema;
+    }
 
-	public Long getNuDemanda() {
-		return this.nuDemanda;
-	}
+    public String getNoSistema() {
+        return this.noSistema;
+    }
 
-	public void setCoDemanda(String coDemanda) {
-		this.coDemanda = coDemanda;
-	}
+    public void setDeSituacaoDemanda(String deSituacaoDemanda) {
+        this.deSituacaoDemanda = deSituacaoDemanda;
+    }
 
-	public String getCoDemanda() {
-		return this.coDemanda;
-	}
+    public String getDeSituacaoDemanda() {
+        return this.deSituacaoDemanda;
+    }
 
-	public void setNuAreaContratante(Long nuAreaContratante) {
-		this.nuAreaContratante = nuAreaContratante;
-	}
+    public void setNuDemanda(Long nuDemanda) {
+        this.nuDemanda = nuDemanda;
+    }
 
-	public Long getNuAreaContratante() {
-		return this.nuAreaContratante;
-	}
+    public Long getNuDemanda() {
+        return this.nuDemanda;
+    }
 
-	public void setNoSiglaContratante(String noSiglaContratante) {
-		this.noSiglaContratante = noSiglaContratante;
-	}
+    public void setNuModulo(Long nuModulo) {
+        this.nuModulo = nuModulo;
+    }
 
-	public String getNoSiglaContratante() {
-		return this.noSiglaContratante;
-	}
+    public Long getNuModulo() {
+        return this.nuModulo;
+    }
 
-	public void setNoAreaContratante(String noAreaContratante) {
-		this.noAreaContratante = noAreaContratante;
-	}
+    public void setNuSistema(Long nuSistema) {
+        this.nuSistema = nuSistema;
+    }
 
-	public String getNoAreaContratante() {
-		return this.noAreaContratante;
-	}
+    public Long getNuSistema() {
+        return this.nuSistema;
+    }
+
+    public void setIcOrdemServicoAcionamento(String icOrdemServicoAcionamento) {
+        this.icOrdemServicoAcionamento = icOrdemServicoAcionamento;
+    }
+
+    public String getIcOrdemServicoAcionamento() {
+        return this.icOrdemServicoAcionamento;
+    }
+
+    public void setIcQuantidade(String icQuantidade) {
+        this.icQuantidade = icQuantidade;
+    }
+
+    public String getIcQuantidade() {
+        return this.icQuantidade;
+    }
+
+    public void setIcValorOsInformado(String icValorOsInformado) {
+        this.icValorOsInformado = icValorOsInformado;
+    }
+
+    public String getIcValorOsInformado() {
+        return this.icValorOsInformado;
+    }
+
+    public void setIcCalculoQuantidadeOs(String icCalculoQuantidadeOs) {
+        this.icCalculoQuantidadeOs = icCalculoQuantidadeOs;
+    }
+
+    public String getIcCalculoQuantidadeOs() {
+        return this.icCalculoQuantidadeOs;
+    }
+
+    public void setIcQuantidadeOs(String icQuantidadeOs) {
+        this.icQuantidadeOs = icQuantidadeOs;
+    }
+
+    public String getIcQuantidadeOs() {
+        return this.icQuantidadeOs;
+    }
+
+    public String getNoTipoGrupo() {
+        return noTipoGrupo;
+    }
+
+    public void setNoTipoGrupo(String noTipoGrupo) {
+        this.noTipoGrupo = noTipoGrupo;
+    }
 
 }

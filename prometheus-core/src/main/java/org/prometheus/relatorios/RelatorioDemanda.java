@@ -49,7 +49,6 @@ public class RelatorioDemanda extends Relatorio {
 
         if (args != null && args.length > 0) {
             coDemanda = args[0];
-            coContrato = args[0];
         }
 
         try {
@@ -106,7 +105,10 @@ public class RelatorioDemanda extends Relatorio {
 
     public String gerar(DemandaDTO demanda) throws Exception {
 
-        String basedir = PATH + File.separatorChar + demanda.getNoTipoGrupo(); 
+        String coContrato = demanda.getCoContrato().replaceAll("[ /]", "_");
+        
+        String basedir = PATH + File.separatorChar + coContrato + //
+                File.separatorChar + demanda.getNoTipoGrupo(); 
         
         (new File(basedir)).mkdirs();
 

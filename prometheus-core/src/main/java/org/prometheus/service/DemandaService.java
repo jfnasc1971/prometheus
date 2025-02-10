@@ -40,6 +40,9 @@ public class DemandaService {
 
                 dto = new DemandaDTO();
 
+                dto.setCoContrato(rs.getString("co_contrato"));
+                dto.setNoContrato(rs.getString("no_contrato"));
+                dto.setNuContrato(rs.getLong("nu_contrato"));
                 dto.setCoDemanda(rs.getString("co_demanda"));
                 dto.setNoTipoGrupo(rs.getString("no_tipo_grupo"));
                 dto.setNoModulo(rs.getString("no_modulo"));
@@ -87,6 +90,9 @@ public class DemandaService {
 
                 DemandaDTO dto = new DemandaDTO();
 
+                dto.setCoContrato(rs.getString("co_contrato"));
+                dto.setNoContrato(rs.getString("no_contrato"));
+                dto.setNuContrato(rs.getLong("nu_contrato"));
                 dto.setCoDemanda(rs.getString("co_demanda"));
                 dto.setNoTipoGrupo(rs.getString("no_tipo_grupo"));
                 dto.setNoModulo(rs.getString("no_modulo"));
@@ -118,6 +124,9 @@ public class DemandaService {
         StringBuilder sb = new StringBuilder();
 
         sb.append("  select");
+        sb.append("    c.co_contrato,");
+        sb.append("    c.no_contrato,");
+        sb.append("    c.nu_contrato,");
         sb.append("    d.co_demanda,");
         sb.append("    tg.no_tipo_grupo,");
         sb.append("    m.no_modulo,");
@@ -134,6 +143,7 @@ public class DemandaService {
         sb.append("    fc.ic_quantidade_os ");
         sb.append("  from");
         sb.append("    gct.gcttb023_ordem_servico os");
+        sb.append("    inner join gct.gcttb010_contrato c on c.nu_contrato = os.nu_contrato ");
         sb.append("    inner join gct.gcttb032_tipo_grupo tg on tg.nu_tipo_grupo = os.nu_tipo_grupo ");
         sb.append("    inner join gct.gcttb021_demanda d on d.nu_demanda=os.nu_demanda");
         sb.append("    inner join gct.gcttb039_sistema s on s.nu_sistema = d.nu_sistema");
@@ -159,7 +169,10 @@ public class DemandaService {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("select distinct "); 
+        sb.append("select distinct ");
+        sb.append("  c.co_contrato,");
+        sb.append("  c.no_contrato,");
+        sb.append("  c.nu_contrato,");
         sb.append("  d.co_demanda, ");
         sb.append("  tg.no_tipo_grupo,");        
         sb.append("  m.no_modulo, "); 
@@ -207,6 +220,7 @@ public class DemandaService {
         sb.append("  and tsd.de_situacao_demanda not in ('Cancelada') ");
         sb.append("  and os.nu_contrato = 649 ");
         sb.append("  and os.nu_stco_ordem_servico not in (6) ");
+        sb.append("  and os.nu_tipo_forma not in (1044,1073,1045) ");
         sb.append("order by "); 
         sb.append("  tg.no_tipo_grupo, d.co_demanda ");
 

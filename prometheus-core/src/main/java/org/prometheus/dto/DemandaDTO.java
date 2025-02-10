@@ -4,6 +4,9 @@ public class DemandaDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
 
+    private String coContrato;
+    private String noContrato;
+    private Long nuContrato;
     private String coDemanda;
     private String noTipoGrupo;
     private String noModulo;
@@ -19,12 +22,36 @@ public class DemandaDTO extends BaseDTO {
     private String icCalculoQuantidadeOs;
     private String icQuantidadeOs;
 
+    public void setNoContrato(String noContrato) {
+        this.noContrato = noContrato;
+    }
+
+    public String getNoContrato() {
+        return this.noContrato;
+    }
+
+    public void setNuContrato(Long nuContrato) {
+        this.nuContrato = nuContrato;
+    }
+
+    public Long getNuContrato() {
+        return this.nuContrato;
+    }
+
     public void setCoDemanda(String coDemanda) {
         this.coDemanda = coDemanda;
     }
 
     public String getCoDemanda() {
         return this.coDemanda;
+    }
+
+    public void setNoTipoGrupo(String noTipoGrupo) {
+        this.noTipoGrupo = noTipoGrupo;
+    }
+
+    public String getNoTipoGrupo() {
+        return this.noTipoGrupo;
     }
 
     public void setNoModulo(String noModulo) {
@@ -123,12 +150,12 @@ public class DemandaDTO extends BaseDTO {
         return this.icQuantidadeOs;
     }
 
-    public String getNoTipoGrupo() {
-        return noTipoGrupo;
+    public String getCoContrato() {
+        return coContrato;
     }
 
-    public void setNoTipoGrupo(String noTipoGrupo) {
-        this.noTipoGrupo = noTipoGrupo;
+    public void setCoContrato(String coContrato) {
+        this.coContrato = coContrato;
     }
 
 }

@@ -59,18 +59,8 @@ public class RelatorioEquipe extends Relatorio {
     private FaturamentoService service;
 
     public static void main(String[] args) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(" ____                            _ \n");
-        sb.append("|  _ \\ _ __ ___  _ __ ___   ___| |_ ___ _   _ ___ \n");
-        sb.append("| |_) | '__/ _ \\| '_ ` _ \\ / _ \\ __/ _ \\ | | / __| \n");
-        sb.append("|  __/| | | (_) | | | | | |  __/ ||  __/ |_| \\__ \\ \n");
-        sb.append("|_|   |_|  \\___/|_| |_| |_|\\___|\\__\\___|\\__,_|___/ \n");
-        System.out.println(sb.toString());
-        System.out.println(AppInfo.getVersion());
-        System.out.println("Da mitologia grega: um semideus que roubou o fogo do Olimpo ");
-        System.out.println("para entregar aos homens e liberta-los do medo do desconhecido.");
-        System.out.println("");
+        
+        printVersion();
 
         (new File(PATH)).mkdirs();
 
@@ -83,6 +73,7 @@ public class RelatorioEquipe extends Relatorio {
         RelatorioEquipe relatorio = AppConfig.getApplicationContext().getBean(RelatorioEquipe.class);
         relatorio.gerarRelatorios(coEquipe);
     }
+
     
     public void gerarRelatorios(String coEquipe) {
 

@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.AppInfo;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.RGBColorsEnum;
 import org.prometheus.utils.Utils;
@@ -734,4 +735,20 @@ public abstract class Relatorio {
             }
         }
     }
+    
+    protected static void printVersion() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" ____                            _ \n");
+        sb.append("|  _ \\ _ __ ___  _ __ ___   ___| |_ ___ _   _ ___ \n");
+        sb.append("| |_) | '__/ _ \\| '_ ` _ \\ / _ \\ __/ _ \\ | | / __| \n");
+        sb.append("|  __/| | | (_) | | | | | |  __/ ||  __/ |_| \\__ \\ \n");
+        sb.append("|_|   |_|  \\___/|_| |_| |_|\\___|\\__\\___|\\__,_|___/ \n");
+        System.out.println(sb.toString());
+        System.out.println(AppInfo.getVersion());
+        System.out.println("Da mitologia grega: um semideus que roubou o fogo do Olimpo ");
+        System.out.println("para entregar aos homens e liberta-los do medo do desconhecido.");
+        System.out.println("");
+    }
+
 }

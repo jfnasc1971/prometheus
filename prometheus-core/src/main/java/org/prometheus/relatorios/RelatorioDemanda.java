@@ -38,6 +38,8 @@ public class RelatorioDemanda extends Relatorio {
 
     public static void main(String[] args) {
 
+        printVersion();
+        
         (new File(PATH)).mkdirs();
 
         RelatorioDemanda relatorio = AppConfig.getApplicationContext().getBean(RelatorioDemanda.class);

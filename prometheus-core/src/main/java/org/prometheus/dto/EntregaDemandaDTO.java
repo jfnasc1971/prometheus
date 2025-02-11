@@ -9,12 +9,14 @@ public class EntregaDemandaDTO extends BaseDTO {
     private Long nuEntrega;
     private String coEntrega;
     private java.util.Date dhPrevistaEntrega;
+    private java.util.Date dhPrevistaPendencias;
     private java.util.Date dhEfetivaEntrega;
     private String deSituacaoEntrega;
     private java.math.BigDecimal pcEntrega;
     private java.math.BigDecimal pcExecutado;
     private Long nuSituacaoEntrega;
     private java.math.BigDecimal vrPreco;
+    private java.math.BigDecimal qtDiasPendencia;
 
     public void setNuOrdemServico(Long nuOrdemServico){
         this.nuOrdemServico = nuOrdemServico;
@@ -104,4 +106,20 @@ public class EntregaDemandaDTO extends BaseDTO {
         return this.vrPreco;
     }
 
+    public java.math.BigDecimal getQtDiasPendencia() {
+        return qtDiasPendencia;
+    }
+
+    public void setQtDiasPendencia(java.math.BigDecimal qtDiasPendencia) {
+        this.qtDiasPendencia = qtDiasPendencia;
+    }
+
+    public java.util.Date getDhPrevistaPendencias() {
+        return dhPrevistaPendencias;
+    }
+
+    public void setDhPrevistaPendencias(java.util.Date dhPrevistaPendencias) {
+        this.dhPrevistaPendencias = dhPrevistaPendencias;
+    }
+    
 }

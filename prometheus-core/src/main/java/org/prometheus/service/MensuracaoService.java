@@ -23,7 +23,6 @@ public class MensuracaoService {
     private DatabaseService databaseService;
 
     public BigDecimal calcularQtTotalPFAjustado(Long nuOrdemServico) {
-        List<MensuracaoDTO> result = new ArrayList<MensuracaoDTO>();
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -35,7 +34,7 @@ public class MensuracaoService {
 
             StringBuilder sb = new StringBuilder();
             sb.append("select "); 
-            sb.append("  sum(qos.qt_solicitacao * tq.vr_ajuste_financeiro) qt_solicitacao_ajustado "); 
+            sb.append("  coalesce(sum(qos.qt_solicitacao * tq.vr_ajuste_financeiro),0) qt_solicitacao_ajustado "); 
             sb.append("from "); 
             sb.append("  gct.gcttb023_ordem_servico os "); 
             sb.append("  inner join gct.gcttb051_quantidade_ordem_serv qos on qos.nu_ordem_servico = os.nu_ordem_servico "); 
@@ -58,7 +57,7 @@ public class MensuracaoService {
             DBUtil.close(conn, pstmt, rs);
         }
 
-        return null;
+        return BigDecimal.ZERO;
     }    
     
     public List<MensuracaoDTO> listar(Long nuOrdemServico) {

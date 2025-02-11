@@ -11,6 +11,8 @@ public class OrdemServicoDTO extends BaseDTO {
     private String deTipoForma;
     private java.math.BigDecimal vrEstmoOrdemServico;
     private java.math.BigDecimal qtOrdemServico;
+    private Long nuStcoOrdemServico;
+    private String deStcoOrdemServico;
 
     public void setNuOrdemServico(Long nuOrdemServico) {
         this.nuOrdemServico = nuOrdemServico;
@@ -66,6 +68,22 @@ public class OrdemServicoDTO extends BaseDTO {
 
     public void setQtOrdemServico(java.math.BigDecimal qtOrdemServico) {
         this.qtOrdemServico = qtOrdemServico;
+    }
+
+    public Long getNuStcoOrdemServico() {
+        return nuStcoOrdemServico;
+    }
+
+    public void setNuStcoOrdemServico(Long nuStcoOrdemServico) {
+        this.nuStcoOrdemServico = nuStcoOrdemServico;
+    }
+
+    public String getDeStcoOrdemServico() {
+        return deStcoOrdemServico;
+    }
+
+    public void setDeStcoOrdemServico(String deStcoOrdemServico) {
+        this.deStcoOrdemServico = deStcoOrdemServico;
     }
 
 }

@@ -99,7 +99,7 @@ public class TermoDemandaService {
         sb.append(" order by");
         sb.append("   d.co_demanda,");
         sb.append("   os.co_ordem_servico,");
-        sb.append("   t.co_termo");
+        sb.append("   t.dh_emissao_termo desc");
 
         return sb.toString();
     }

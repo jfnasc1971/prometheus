@@ -75,17 +75,27 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
                     cellVrEquipe = setCellFormula(sheet, row, //
                             XSSFUtils.getFullReference(insumo.getVrEquipe()), pos++);
 
-                    cellVrExtras = setCellFormula(sheet, row, //
-                            String.format("'%s'!%s", //
-                                    insumo.getVrExtras().getSheet().getSheetName(), //
-                                    insumo.getVrExtras().getReference()), //
-                            pos++);
-
-                    cellVrAusencias = setCellFormula(sheet, row, //
-                            String.format("'%s'!%s", //
-                                    insumo.getVrAusencias().getSheet().getSheetName(), //
-                                    insumo.getVrAusencias().getReference()), //
-                            pos++);
+                    if (insumo.getVrExtras() != null) {
+                        cellVrExtras = setCellFormula(sheet, row, //
+                                String.format("'%s'!%s", //
+                                        insumo.getVrExtras().getSheet().getSheetName(), //
+                                        insumo.getVrExtras().getReference()), //
+                                pos++);
+                    }
+                    else {
+                        cellVrExtras = addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL);
+                    }
+                    
+                    if (insumo.getVrAusencias() != null) {
+                        cellVrAusencias = setCellFormula(sheet, row, //
+                                String.format("'%s'!%s", //
+                                        insumo.getVrAusencias().getSheet().getSheetName(), //
+                                        insumo.getVrAusencias().getReference()), //
+                                pos++);                   	
+                    }
+                    else {
+                        cellVrAusencias = addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL);  	
+                    }
 
                     if (insumo.getVrFns() != null
                             && !"STRING".equalsIgnoreCase(insumo.getVrFns().getCellType().name())) {
@@ -95,7 +105,7 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
                                         insumo.getVrFns().getReference()), //
                                 pos++);
                     } else {
-                        cellVrFns = addCell(row, pos++, BigDecimal.ONE);
+                        cellVrFns = addCell(row, pos++, BigDecimal.ONE, STYLE_DECIMAL);
                     }
 
                     cellVrPrevisto = setCellFormula(sheet, row, //

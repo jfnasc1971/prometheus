@@ -183,35 +183,34 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 AusenciaExtraFaturamentoDTO ausenciaExtra = ausenciaExtraService.findBy(equipe.getNuEquipe(), //
                         faturamento.getNuFatura(), perfil.getNuPerfil());
 
-                row = getRow(sheet, rowNumSecao2++);
-                pos = 4;
-
-                addCell(row, pos++, perfil.getDePerfil());
-
-                XSSFCell cellvrPrecoGrupo = null;
-                XSSFCell cellQtExtras = null;
-                XSSFCell cellQtAusencias = null;
-
-                if (ausenciaExtra == null) {
-                    cellQtAusencias = addCell(row, pos++, BigDecimal.ZERO);
-                    cellQtExtras = addCell(row, pos++, BigDecimal.ZERO);
-                } else {
+                if (ausenciaExtra != null) {
+                
+	                row = getRow(sheet, rowNumSecao2++);
+	                pos = 4;
+	
+	                addCell(row, pos++, perfil.getDePerfil());
+	
+	                XSSFCell cellvrPrecoGrupo = null;
+	                XSSFCell cellQtExtras = null;
+	                XSSFCell cellQtAusencias = null;
+	
                     cellQtAusencias = addCell(row, pos++, ausenciaExtra.getQtDiaAusencia());
                     cellQtExtras = addCell(row, pos++, ausenciaExtra.getQtDiaServicoExtra());
+	
+	                BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
+	                        faturamento.getNuFatura(), perfil.getNuPerfil());
+	
+	                cellvrPrecoGrupo = addCell(row, pos++, vrPrecoGrupo == null ? BigDecimal.ZERO : vrPrecoGrupo);
+	
+	                listaVrAusencias.add(setCellFormula(sheet, row, //
+	                        String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+	                        pos++));
+	
+	                listaVrExtras.add(setCellFormula(sheet, row, //
+	                        String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
+	                        pos++));
+                
                 }
-
-                BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
-                        faturamento.getNuFatura(), perfil.getNuPerfil());
-
-                cellvrPrecoGrupo = addCell(row, pos++, vrPrecoGrupo == null ? BigDecimal.ZERO : vrPrecoGrupo);
-
-                listaVrAusencias.add(setCellFormula(sheet, row, //
-                        String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-                        pos++));
-
-                listaVrExtras.add(setCellFormula(sheet, row, //
-                        String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-                        pos++));
             }
 
             // blank
@@ -311,12 +310,21 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 pos = 10;
                 row = addNewRow(sheet);
                 addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
-                        "sum(" + listaValorPrevisto.get(0).getReference() + ":" + //
-                                listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
-                                cellVrExtras.getReference() + " - " + //
-                                cellVrAusencias.getReference(),
-                        pos++));
+                
+                if (cellVrExtras != null || cellVrAusencias != null) {
+                    insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
+                            "sum(" + listaValorPrevisto.get(0).getReference() + ":" + //
+                                    listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
+                                    cellVrExtras.getReference() + " - " + //
+                                    cellVrAusencias.getReference(),
+                            pos++)); 	
+                }
+                else {
+                    insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
+                            "sum(" + listaValorPrevisto.get(0).getReference() + ":" + //
+                                    listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ")", //
+                            pos++));                	
+                }
 
                 int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
 
@@ -358,9 +366,10 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
                             && cellQtServicosEntregues.getNumericCellValue() != 0) {
                         setCellFormula(cellFormulaIEQQL, //
-                                String.format("1-(%s/%s)", //
-                                        cellQtServicosDevolvidos.getReference(), //
-                                        cellQtServicosEntregues.getReference()), //
+                                String.format("%s/(%s+%s)", //
+                                        cellQtServicosEntregues.getReference(), //
+                                        cellQtServicosEntregues.getReference(), //
+                                        cellQtServicosDevolvidos.getReference()), //
                                 STYLE_DECIMAL_5DIGITS);
                     }
 
@@ -405,6 +414,22 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
 
                     /**
+                     * IEQRCP - Capacitação
+                     */
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 5, "IEQRCP - Resultado Capacitação", ALIGN_LEFT);
+                    XSSFCell cellFormulaIEQRCP = addCell(row, 6, "N/A", ALIGN_CENTER);
+                                        
+                    
+                    /**
+                     * ICET - Capacitaçao
+                     */
+                    row = getRow(sheet, rownum++);
+                    addMergedRegion(sheet, row, 4, 5, "IEQRSA - Resultado Assistido", ALIGN_LEFT);
+                    XSSFCell cellFormulaIEQRSA = addCell(row, 6, "N/A", ALIGN_CENTER);
+                                        
+                    
+                    /**
                      * Média dos Indicadores
                      */
                     rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
@@ -424,7 +449,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
                     row = getRow(sheet, rownum++);
                     addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
-                    cellFormulaIEQQPZ = addCell(row, 10, "N/A", STYLE_DECIMAL_5DIGITS);
+                    cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
                     if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
                         setCellFormula(cellFormulaIEQQPZ, //
                                 "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) + ")", //
@@ -442,10 +467,19 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     }
                     addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
 
+    				row = getRow(sheet, rownum++);
+    				addMergedRegion(sheet, row, 8, 9, "IEQRCP - Resultado Capacitação");
+    				cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
+
+    				row = getRow(sheet, rownum++);
+    				addMergedRegion(sheet, row, 8, 9, "IEQRSA - Resultado Assistido");
+    				cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
+                    
+  				
                     /**
                      * Desempenho / Valor FNS
                      */
-                    rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
+                    rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 13;
 
                     row = getRow(sheet, rownum++);
                     addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);

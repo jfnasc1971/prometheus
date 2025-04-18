@@ -19,18 +19,14 @@ import org.prometheus.AppInfo;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
-import org.prometheus.relatorios.equipe.AbaAjuste;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevido;
+import org.prometheus.relatorios.equipe.AbaCalculoVrDevidoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculoVrDevidoQualidade;
-import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoQualidade;
-import org.prometheus.relatorios.equipe.AbaCalculosG4;
-import org.prometheus.relatorios.equipe.AbaCalculosSprint;
+import org.prometheus.relatorios.equipe.AbaCalculosSprintPerfil;
 import org.prometheus.relatorios.equipe.AbaEquipe;
 import org.prometheus.relatorios.equipe.AbaPagamentos;
 import org.prometheus.relatorios.equipe.AbaPagamentosQualidade;
-import org.prometheus.relatorios.equipe.AbaServicosAcionamento;
-import org.prometheus.relatorios.equipe.AbaServicosAcionamentoQualidade;
 import org.prometheus.relatorios.equipe.AbaVigenciaMembros;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaturamentoService;
@@ -177,10 +173,10 @@ public class RelatorioEquipe extends Relatorio {
             return null;
         }
 
-        String dir = equipe.getCoContrato().replaceAll("[ /]", "_");
+        String dir = equipe.getCoContrato().replaceAll("[ /]", "_") + "/" + equipe.getNoTipoGrupo().trim();
 
         (new File(PATH + "/" + dir)).mkdirs();
-
+        
         File file = new File(PATH + "/" + dir + "/SIGCT_Demonstrativo_" + coEquipe + ".xlsx");
         file.delete();
         FileOutputStream fos = new FileOutputStream(file);
@@ -223,58 +219,71 @@ public class RelatorioEquipe extends Relatorio {
         // Cálculos
         //
 
-        if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
-            AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
-            insumos = calculos.gerar(wb, coEquipe, faturamentos);
-        }
-
-        if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
-            AbaCalculosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamento.class);
-            insumos = calculos.write(wb, coEquipe, faturamentos);
-        }
-
-        if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
-            AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-                    .getBean(AbaCalculosAcionamentoQualidade.class);
+        /**
+         * UNISYS
+         */
+        if (Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+            AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamentoQualidade.class);
             calculos.gerar(wb, coEquipe, faturamentos, insumos);
         }
 
-        if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
-            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-            insumos = calculos.write(wb, coEquipe, faturamentos);
-        }
+        if (Long.valueOf(62L).equals(equipe.getNuTipoGrupo())) {
+        	AbaCalculosSprintPerfil calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprintPerfil.class);
+            insumos = calculos.gerar(wb, coEquipe, faturamentos);
+        }        
+        
+//	    if (Long.valueOf(70L).equals(equipe.getNuTipoGrupo())) {
+//	       AbaCalculosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamento.class);
+//	       insumos = calculos.write(wb, coEquipe, faturamentos);
+//	    }
+        
 
-        if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(97L).equals(equipe.getNuTipoGrupo())) {
-            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-            insumos = calculos.write(wb, coEquipe, faturamentos);
-        }
+//
+//        if (Long.valueOf(63L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(64L).equals(equipe.getNuTipoGrupo())) {
+//            AbaCalculosAcionamento calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamento.class);
+//            insumos = calculos.write(wb, coEquipe, faturamentos);
+//        }
+//
+//        if (Long.valueOf(83L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(84L).equals(equipe.getNuTipoGrupo())) {
+//            AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext().getBean(AbaCalculosAcionamentoQualidade.class);
+//            calculos.gerar(wb, coEquipe, faturamentos, insumos);
+//        }
+//
+//        if (Long.valueOf(65L).equals(equipe.getNuTipoGrupo())) {
+//            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+//            insumos = calculos.write(wb, coEquipe, faturamentos);
+//        }
+//
+//        if (Long.valueOf(87L).equals(equipe.getNuTipoGrupo()) || Long.valueOf(97L).equals(equipe.getNuTipoGrupo())) {
+//            AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+//            insumos = calculos.write(wb, coEquipe, faturamentos);
+//        }
 
         //
         // Serviços (SOMENTE ACIONAMENTO)
         //
-        if ("A".equals(equipe.getIcTipoAtendimento())) {
-
-            if ("G".equals(equipe.getIcDistribuiProfissional())) {
-                AbaServicosAcionamento servicos = AppConfig.getApplicationContext()
-                        .getBean(AbaServicosAcionamento.class);
-                servicos.write(wb, coEquipe, faturamentos);
-            }
-
-            if ("D".equals(equipe.getIcDistribuiProfissional())) {
-                AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext()
-                        .getBean(AbaServicosAcionamentoQualidade.class);
-                servicos.write(wb, coEquipe, faturamentos);
-            }
-
-        }
+//        if ("A".equals(equipe.getIcTipoAtendimento())) {
+//
+//            if ("G".equals(equipe.getIcDistribuiProfissional())) {
+//                AbaServicosAcionamento servicos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamento.class);
+//                servicos.write(wb, coEquipe, faturamentos);
+//            }
+//
+//            if ("D".equals(equipe.getIcDistribuiProfissional())) {
+//                AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext().getBean(AbaServicosAcionamentoQualidade.class);
+//                servicos.write(wb, coEquipe, faturamentos);
+//            }
+//
+//        }
 
         XSSFCell cellValorDevido = null;
 
+      
         // Calculos Valor Devido
         if ("D".equals(equipe.getIcDistribuiProfissional())) {
 
-            AbaCalculoVrDevidoQualidade abaCalculoValorDevido = AppConfig.getApplicationContext()
-                    .getBean(AbaCalculoVrDevidoQualidade.class);
+        	AbaCalculoVrDevidoPerfil abaCalculoValorDevido = AppConfig.getApplicationContext()
+                    .getBean(AbaCalculoVrDevidoPerfil.class);
             cellValorDevido = abaCalculoValorDevido.gerar(wb, coEquipe, faturamentos, insumos);
 
         } else {
@@ -286,8 +295,8 @@ public class RelatorioEquipe extends Relatorio {
         }
 
         // Ajuste
-        AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
-        abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
+//        AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
+//        abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
 
         wb.write(fos);
         wb.close();

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.prometheus.dto.OrdemServicoDTO;
-
+import org.prometheus.relatorios.RelatorioDemanda;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 
@@ -85,7 +85,7 @@ public class OrdemServicoService {
         sb.append("   inner join gct.gcttb016_tipo_forma tf on tf.nu_tipo_forma = os.nu_tipo_forma");
         sb.append(" where");
         sb.append("   d.co_demanda = ?");
-        sb.append("   and os.nu_contrato = 649");
+        sb.append("   and os.nu_contrato = " + RelatorioDemanda.NU_CONTRATO);
         sb.append(" order by");
         sb.append("   os.co_ordem_servico");
 

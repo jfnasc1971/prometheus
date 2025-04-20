@@ -32,6 +32,7 @@ public class RelatorioDemanda extends Relatorio {
 
     public static final String ABA_DEMANDA = "Demanda";
     public static final String ABA_TERMOS = "Termos";
+    public static final Integer NU_CONTRATO = 909;
 
     @Autowired
     private DemandaService demandaService;
@@ -108,7 +109,7 @@ public class RelatorioDemanda extends Relatorio {
         String coContrato = demanda.getCoContrato().replaceAll("[ /]", "_");
         
         String basedir = PATH + File.separatorChar + coContrato + //
-                File.separatorChar + demanda.getNoTipoGrupo(); 
+                File.separatorChar + demanda.getNoTipoGrupo().replaceAll("\\*", ""); 
         
         (new File(basedir)).mkdirs();
 
@@ -221,6 +222,14 @@ public class RelatorioDemanda extends Relatorio {
             return true;
         }
 
+        if ("N".equalsIgnoreCase(demanda.getIcOrdemServicoAcionamento())
+                && "S".equalsIgnoreCase(demanda.getIcQuantidade())
+                && "N".equalsIgnoreCase(demanda.getIcValorOsInformado())
+                && "S".equalsIgnoreCase(demanda.getIcCalculoQuantidadeOs())
+                && "S".equalsIgnoreCase(demanda.getIcQuantidadeOs())) {
+            return true;
+        }        
+        
         return false;
     }
 }

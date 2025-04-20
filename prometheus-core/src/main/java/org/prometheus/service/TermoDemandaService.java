@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.prometheus.dto.TermoDemandaDTO;
-
+import org.prometheus.relatorios.RelatorioDemanda;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 
@@ -94,7 +94,7 @@ public class TermoDemandaService {
         sb.append("   inner join gct.gcttb102_fatura fg on fg.nu_fatura = t.nu_fatura_gerada");
         sb.append(" where");
         sb.append("   d.co_demanda = ?");
-        sb.append("   and os.nu_contrato = 649");
+        sb.append("   and os.nu_contrato = " + RelatorioDemanda.NU_CONTRATO);
         sb.append("   and t.nu_situacao_termo in(1, 3)");
         sb.append(" order by");
         sb.append("   d.co_demanda,");

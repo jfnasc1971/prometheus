@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.prometheus.dto.DemandaDTO;
+import org.prometheus.relatorios.RelatorioDemanda;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +160,7 @@ public class DemandaService {
         sb.append("    )");
         sb.append("  where");
         sb.append("    d.co_demanda = ?");
-        sb.append("    and os.nu_contrato = 649");
+        sb.append("    and os.nu_contrato = " + RelatorioDemanda.NU_CONTRATO);
         sb.append("    and os.nu_stco_ordem_servico not in (6) ");
 
         return sb.toString();
@@ -218,7 +219,7 @@ public class DemandaService {
         sb.append("  c.co_contrato = ? "); 
         //sb.append("  and d.co_demanda = 'SP202200308' "); 
         sb.append("  and tsd.de_situacao_demanda not in ('Cancelada') ");
-        sb.append("  and os.nu_contrato = 649 ");
+        sb.append("  and os.nu_contrato = " + RelatorioDemanda.NU_CONTRATO);
         sb.append("  and os.nu_stco_ordem_servico not in (6) ");
         sb.append("  and os.nu_tipo_forma not in (1044,1073,1045) ");
         sb.append("order by "); 

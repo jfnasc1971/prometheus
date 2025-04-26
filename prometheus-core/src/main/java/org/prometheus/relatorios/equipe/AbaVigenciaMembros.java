@@ -48,6 +48,8 @@ public class AbaVigenciaMembros extends Relatorio {
 		sheet.setDisplayGridlines(false);
 
 		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 60);
+		setColumnWidth(sheet, 0, 90);
+		setColumnWidth(sheet, 1, 90);
 		setColumnWidth(sheet, 5, 10);
 		setColumnWidth(sheet, 7, 180);
 

@@ -18,7 +18,7 @@ public class GerarServicoDB {
 
     public static final String TEMPLATE = "/projetos/prometheus/src/template.sql";
     private static final String PATH = ".";
-	private static final String PREFIX = "Demanda";
+	private static final String PREFIX = "CalculoValorDevidoMilheiros";
 	private static final String VIEW_NAME = PREFIX + "DTO";
 	private static final String SERVICE_NAME = PREFIX + "Service";
 

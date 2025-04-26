@@ -34,7 +34,6 @@ import org.prometheus.enums.RGBColorsEnum;
 import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
-    protected Map<String, Integer> fontes = new HashMap<>();
     protected Map<String, XSSFCellStyle> estilos = new HashMap<>();
 
     public static final String ALIGN_CENTER = "ALIGN_CENTER";
@@ -48,8 +47,10 @@ public abstract class Relatorio {
     public static final String ALIGN_CENTER_RED_BOLD = "ALIGN_CENTER_RED_BOLD";
     public static final String ALIGN_CENTER_WHITE = "ALIGN_CENTER_WHITE";
     public static final String ALIGN_CENTER_WHITE_BOLD = "ALIGN_CENTER_WHITE_BOLD";
+    public static final String ALIGN_LEFT_WHITE_SMOKE_BOLD = "ALIGN_LEFT_WHITE_SMOKE_BOLD";
 
     public static final String ALIGN_LEFT = "ALIGN_LEFT";
+    public static final String ALIGN_LEFT_BOLD = "ALIGN_LEFT_BOLD";
     public static final String ALIGN_LEFT_GREY_25_PERCENT_BOLD = "ALIGN_LEFT_GREY_25_PERCENT_BOLD";
 
     public static final String ALIGN_RIGHT_BOLD = "ALIGN_RIGHT_BOLD";
@@ -61,10 +62,10 @@ public abstract class Relatorio {
 
     public static final short FONT_SIZE = (short) 9;
     public static final String FONT_FAMILY = "Arial";
-    public static final String FONTE_BOLD = "FONTE_BOLD";
-    public static final String FONTE_NORMAL = "FONTE_NORMAL";
-    public static final String FONTE_WHITE_BOLD = "FONTE_WHITE_BOLD";
-    public static final String FONTE_RED_BOLD = "FONTE_RED_BOLD";
+    public static final Integer FONTE_BOLD = 2;
+    public static final Integer FONTE_NORMAL = 1;
+    public static final Integer FONTE_WHITE_BOLD = 3;
+    public static final Integer FONTE_RED_BOLD = 4;
 
     public static final String STYLE_DATE = "STYLE_DATE";
     public static final String STYLE_DATE_TIME = "STYLE_DATE_TIME";
@@ -107,6 +108,10 @@ public abstract class Relatorio {
         c0.setCellComment(comment);
     }
 
+    protected final XSSFRow getLastRow(XSSFSheet sheet) {
+        return sheet.getRow(sheet.getLastRowNum());
+    }
+    
     protected final XSSFRow getRow(XSSFSheet sheet, int rownum) {
         XSSFRow row = sheet.getRow(rownum);
         if (row == null) {
@@ -129,19 +134,23 @@ public abstract class Relatorio {
         }
         return sheet.createRow(sheet.getLastRowNum() + 1);
     }
-
-    protected final void addMergedRegion(XSSFSheet sheet, XSSFRow row, int firstCol, int lastCol, Object value) {
-        addMergedRegion(sheet, row, firstCol, lastCol, value, ALIGN_LEFT, true);
+    
+    protected final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int firstCol, int lastCol, Object value) {
+        return addMergedRegion(sheet, row, firstCol, lastCol, value, ALIGN_LEFT, true);
     }
 
-    protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int colNum, Object value) {
+    protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int firstCol, Object value) {
+        addMergedRegion2(sheet, firstRow, lastRow, firstCol, firstCol, value);
+    }
 
-        CellRangeAddress cellRangeAddress = new CellRangeAddress(firstRow, lastRow, colNum, colNum);
+    protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int firstCol, int lastCol, Object value) {
+
+        CellRangeAddress cellRangeAddress = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         sheet.addMergedRegion(cellRangeAddress);
 
         XSSFRow row = getRow(sheet, firstRow);
 
-        XSSFCell cell1 = row.createCell(colNum);
+        XSSFCell cell1 = row.createCell(firstCol);
 
         XSSFCellStyle s20 = sheet.getWorkbook().createCellStyle();
         s20.setAlignment(HorizontalAlignment.CENTER_SELECTION);
@@ -294,6 +303,7 @@ public abstract class Relatorio {
         XSSFCell cell1 = row.createCell(pos);
         cell1.setCellStyle(estilos.get(style));
         cell1.setCellValue(value);
+        cell1.getCellStyle().setWrapText(true);
         return cell1;
     }
 
@@ -359,32 +369,31 @@ public abstract class Relatorio {
 
     protected final void carregarFontes(XSSFWorkbook workBook) {
 
-        XSSFFont normal = workBook.createFont();
-        normal.setFontHeightInPoints(FONT_SIZE);
-        normal.setFontName(FONT_FAMILY);
-        normal.setColor(IndexedColors.BLACK.getIndex());
-        fontes.put(FONTE_NORMAL, normal.getIndexAsInt());
+        if (workBook.getStylesSource().getFonts().size() == 1) {
+            
+            XSSFFont normal = workBook.createFont();
+            normal.setFontHeightInPoints(FONT_SIZE);
+            normal.setFontName(FONT_FAMILY);
+            normal.setColor(RGBColorsEnum.BLACK.color());
 
-        XSSFFont bold = workBook.createFont();
-        bold.setFontHeightInPoints(FONT_SIZE);
-        bold.setFontName(FONT_FAMILY);
-        bold.setColor(IndexedColors.BLACK.getIndex());
-        bold.setBold(true);
-        fontes.put(FONTE_BOLD, bold.getIndexAsInt());
+            XSSFFont bold = workBook.createFont();
+            bold.setFontHeightInPoints(FONT_SIZE);
+            bold.setFontName(FONT_FAMILY);
+            bold.setColor(RGBColorsEnum.BLACK.color());
+            bold.setBold(true);
 
-        XSSFFont whiteBold = workBook.createFont();
-        whiteBold.setFontHeightInPoints(FONT_SIZE);
-        whiteBold.setFontName(FONT_FAMILY);
-        whiteBold.setColor(IndexedColors.WHITE.getIndex());
-        whiteBold.setBold(true);
-        fontes.put(FONTE_WHITE_BOLD, whiteBold.getIndexAsInt());
-
-        XSSFFont redBold = workBook.createFont();
-        redBold.setFontHeightInPoints(FONT_SIZE);
-        whiteBold.setFontName(FONT_FAMILY);
-        redBold.setColor(IndexedColors.RED.getIndex());
-        redBold.setBold(true);
-        fontes.put(FONTE_RED_BOLD, redBold.getIndexAsInt());
+            XSSFFont whiteBold = workBook.createFont();
+            whiteBold.setFontHeightInPoints(FONT_SIZE);
+            whiteBold.setFontName(FONT_FAMILY);
+            whiteBold.setColor(RGBColorsEnum.WHITE.color());
+            whiteBold.setBold(true);
+        
+            XSSFFont redBold = workBook.createFont();
+            redBold.setFontHeightInPoints(FONT_SIZE);
+            redBold.setFontName(FONT_FAMILY);
+            redBold.setColor(RGBColorsEnum.RED.color());
+            redBold.setBold(true);
+        }
     }
 
     protected final void carregarEstilos(XSSFWorkbook wb) {
@@ -394,115 +403,115 @@ public abstract class Relatorio {
         XSSFCellStyle s30 = wb.createCellStyle();
         setAlignCenter(s30);
         setFillForeground(s30, IndexedColors.LIGHT_BLUE.index);
-        s30.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s30.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s30);
         estilos.put(ALIGN_CENTER_LIGHT_BLUE_BOLD, s30);    
         
         XSSFCellStyle s18 = wb.createCellStyle();
         setAlignCenter(s18);
         setFillForeground(s18, IndexedColors.ORANGE.index);
-        s18.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s18.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s18);
         estilos.put(ALIGN_CENTER_ORANGE_BOLD, s18);        
         
         XSSFCellStyle s1 = wb.createCellStyle();
         setAlignCenter(s1);
-        s1.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s1.setFont(wb.getFontAt(FONTE_NORMAL));
         addBorders(s1);
         estilos.put(ALIGN_CENTER, s1);
 
         XSSFCellStyle s2 = wb.createCellStyle();
         setAlignCenter(s2);
-        s2.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        s2.setFont(wb.getFontAt(FONTE_BOLD));
         addBorders(s2);
         estilos.put(ALIGN_CENTER_BOLD, s2);
 
         XSSFCellStyle s3 = wb.createCellStyle();
         s3.setWrapText(true);
         setAlignCenter(s3);
-        setFillForeground(s3, RGBColorsEnum.LIGHT_GREY.color());
-        s3.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        setFillForeground(s3, RGBColorsEnum.WHITE_SMOKE.color());
+        s3.setFont(wb.getFontAt(FONTE_BOLD));
         addBorders(s3);
         estilos.put(ALIGN_CENTER_GREY_25_PERCENT_BOLD, s3);
 
         XSSFCellStyle s4 = wb.createCellStyle();
-        setAlignLeft(s4);
-        setFillForeground(s4, IndexedColors.GREY_25_PERCENT.index);
-        s4.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        setAlignRight(s4);
+        setFillForeground(s4, RGBColorsEnum.WHITE_SMOKE.color());
+        s4.setFont(wb.getFontAt(FONTE_BOLD));
         addBorders(s4);
         estilos.put(ALIGN_RIGHT_GREY_25_PERCENT_BOLD, s4);
 
         XSSFCellStyle s5 = wb.createCellStyle();
         setAlignRight(s5);
         setFillForeground(s5, IndexedColors.ORANGE.index);
-        s5.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s5.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s5);
         estilos.put(ALIGN_RIGHT_ORANGE_BOLD, s5);
 
         XSSFCellStyle s7 = wb.createCellStyle();
         setAlignRight(s7);
         setFillForeground(s7, IndexedColors.LIGHT_BLUE.index);
-        s7.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s7.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s7);
         estilos.put(ALIGN_RIGHT_BLUE_BOLD, s7);
 
-        final XSSFCellStyle s8 = wb.createCellStyle();
+        XSSFCellStyle s8 = wb.createCellStyle();
         setAlignCenter(s8);
         setFillForeground(s8, IndexedColors.GREY_40_PERCENT.index);
-        s8.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s8.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s8);
         estilos.put(ALIGN_CENTER_GREY_40_PERCENT_BOLD, s8);
 
         XSSFCellStyle s9 = wb.createCellStyle();
         setAlignCenter(s9);
         setFillForeground(s9, IndexedColors.RED.index);
-        s9.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s9.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s9);
         estilos.put(ALIGN_CENTER_RED_BOLD, s9);
 
         XSSFCellStyle s10 = wb.createCellStyle();
         setAlignCenter(s10);
         setFillForeground(s10, IndexedColors.GREEN.index);
-        s10.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s10.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s10);
         estilos.put(ALIGN_CENTER_GREEN_BOLD, s10);
 
         XSSFCellStyle s11 = wb.createCellStyle();
         setAlignCenter(s11);
         setFillForeground(s11, IndexedColors.WHITE.index);
-        s11.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        s11.setFont(wb.getFontAt(FONTE_BOLD));
         estilos.put(ALIGN_CENTER_WHITE_BOLD, s11);
 
         XSSFCellStyle s12 = wb.createCellStyle();
-        s12.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s12.setFont(wb.getFontAt(FONTE_NORMAL));
         s12.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
         setAlignCenter(s12);
         addBorders(s12);
         estilos.put(STYLE_DATE, s12);
 
         XSSFCellStyle s13 = wb.createCellStyle();
-        s13.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s13.setFont(wb.getFontAt(FONTE_NORMAL));
         s13.setDataFormat(
                 createHelper.createDataFormat().getFormat("###,###,###,###,##0.00;[Red]-###,###,###,###,##0.00"));
         setAlignRight(s13);
         addBorders(s13);
         estilos.put(STYLE_DECIMAL, s13);
 
-        final XSSFCellStyle s14 = wb.createCellStyle();
+        XSSFCellStyle s14 = wb.createCellStyle();
         addBorders(s14);
         setAlignLeft(s14);
-        s14.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s14.setFont(wb.getFontAt(FONTE_NORMAL));
         estilos.put(STYLE_TEXT, s14);
 
         XSSFCellStyle s15 = wb.createCellStyle();
-        s15.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s15.setFont(wb.getFontAt(FONTE_NORMAL));
         s15.setDataFormat(createHelper.createDataFormat().getFormat("##############0"));
         s15.setVerticalAlignment(VerticalAlignment.CENTER);
         addBorders(s15);
         estilos.put(STYLE_NUMBER, s15);
 
         XSSFCellStyle s16 = wb.createCellStyle();
-        s16.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s16.setFont(wb.getFontAt(FONTE_NORMAL));
         s16.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy hh:mm"));
         setAlignCenter(s16);
         addBorders(s16);
@@ -511,36 +520,41 @@ public abstract class Relatorio {
         XSSFCellStyle s17 = wb.createCellStyle();
         setAlignCenter(s17);
         setFillForeground(s17, IndexedColors.LIGHT_BLUE.index);
-        s17.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s17.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         estilos.put(ALIGN_CENTER_BLUE_BOLD, s17);
 
         XSSFCellStyle s19 = wb.createCellStyle();
         setAlignRight(s19);
         setFillForeground(s19, IndexedColors.RED.index);
-        s19.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s19.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         addBorders(s19);
         estilos.put(ALIGN_RIGHT_RED_BOLD, s19);
         
         XSSFCellStyle s20 = wb.createCellStyle();
         setAlignRight(s20);
         setFillForeground(s20, IndexedColors.GREEN.index);
-        s20.setFont(wb.getFontAt(fontes.get(FONTE_WHITE_BOLD)));
+        s20.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
         estilos.put(ALIGN_RIGHT_GREEN_BOLD, s20);
+
+        XSSFCellStyle s28 = wb.createCellStyle();
+        setAlignLeft(s28);
+        s28.setFont(wb.getFontAt(FONTE_BOLD));
+        estilos.put(ALIGN_LEFT_BOLD, s28);
 
         XSSFCellStyle s21 = wb.createCellStyle();
         setAlignLeft(s21);
-        s21.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s21.setFont(wb.getFontAt(FONTE_NORMAL));
         estilos.put(ALIGN_LEFT, s21);
 
-        final XSSFCellStyle s22 = wb.createCellStyle();
-        s22.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        XSSFCellStyle s22 = wb.createCellStyle();
+        s22.setFont(wb.getFontAt(FONTE_BOLD));
         setAlignLeft(s22);
         setFillForeground(s22, IndexedColors.GREY_25_PERCENT.index);
         addBorders(s22);
         estilos.put(ALIGN_LEFT_GREY_25_PERCENT_BOLD, s22);
 
         XSSFCellStyle s23 = wb.createCellStyle();
-        s23.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s23.setFont(wb.getFontAt(FONTE_NORMAL));
         s23.setDataFormat(createHelper.createDataFormat().getFormat("###,###,###,###,##0.00000"));
         addBorders(s23);
         estilos.put(STYLE_DECIMAL_5DIGITS, s23);
@@ -548,23 +562,30 @@ public abstract class Relatorio {
         XSSFCellStyle s24 = wb.createCellStyle();
         setAlignCenter(s24);
         setFillForeground(s24, IndexedColors.WHITE.index);
-        s24.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s24.setFont(wb.getFontAt(FONTE_NORMAL));
         estilos.put(ALIGN_CENTER_WHITE, s24);
 
         XSSFCellStyle s25 = wb.createCellStyle();
         setAlignRight(s25);
-        s25.setFont(wb.getFontAt(fontes.get(FONTE_BOLD)));
+        s25.setFont(wb.getFontAt(FONTE_BOLD));
         addBorders(s25);
         estilos.put(ALIGN_RIGHT_BOLD, s25);
 
         XSSFCellStyle s26 = wb.createCellStyle();
-        s26.setFont(wb.getFontAt(fontes.get(FONTE_NORMAL)));
+        s26.setFont(wb.getFontAt(FONTE_NORMAL));
         s26.setDataFormat(
                 createHelper.createDataFormat().getFormat("###,###,###,###,##0.00%;[Red]-###,###,###,###,##0.00%"));
         setAlignRight(s26);
         addBorders(s26);
         estilos.put(STYLE_PERCENT, s26);
 
+        XSSFCellStyle s27 = wb.createCellStyle();
+        setAlignLeft(s27);
+        setFillForeground(s27, RGBColorsEnum.WHITE_SMOKE.color());
+        s27.setFont(wb.getFontAt(FONTE_BOLD));
+        addBorders(s27);
+        estilos.put(ALIGN_LEFT_WHITE_SMOKE_BOLD, s27);
+        
     }
 
     protected XSSFCell setCellFormula(XSSFCell cell, String formula) {
@@ -734,6 +755,10 @@ public abstract class Relatorio {
                 addCell(row, pos, value);
             }
         }
+    }
+
+    protected XSSFCellStyle getCellStyle(String key) {
+        return estilos.get(key);
     }
     
     protected static void printVersion() {

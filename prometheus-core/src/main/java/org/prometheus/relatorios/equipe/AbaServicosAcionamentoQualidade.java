@@ -69,6 +69,11 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
+		    InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
+		    
+		    insumo.setNuFatura(faturamento.getNuFatura());
+		    insumo.setNuEquipe(equipe.getNuEquipe());
+		    
 			LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s", //
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
@@ -87,6 +92,8 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 			listarServicosContratados(equipe, sheet, faturamento);
 
 			addBlank(sheet);
+			
+			result.put(faturamento.getNuFatura(), insumo);
 
 		} // faturamentos
 

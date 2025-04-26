@@ -55,7 +55,7 @@ public class AbaAjuste extends Relatorio {
 		setCellComment(cell, "Corresponde à diferença entre o valor devido calculado e que foi pago.\n" //
 				+ "Esse valor tende a 0(zero).");
 
-		LOG.info(coEquipe + ";" + result.getNumericCellValue());
+		LOG.info(coEquipe + ";" + result.getRawValue());
 		
 		return result;
 

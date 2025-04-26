@@ -120,6 +120,8 @@ public class AbaPagamentosPerfil extends Relatorio {
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 			insumo.setVrPago(ultimaFatura);
+			insumo.setNuFatura(termo.getNuFaturaGerada());
+			insumo.setNuEquipe(equipe.getNuEquipe());
 			
 			insumos.put(termo.getNuFaturaGerada(), insumo);
 			

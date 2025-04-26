@@ -62,7 +62,7 @@ public class AbaEquipe extends Relatorio {
 
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 60);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 75);
 		setColumnWidth(sheet, 6, 10); // Coluna G
 
 		XSSFRow row = addNewRow(sheet);

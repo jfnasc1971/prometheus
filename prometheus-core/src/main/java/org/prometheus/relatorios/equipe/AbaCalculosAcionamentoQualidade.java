@@ -246,7 +246,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(),
                             faturamento.getNuFatura(), vigencia.getNuPerfil());
 
-                    insumo.addVrPrecoPerfil(vigencia.getNuPerfil(), vrPrecoGrupo);
+                    insumo.addVrPrecoPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(), vrPrecoGrupo);
 
                     pos = 4;
                     row = addNewRow(sheet);
@@ -264,7 +264,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                                     row.getCell(row.getLastCellNum() - 1).getReference()),
                             pos++));
 
-                    insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getQtEfetiva());
+                    insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(), vigencia.getQtEfetiva());
 
                 }
 

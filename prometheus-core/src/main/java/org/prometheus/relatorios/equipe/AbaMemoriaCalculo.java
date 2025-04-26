@@ -14,6 +14,7 @@ import org.prometheus.dto.DetalheFaturamentoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.IndicadorDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.AusenciaExtraFaturamentoService;
 import org.prometheus.service.DetalheFaturamentoService;
@@ -64,7 +65,8 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 
-		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, coEquipe, ALIGN_CENTER_WHITE_BOLD, false);
+		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, coEquipe, //
+		        CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (FaturamentoDTO faturamento : faturamentos) {
 
@@ -76,7 +78,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 			addMergedRegion(
 					sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, String.format("%s - %s - %s", faturamento.getNuFatura(),
 							faturamento.getDeFatura(), faturamento.getDtFinalFatura()),
-					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+					CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 			List<DetalheFaturamentoDTO> detalhes = detalheService.listar(coEquipe, faturamento.getNuFatura());
 
@@ -84,14 +86,14 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 			int pos = 0;
 
-			addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Dias Trab.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Qt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-			addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Dias Trab.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Qt. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addCell(row, pos++, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 			int posInicioVgnciaMembros = sheet.getLastRowNum() + 2;
 			int posFinalVgnciaMembros = sheet.getLastRowNum() + 1;
@@ -114,7 +116,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 				addCell(row, pos++, d.getQtDiasFat());
 
 				// =(E4/F4)*D4
-				setCellFormula(sheet, row, "(E$1/F$1)*D$1", pos++, STYLE_DECIMAL_5DIGITS);
+				setCellFormula(sheet, row, "(E$1/F$1)*D$1", pos++, CellStylesEnum.DECIMAL5);
 
 				// =G4*C4
 				setCellFormula(sheet, row, "G$1*C$1", pos++);
@@ -126,9 +128,9 @@ public class AbaMemoriaCalculo extends Relatorio {
 			pos = 5;
 
 			// Qt. Efetiva
-			addCell(row, pos++, "Qt. Efetiva", ALIGN_RIGHT_BOLD);
+			addCell(row, pos++, "Qt. Efetiva", CellStylesEnum.NORMAL_ALIGN_RIGHT_BOLD);
 			setCellFormula(sheet, row, "SUM(G$1:G$2)", pos++, posInicioVgnciaMembros, posFinalVgnciaMembros,
-					STYLE_DECIMAL_5DIGITS);
+					CellStylesEnum.DECIMAL5);
 
 			// Sub-Total
 			setCellFormula(sheet, row, "SUM(H$1:H$2)", pos++, posInicioVgnciaMembros, posFinalVgnciaMembros);
@@ -139,7 +141,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 			row = addNewRow(sheet);
 			pos = 5;
-			addCell(row, pos++, "APEC", ALIGN_RIGHT_BOLD);
+			addCell(row, pos++, "APEC", CellStylesEnum.NORMAL_ALIGN_RIGHT_BOLD);
 			if (ausenciaExtraDTO != null) {
 				addCell(row, pos++, ausenciaExtraDTO.getQtDiaServicoExtra());
 			} else {
@@ -150,7 +152,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 			// ausencias
 			row = addNewRow(sheet);
 			pos = 5;
-			addCell(row, pos++, "DPEC", ALIGN_RIGHT_BOLD);
+			addCell(row, pos++, "DPEC", CellStylesEnum.NORMAL_ALIGN_RIGHT_BOLD);
 			if (ausenciaExtraDTO != null) {
 				addCell(row, pos++, ausenciaExtraDTO.getQtDiaAusencia());
 			} else {
@@ -161,7 +163,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 			//
 			row = addNewRow(sheet);
 			pos = 6;
-			addCell(row, pos++, "Sub-Total", ALIGN_RIGHT_BOLD);
+			addCell(row, pos++, "Sub-Total", CellStylesEnum.NORMAL_ALIGN_RIGHT_BOLD);
 			setCellFormula(sheet, row, //
 					String.format("SUM(H%s+H%s-H%s)", sheet.getLastRowNum() - 2, sheet.getLastRowNum() - 1,
 							sheet.getLastRowNum()),
@@ -172,7 +174,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 			//
 			row = addNewRow(sheet);
 			pos = 5;
-			addCell(row, pos++, "Valor com FNS", ALIGN_RIGHT_ORANGE_BOLD);
+			addCell(row, pos++, "Valor com FNS", CellStylesEnum.ORANGE_ALIGN_RIGHT_BOLD);
 			IndicadorDTO indicador = indicadorService.findByFatura(equipe.getNuEquipe(), faturamento.getNuFatura(),
 					"S");
 			if (indicador != null) {

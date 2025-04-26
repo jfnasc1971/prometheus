@@ -13,6 +13,7 @@ import org.prometheus.dto.CalculoValorDevidoMilheirosDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.CalculoValorMilheirosService;
@@ -53,15 +54,15 @@ public class AbaCalculoValorDevidoMilheiros extends Relatorio {
 
         int pos = 0;
 
-        addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-        addCell(row, pos++, "Tipo Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Quantidade", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "% Desconto Proporcional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Valor desconto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Valor Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "Tipo Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Quantidade", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "% Desconto Proporcional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Valor desconto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Valor Financeiro", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
         XSSFCell primeiraFatura = null;
         XSSFCell ultimaFatura = null;
@@ -80,22 +81,22 @@ public class AbaCalculoValorDevidoMilheiros extends Relatorio {
 
                 addCell(row, pos++, dto.getNuFatura() + " - " + dto.getDeFatura());
                 addCell(row, pos++, dto.getNoTipoPreco());
-                addCell(row, pos++, dto.getVrPrecoGrupo(), STYLE_DECIMAL);
-                addCell(row, pos++, dto.getQtSolicitacao(), STYLE_DECIMAL);
+                addCell(row, pos++, dto.getVrPrecoGrupo(), CellStylesEnum.DECIMAL);
+                addCell(row, pos++, dto.getQtSolicitacao(), CellStylesEnum.DECIMAL);
 
-                XSSFCell vrPrevisto = addCell(row, pos++, dto.getVrPrevisto(), STYLE_DECIMAL);
+                XSSFCell vrPrevisto = addCell(row, pos++, dto.getVrPrevisto(), CellStylesEnum.DECIMAL);
 
-                setCellFormula(addCell(row, pos++, BigDecimal.ZERO, STYLE_PERCENT), //
+                setCellFormula(addCell(row, pos++, BigDecimal.ZERO, CellStylesEnum.PERCENT), //
                         String.format("%s", XSSFUtils.getFullReference(insumo.getPcDescontoProporcional())));
 
-                XSSFCell vrDescontoProporcional = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL), //
+                XSSFCell vrDescontoProporcional = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, CellStylesEnum.DECIMAL), //
                         String.format("%s", XSSFUtils.getFullReference(insumo.getVrDescontoProporcional())));
 
-                XSSFCell vrFns = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL), //
+                XSSFCell vrFns = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, CellStylesEnum.DECIMAL), //
                         String.format("%s", XSSFUtils.getFullReference(insumo.getVrFns())));
 
                 if (ultimaFatura == null) {
-                    primeiraFatura = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL), //
+                    primeiraFatura = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, CellStylesEnum.DECIMAL), //
                             String.format("(%s-%s)*%s", //
                                     vrPrevisto.getReference(), //
                                     vrDescontoProporcional.getReference(), //
@@ -103,7 +104,7 @@ public class AbaCalculoValorDevidoMilheiros extends Relatorio {
                     ultimaFatura = primeiraFatura;
                 } else {
 
-                    ultimaFatura = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, STYLE_DECIMAL), //
+                    ultimaFatura = setCellFormula(addCell(row, pos++, BigDecimal.ZERO, CellStylesEnum.DECIMAL), //
                             String.format("(%s-%s)*%s", //
                                     vrPrevisto.getReference(), //
                                     vrDescontoProporcional.getReference(), //
@@ -115,14 +116,14 @@ public class AbaCalculoValorDevidoMilheiros extends Relatorio {
 
 
 		row = addNewRow(sheet);
-		addCell(row, pos - 2, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos - 2, "TOTAL", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		
         XSSFCell result = null;
 		
 		if (primeiraFatura != null) {
 	        result = setCellFormula(sheet, row,
 	                String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
-	                pos - 1, STYLE_DECIMAL);
+	                pos - 1, CellStylesEnum.DECIMAL);
 		} else {
             result = addCell(row, pos - 1, "N/A");
 		}

@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.springframework.stereotype.Component;
@@ -38,18 +39,18 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 		int pos = 0;
 
-		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-		addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Dias Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Dias Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Vr. Previsto Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-		addCell(row, pos++, "Vr. Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Dias Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "APEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Dias Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "DPEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Vr. Previsto Termo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 30);
+		addCell(row, pos++, "Vr. Financeiro", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		XSSFCell primeiraFatura = null;
 		XSSFCell ultimaFatura = null;
@@ -66,54 +67,54 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 				addCell(row, pos++, faturamento.getNuFatura() + " - " + faturamento.getDeFatura());
 				addCell(row, pos++, faturamento.getQtDiasFaturamento());
-				addCell(row, pos++, insumo.getVrPreco(), STYLE_DECIMAL);
+				addCell(row, pos++, insumo.getVrPreco(), CellStylesEnum.DECIMAL);
 
 				if (insumo.getQtEfetiva() != null) {
 					setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULOS, //
-							insumo.getQtEfetiva().getReference()), pos++, STYLE_DECIMAL);
+							insumo.getQtEfetiva().getReference()), pos++, CellStylesEnum.DECIMAL);
 				}
 
 				setCellFormula(sheet, row, String.format("C%s*D%s", row.getRowNum() + 1, row.getRowNum() + 1), //
-						pos++, STYLE_DECIMAL);
+						pos++, CellStylesEnum.DECIMAL);
 
 				setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULOS, //
-						insumo.getQtDiasExtra().getReference()), pos++, STYLE_DECIMAL);
+						insumo.getQtDiasExtra().getReference()), pos++, CellStylesEnum.DECIMAL);
 
 				// =(C20/B20)*F20
 				setCellFormula(sheet, row,
 						String.format("(C%s/B%s)*F%s", row.getRowNum() + 1, row.getRowNum() + 1, row.getRowNum() + 1), //
-						pos++, STYLE_DECIMAL);
+						pos++, CellStylesEnum.DECIMAL);
 
 				setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULOS, //
-						insumo.getQtDiasAusencia().getReference()), pos++, STYLE_DECIMAL);
+						insumo.getQtDiasAusencia().getReference()), pos++, CellStylesEnum.DECIMAL);
 
 				setCellFormula(sheet, row,
 						String.format("(C%s/B%s)*H%s", row.getRowNum() + 1, row.getRowNum() + 1, row.getRowNum() + 1), //
-						pos++, STYLE_DECIMAL);
+						pos++, CellStylesEnum.DECIMAL);
 
 				// E20+(G20-I20)
 				setCellFormula(sheet, row,
 						String.format("E%s+(G%s-I%s)", row.getRowNum() + 1, row.getRowNum() + 1, row.getRowNum() + 1), //
-						pos++, STYLE_DECIMAL);
+						pos++, CellStylesEnum.DECIMAL);
 
 				if (insumo.getVrFns() != null && !"N/A".equalsIgnoreCase(insumo.getVrFns().toString())) {
 					setCellFormula(sheet, row,
 							getCellReference(RelatorioEquipe.ABA_CALCULOS, insumo.getVrFns().getReference()), pos++,
-							STYLE_DECIMAL);
+							CellStylesEnum.DECIMAL);
 				} else {
-					addCell(row, pos++, "N/A", ALIGN_CENTER);
+					addCell(row, pos++, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 				}
 
 				// J20*K20
 				if (primeiraFatura == null) {
 					primeiraFatura = setCellFormula(sheet, row,
 							"IF(K%s=\"N/A\",J%s,J%s*K%s)".replaceAll("%s", String.valueOf(row.getRowNum() + 1)), //
-							pos++, STYLE_DECIMAL);
+							pos++, CellStylesEnum.DECIMAL);
 
 				} else {
 					ultimaFatura = setCellFormula(sheet, row,
 							"IF(K%s=\"N/A\",J%s,J%s*K%s)".replaceAll("%s", String.valueOf(row.getRowNum() + 1)), //
-							pos++, STYLE_DECIMAL);
+							pos++, CellStylesEnum.DECIMAL);
 
 				}
 			}
@@ -124,14 +125,14 @@ public class AbaCalculoValorDevido extends Relatorio {
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, pos - 2, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos - 2, "TOTAL", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		
 		XSSFCell result = null;
 		
 		if (primeiraFatura != null) {
 	        result = setCellFormula(sheet, row,
 	                String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
-	                pos - 1, STYLE_DECIMAL);
+	                pos - 1, CellStylesEnum.DECIMAL);
 		} else {
             result = addCell(row, pos - 1, "N/A");
 		}

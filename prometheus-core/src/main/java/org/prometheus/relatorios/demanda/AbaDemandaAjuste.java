@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioDemanda;
 import org.springframework.stereotype.Component;
@@ -37,21 +38,21 @@ public class AbaDemandaAjuste extends Relatorio {
 		XSSFRow row = null;
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 2, coDemanda, ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 2, coDemanda, CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 1, "Vr. Devido Faturamento", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 1, "Vr. Devido Faturamento", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 		setCellFormula(sheet, row, getCellReference(RelatorioDemanda.ABA_DEMANDA, //
-				cellValorDevido.getReference()), 2, STYLE_DECIMAL);
+				cellValorDevido.getReference()), 2, CellStylesEnum.DECIMAL);
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 		setCellFormula(sheet, row, getCellReference(RelatorioDemanda.ABA_TERMOS, //
-				cellValorPagamentos.getReference()), 2, STYLE_DECIMAL);
+				cellValorPagamentos.getReference()), 2, CellStylesEnum.DECIMAL);
 		
 		row = addNewRow(sheet);
-		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", ALIGN_RIGHT_GREEN_BOLD);
-		XSSFCell result = setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, STYLE_DECIMAL);
+		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", CellStylesEnum.GREEN_ALIGN_RIGHT_BOLD);
+		XSSFCell result = setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, CellStylesEnum.DECIMAL);
 		setCellComment(cell, "Corresponde à diferença entre o valor devido calculado e que foi pago.\n" //
 				+ "Esse valor tende a 0(zero).");
 

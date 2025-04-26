@@ -10,6 +10,7 @@ import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaixaIndicadorDTO;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.SituacaoEntregaIndicadorDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
@@ -65,15 +66,15 @@ public class AbaIndicadores extends Relatorio {
 		int rownum = 0;
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, 0, 4, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 4, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		pos = 0;
 		row = addNewRow(sheet, rownum++);
-		addCell(row, pos++, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 70);
-		addCell(row, pos++, "Peso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Fator Ajuste", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Limite Máximo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. Fat. Média", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 70);
+		addCell(row, pos++, "Peso", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Fator Ajuste", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Limite Máximo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Fat. Média", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		for (IndicadorContratoDTO indicador : indicadores) {
 			pos = 0;
@@ -81,7 +82,7 @@ public class AbaIndicadores extends Relatorio {
 
 			addCell(row, pos++, indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador());
 			setNoNull(row, pos++, indicador.getVrPesoTipoIndicador());
-			setNoNull(row, pos++, indicador.getVrFatorAjuste(), STYLE_DECIMAL_5DIGITS);
+			setNoNull(row, pos++, indicador.getVrFatorAjuste(), CellStylesEnum.DECIMAL5);
 			setNoNull(row, pos++, indicador.getVrLimiteMaximoIndicador());
 			setNoNull(row, pos++, indicador.getQtFaturamento());
 		}
@@ -92,7 +93,7 @@ public class AbaIndicadores extends Relatorio {
 		addNewRow(sheet, rownum++);
 		row = addNewRow(sheet, rownum++);
 		addMergedRegion(sheet, row, 0, 2, "Situações Consideradas para Serviços Contratados",
-				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		List<SituacaoEntregaIndicadorDTO> situacoes = situacaoEntregaIndicadorService.listar(equipe.getNuEquipe());
 
@@ -104,8 +105,8 @@ public class AbaIndicadores extends Relatorio {
 //		if (Utils.isNotEmpty(situacoes)) {
 //
 //			row = addNewRow(sheet, rownum++);
-//			addCell(row, 0, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-//			addMergedRegion(sheet, row, 1, 2, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+//			addCell(row, 0, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+//			addMergedRegion(sheet, row, 1, 2, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 //
 //			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
 //				row = addNewRow(sheet, rownum++);
@@ -124,21 +125,21 @@ public class AbaIndicadores extends Relatorio {
 		List<FaixaIndicadorDTO> faixas = faixaIndicadorService.listar(equipe.getNuEquipe());
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, 6, 8, "Valores Faixas Indicador", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 6, 8, "Valores Faixas Indicador", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
 		pos = 6;
-		addCell(row, pos++, "Vr. Inicial", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Vr. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Vr. Inicial", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Vr. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		for (FaixaIndicadorDTO faixa : faixas) {
 			pos = 6;
 			row = addNewRow(sheet, rownum++);
 
-			addCell(row, pos++, faixa.getQtInicioFaixa(), STYLE_DECIMAL);
-			addCell(row, pos++, faixa.getQtFinalFaixa(), STYLE_DECIMAL);
-			addCell(row, pos++, faixa.getVrFatorFaixa(), STYLE_DECIMAL);
+			addCell(row, pos++, faixa.getQtInicioFaixa(), CellStylesEnum.DECIMAL);
+			addCell(row, pos++, faixa.getQtFinalFaixa(), CellStylesEnum.DECIMAL);
+			addCell(row, pos++, faixa.getVrFatorFaixa(), CellStylesEnum.DECIMAL);
 		}
 
 		addNewRow(sheet, rownum++);

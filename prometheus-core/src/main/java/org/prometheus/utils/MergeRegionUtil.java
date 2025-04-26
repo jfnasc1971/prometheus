@@ -3,7 +3,6 @@ package org.prometheus.utils;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
@@ -11,23 +10,23 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.prometheus.enums.RGBColorsEnum;
+import org.prometheus.enums.CellStylesEnum;
 
 public class MergeRegionUtil {
 
     public static final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int primeiraColuna, int qtColunas,  
-            Object value, XSSFCellStyle cellStyle) {
-        return addMergedRegion(sheet, row, primeiraColuna, qtColunas, 1, value, cellStyle);
+            Object value, CellStylesEnum style) {
+        return addMergedRegion(sheet, row, primeiraColuna, qtColunas, 1, value, style);
     }
 
     public static final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int primeiraColuna, int qtColunas, int qtLinhas, 
-            Object value, XSSFCellStyle cellStyle) {
+            Object value, CellStylesEnum style) {
 
         CellRangeAddress cellRangeAddress = new CellRangeAddress(row.getRowNum(), row.getRowNum() + (qtLinhas - 1), primeiraColuna, primeiraColuna + qtColunas);
         sheet.addMergedRegion(cellRangeAddress);
 
         XSSFCell cell1 = row.createCell(primeiraColuna);
-        cell1.setCellStyle(cellStyle);
+        cell1.getSheet().getWorkbook().getCellStyleAt(style.index);
 
         if (value instanceof Number) {
             cell1.setCellValue(value == null ? null : ((Number) value).doubleValue());

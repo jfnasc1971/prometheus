@@ -3,7 +3,6 @@ package org.prometheus.relatorios;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,53 +29,13 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.AppInfo;
 import org.prometheus.dto.IndicadorContratoDTO;
-import org.prometheus.enums.RGBColorsEnum;
+import org.prometheus.enums.CellStylesEnum;
+import org.prometheus.enums.FontWeightEnum;
+import org.prometheus.enums.FontsEnum;
+import org.prometheus.enums.ValueFormatsEnum;
 import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
-    protected Map<String, XSSFCellStyle> estilos = new HashMap<>();
-
-    public static final String ALIGN_CENTER = "ALIGN_CENTER";
-    public static final String ALIGN_CENTER_BLUE_BOLD = "ALIGN_CENTER_BLUE_BOLD";
-    public static final String ALIGN_CENTER_BOLD = "ALIGN_CENTER_BOLD";
-    public static final String ALIGN_CENTER_GREEN_BOLD = "ALIGN_CENTER_GREEN_BOLD";
-    public static final String ALIGN_CENTER_GREY_25_PERCENT_BOLD = "ALIGN_CENTER_GREY_25_PERCENT_BOLD";
-    public static final String ALIGN_CENTER_GREY_40_PERCENT_BOLD = "ALIGN_CENTER_GREY_40_PERCENT_BOLD";
-    public static final String ALIGN_CENTER_ORANGE_BOLD = "ALIGN_CENTER_ORANGE_BOLD";
-    public static final String ALIGN_CENTER_LIGHT_BLUE_BOLD = "ALIGN_CENTER_LIGHT_BLUE_BOLD";
-    public static final String ALIGN_CENTER_RED_BOLD = "ALIGN_CENTER_RED_BOLD";
-    public static final String ALIGN_CENTER_WHITE = "ALIGN_CENTER_WHITE";
-    public static final String ALIGN_CENTER_WHITE_BOLD = "ALIGN_CENTER_WHITE_BOLD";
-    public static final String ALIGN_LEFT_WHITE_SMOKE_BOLD = "ALIGN_LEFT_WHITE_SMOKE_BOLD";
-
-    public static final String ALIGN_LEFT = "ALIGN_LEFT";
-    public static final String ALIGN_LEFT_BOLD = "ALIGN_LEFT_BOLD";
-    public static final String ALIGN_LEFT_GREY_25_PERCENT_BOLD = "ALIGN_LEFT_GREY_25_PERCENT_BOLD";
-
-    public static final String ALIGN_RIGHT_BOLD = "ALIGN_RIGHT_BOLD";
-    public static final String ALIGN_RIGHT_BLUE_BOLD = "ALIGN_RIGHT_BLUE_BOLD";
-    public static final String ALIGN_RIGHT_GREEN_BOLD = "ALIGN_RIGHT_GREEN_BOLD";
-    public static final String ALIGN_RIGHT_GREY_25_PERCENT_BOLD = "ALIGN_RIGHT_GREY_25_PERCENT_BOLD";
-    public static final String ALIGN_RIGHT_ORANGE_BOLD = "ALIGN_RIGHT_ORANGE_BOLD";
-    public static final String ALIGN_RIGHT_RED_BOLD = "ALIGN_RIGHT_RED_BOLD";
-
-    public static final short FONT_SIZE = (short) 9;
-    public static final String FONT_FAMILY = "Arial";
-    public static final Integer FONTE_BOLD = 2;
-    public static final Integer FONTE_NORMAL = 1;
-    public static final Integer FONTE_WHITE_BOLD = 3;
-    public static final Integer FONTE_RED_BOLD = 4;
-
-    public static final String STYLE_DATE = "STYLE_DATE";
-    public static final String STYLE_DATE_TIME = "STYLE_DATE_TIME";
-    public static final String STYLE_DECIMAL = "STYLE_DECIMAL";
-    public static final String STYLE_DECIMAL_5DIGITS = "STYLE_DECIMAL_5DIGITS";
-    public static final String STYLE_NUMBER = "STYLE_NUMBER";
-    public static final String STYLE_TEXT = "STYLE_TEXT";
-    public static final String STYLE_REDBOLD_TEXT = "STYLE_REDBOLD_TEXT";
-    public static final String STYLE_PERCENT = "STYLE_PERCENT";
-
-    public static final String BOLD = "_BOLD";
 
     protected void setColumnWidth(XSSFSheet sheet, int colNum, int width) {
         sheet.setColumnWidth(colNum, (int) sheet.getColumnWidthInPixels(colNum) * width);
@@ -111,7 +70,7 @@ public abstract class Relatorio {
     protected final XSSFRow getLastRow(XSSFSheet sheet) {
         return sheet.getRow(sheet.getLastRowNum());
     }
-    
+
     protected final XSSFRow getRow(XSSFSheet sheet, int rownum) {
         XSSFRow row = sheet.getRow(rownum);
         if (row == null) {
@@ -134,16 +93,17 @@ public abstract class Relatorio {
         }
         return sheet.createRow(sheet.getLastRowNum() + 1);
     }
-    
+
     protected final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int firstCol, int lastCol, Object value) {
-        return addMergedRegion(sheet, row, firstCol, lastCol, value, ALIGN_LEFT, true);
+        return addMergedRegion(sheet, row, firstCol, lastCol, value, CellStylesEnum.NORMAL_ALIGN_LEFT);
     }
 
     protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int firstCol, Object value) {
         addMergedRegion2(sheet, firstRow, lastRow, firstCol, firstCol, value);
     }
 
-    protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int firstCol, int lastCol, Object value) {
+    protected final void addMergedRegion2(XSSFSheet sheet, int firstRow, int lastRow, int firstCol, int lastCol,
+            Object value) {
 
         CellRangeAddress cellRangeAddress = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         sheet.addMergedRegion(cellRangeAddress);
@@ -178,12 +138,7 @@ public abstract class Relatorio {
     }
 
     protected final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int firstCol, int lastCol, Object value,
-            String style) {
-        return addMergedRegion(sheet, row, firstCol, lastCol, value, style, true);
-    }
-
-    protected final XSSFCell addMergedRegion(XSSFSheet sheet, XSSFRow row, int firstCol, int lastCol, Object value,
-            String style, boolean hasBorders) {
+            CellStylesEnum style) {
 
         CreationHelper createHelper = sheet.getWorkbook().getCreationHelper();
 
@@ -192,7 +147,7 @@ public abstract class Relatorio {
 
         XSSFCell cell1 = row.createCell(firstCol);
 
-        CellStyle cellStyle = estilos.get(style);
+        CellStyle cellStyle = sheet.getWorkbook().getCellStyleAt(style.index);
 
         if (value instanceof Number) {
             cell1.setCellValue(value == null ? null : ((Number) value).doubleValue());
@@ -203,9 +158,7 @@ public abstract class Relatorio {
             cell1.setCellValue(value == null ? "" : value.toString());
         }
 
-        cell1.setCellStyle(cellStyle);
-
-        if (hasBorders) {
+        if (style.hasBorders) {
             RegionUtil.setBorderBottom(BorderStyle.THIN, cellRangeAddress, sheet);
             RegionUtil.setBorderTop(BorderStyle.THIN, cellRangeAddress, sheet);
             RegionUtil.setBorderRight(BorderStyle.THIN, cellRangeAddress, sheet);
@@ -216,34 +169,21 @@ public abstract class Relatorio {
             RegionUtil.setBottomBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
             RegionUtil.setLeftBorderColor(IndexedColors.GREY_40_PERCENT.index, cellRangeAddress, sheet);
         }
-        
-        row.setHeight((short)300);
-        
-        return cell1;
-    }
 
-    private void setFillForeground(XSSFCellStyle s0, short color) {
-        s0.setFillForegroundColor(color);
-        s0.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        row.setHeight((short) 300);
+
+        cell1.setCellStyle(cellStyle);
+
+        return cell1;
     }
 
     private void setFillForeground(XSSFCellStyle s0, XSSFColor color) {
         s0.setFillForegroundColor(color);
-        s0.setFillPattern(FillPatternType.SOLID_FOREGROUND);        
+        s0.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     }
 
-    private void setAlignLeft(final XSSFCellStyle s0) {
-        s0.setAlignment(HorizontalAlignment.LEFT);
-        s0.setVerticalAlignment(VerticalAlignment.CENTER);
-    }
-
-    private void setAlignRight(XSSFCellStyle s0) {
-        s0.setAlignment(HorizontalAlignment.RIGHT);
-        s0.setVerticalAlignment(VerticalAlignment.CENTER);
-    }
-
-    private void setAlignCenter(XSSFCellStyle s0) {
-        s0.setAlignment(HorizontalAlignment.CENTER);
+    private void setAlign(XSSFCellStyle s0, HorizontalAlignment hAlignment) {
+        s0.setAlignment(hAlignment);
         s0.setVerticalAlignment(VerticalAlignment.CENTER);
     }
 
@@ -263,66 +203,58 @@ public abstract class Relatorio {
 
     protected final XSSFCell addCell(XSSFRow row, int pos, Long value) {
         XSSFCell cell1 = row.createCell(pos);
-        cell1.setCellStyle(estilos.get(STYLE_NUMBER));
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(CellStylesEnum.NUMBER.index));
         cell1.setCellValue(value == null ? 0L : value.doubleValue());
         return cell1;
     }
 
     protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value) {
         XSSFCell cell1 = row.createCell(pos);
-        cell1.setCellStyle(estilos.get(STYLE_NUMBER));
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(CellStylesEnum.DECIMAL.index));
         cell1.setCellValue(value == null ? BigDecimal.ZERO.doubleValue() : value.doubleValue());
         return cell1;
     }
 
-    protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value, String style) {
+    protected final XSSFCell addCell(XSSFRow row, int pos, BigDecimal value, CellStylesEnum style) {
         XSSFCell cell1 = row.createCell(pos);
-        XSSFCellStyle s0 = estilos.get(style);
-        if (s0 == null) {
-            s0 = estilos.get(STYLE_DECIMAL);
-        }
-
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         if (value != null) {
             cell1.setCellValue(value == null ? BigDecimal.ZERO.doubleValue() : value.doubleValue());
         }
-
-        cell1.setCellStyle(s0);
-
         return cell1;
     }
 
-    protected final XSSFCell addCell(XSSFRow row, int pos, String value, String style, int width) {
+    protected final XSSFCell addCell(XSSFRow row, int pos, String value, CellStylesEnum style, int width) {
         XSSFCell cell1 = row.createCell(pos);
-        cell1.setCellStyle(estilos.get(style));
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         cell1.setCellValue(value);
         setColumnWidth(row.getSheet(), pos, width);
         return cell1;
     }
 
-    protected final XSSFCell addCell(XSSFRow row, int pos, String value, String style) {
+    protected final XSSFCell addCell(XSSFRow row, int pos, String value, CellStylesEnum style) {
         XSSFCell cell1 = row.createCell(pos);
-        cell1.setCellStyle(estilos.get(style));
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         cell1.setCellValue(value);
         cell1.getCellStyle().setWrapText(true);
         return cell1;
     }
 
     protected final XSSFCell addCell(XSSFRow row, int pos) {
-        return addCell(row, pos, (String) null, STYLE_TEXT);
+        return addCell(row, pos, (String) null, CellStylesEnum.TEXT);
     }
 
     protected final XSSFCell addCell(XSSFRow row, int pos, String value) {
-        return addCell(row, pos, value, STYLE_TEXT);
+        return addCell(row, pos, value, CellStylesEnum.TEXT);
     }
 
     protected final XSSFCell addCell(XSSFRow row, int pos, Date value) {
-        return addCell(row, pos, value, STYLE_DATE);
+        return addCell(row, pos, value, CellStylesEnum.DATE);
     }
 
-    protected final XSSFCell addCell(XSSFRow row, int pos, Date value, String style) {
+    protected final XSSFCell addCell(XSSFRow row, int pos, Date value, CellStylesEnum style) {
         XSSFCell cell1 = row.createCell(pos);
-        XSSFCellStyle s0 = estilos.get(style);
-        cell1.setCellStyle(s0);
+        cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         cell1.setCellValue(value);
         return cell1;
     }
@@ -331,261 +263,89 @@ public abstract class Relatorio {
         evaluateFormula(sheet, row, pos, formula, null);
     }
 
-    protected final XSSFCell evaluateFormula(XSSFSheet sheet, XSSFRow row, int pos, String formula, String style) {
+    protected final XSSFCell evaluateFormula(XSSFSheet sheet, XSSFRow row, int pos, String formula,
+            CellStylesEnum style) {
 
         FormulaEvaluator evaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 
         XSSFCell c0 = row.createCell(pos);
         c0.setCellFormula(formula);
-
-        if (style == null) {
-            c0.setCellStyle(estilos.get(STYLE_DECIMAL));
-        } else {
-            c0.setCellStyle(estilos.get(style));
-        }
-
+        c0.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         evaluator.evaluateFormulaCell(c0);
 
         return c0;
 
     }
 
-    protected final XSSFCell evaluateFormula(XSSFCell cell, String formula, String style) {
+    protected final XSSFCell evaluateFormula(XSSFCell cell, String formula, CellStylesEnum style) {
 
         FormulaEvaluator evaluator = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
 
         cell.setCellFormula(formula);
-
-        if (style == null) {
-            //cell.setCellStyle(estilos.get(STYLE_DECIMAL));
-        } else {
-            cell.setCellStyle(estilos.get(style));
-        }
-
+        cell.setCellStyle(cell.getSheet().getWorkbook().getCellStyleAt(style.index));
         evaluator.evaluateFormulaCell(cell);
 
         return cell;
     }
 
     protected final void carregarFontes(XSSFWorkbook workBook) {
-
         if (workBook.getStylesSource().getFonts().size() == 1) {
-            
-            XSSFFont normal = workBook.createFont();
-            normal.setFontHeightInPoints(FONT_SIZE);
-            normal.setFontName(FONT_FAMILY);
-            normal.setColor(RGBColorsEnum.BLACK.color());
-
-            XSSFFont bold = workBook.createFont();
-            bold.setFontHeightInPoints(FONT_SIZE);
-            bold.setFontName(FONT_FAMILY);
-            bold.setColor(RGBColorsEnum.BLACK.color());
-            bold.setBold(true);
-
-            XSSFFont whiteBold = workBook.createFont();
-            whiteBold.setFontHeightInPoints(FONT_SIZE);
-            whiteBold.setFontName(FONT_FAMILY);
-            whiteBold.setColor(RGBColorsEnum.WHITE.color());
-            whiteBold.setBold(true);
-        
-            XSSFFont redBold = workBook.createFont();
-            redBold.setFontHeightInPoints(FONT_SIZE);
-            redBold.setFontName(FONT_FAMILY);
-            redBold.setColor(RGBColorsEnum.RED.color());
-            redBold.setBold(true);
+            for (FontsEnum f : FontsEnum.values()) {
+                XSSFFont normal = workBook.createFont();
+                normal.setFontHeightInPoints(f.size);
+                normal.setFontName(f.fontFamily);
+                normal.setColor(f.color);
+                normal.setBold(f.fontWeight.equals(FontWeightEnum.BOLD));
+            }
         }
     }
 
     protected final void carregarEstilos(XSSFWorkbook wb) {
 
-        CreationHelper createHelper = wb.getCreationHelper();
+        if (wb.getStylesSource().getNumCellStyles() == 1) {
 
-        XSSFCellStyle s30 = wb.createCellStyle();
-        setAlignCenter(s30);
-        setFillForeground(s30, IndexedColors.LIGHT_BLUE.index);
-        s30.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s30);
-        estilos.put(ALIGN_CENTER_LIGHT_BLUE_BOLD, s30);    
-        
-        XSSFCellStyle s18 = wb.createCellStyle();
-        setAlignCenter(s18);
-        setFillForeground(s18, IndexedColors.ORANGE.index);
-        s18.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s18);
-        estilos.put(ALIGN_CENTER_ORANGE_BOLD, s18);        
-        
-        XSSFCellStyle s1 = wb.createCellStyle();
-        setAlignCenter(s1);
-        s1.setFont(wb.getFontAt(FONTE_NORMAL));
-        addBorders(s1);
-        estilos.put(ALIGN_CENTER, s1);
+            CreationHelper createHelper = wb.getCreationHelper();
 
-        XSSFCellStyle s2 = wb.createCellStyle();
-        setAlignCenter(s2);
-        s2.setFont(wb.getFontAt(FONTE_BOLD));
-        addBorders(s2);
-        estilos.put(ALIGN_CENTER_BOLD, s2);
+            for (CellStylesEnum s : CellStylesEnum.values()) {
+                XSSFCellStyle style = wb.createCellStyle();
+                setAlign(style, s.hAlignment);
+                setFillForeground(style, s.bgColor);
+                style.setFont(wb.getFontAt(s.font));
 
-        XSSFCellStyle s3 = wb.createCellStyle();
-        s3.setWrapText(true);
-        setAlignCenter(s3);
-        setFillForeground(s3, RGBColorsEnum.WHITE_SMOKE.color());
-        s3.setFont(wb.getFontAt(FONTE_BOLD));
-        addBorders(s3);
-        estilos.put(ALIGN_CENTER_GREY_25_PERCENT_BOLD, s3);
+                if (s.format.equals(ValueFormatsEnum.DECIMAL)) {
+                    style.setDataFormat(createHelper.createDataFormat()
+                            .getFormat("###,###,###,###,##0.00;[Red]-###,###,###,###,##0.00"));
+                }
 
-        XSSFCellStyle s4 = wb.createCellStyle();
-        setAlignRight(s4);
-        setFillForeground(s4, RGBColorsEnum.WHITE_SMOKE.color());
-        s4.setFont(wb.getFontAt(FONTE_BOLD));
-        addBorders(s4);
-        estilos.put(ALIGN_RIGHT_GREY_25_PERCENT_BOLD, s4);
+                else if (s.format.equals(ValueFormatsEnum.DECIMAL5)) {
+                    style.setDataFormat(createHelper.createDataFormat()
+                            .getFormat("###,###,###,###,##0.00000;[Red]-###,###,###,###,##0.00000"));
+                }
 
-        XSSFCellStyle s5 = wb.createCellStyle();
-        setAlignRight(s5);
-        setFillForeground(s5, IndexedColors.ORANGE.index);
-        s5.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s5);
-        estilos.put(ALIGN_RIGHT_ORANGE_BOLD, s5);
+                else if (s.format.equals(ValueFormatsEnum.DATE_TIME)) {
+                    style.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy hh:mm"));
+                }
 
-        XSSFCellStyle s7 = wb.createCellStyle();
-        setAlignRight(s7);
-        setFillForeground(s7, IndexedColors.LIGHT_BLUE.index);
-        s7.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s7);
-        estilos.put(ALIGN_RIGHT_BLUE_BOLD, s7);
+                else if (s.format.equals(ValueFormatsEnum.DATE)) {
+                    style.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
+                }
 
-        XSSFCellStyle s8 = wb.createCellStyle();
-        setAlignCenter(s8);
-        setFillForeground(s8, IndexedColors.GREY_40_PERCENT.index);
-        s8.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s8);
-        estilos.put(ALIGN_CENTER_GREY_40_PERCENT_BOLD, s8);
+                else if (s.format.equals(ValueFormatsEnum.PERCENT)) {
+                    style.setDataFormat(createHelper.createDataFormat()
+                            .getFormat("###,###,###,###,##0.00%;[Red]-###,###,###,###,##0.00%"));
+                }
 
-        XSSFCellStyle s9 = wb.createCellStyle();
-        setAlignCenter(s9);
-        setFillForeground(s9, IndexedColors.RED.index);
-        s9.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s9);
-        estilos.put(ALIGN_CENTER_RED_BOLD, s9);
+                style.setBorderBottom(BorderStyle.NONE);
+                style.setBorderTop(BorderStyle.NONE);
+                style.setBorderRight(BorderStyle.NONE);
+                style.setBorderLeft(BorderStyle.NONE);
 
-        XSSFCellStyle s10 = wb.createCellStyle();
-        setAlignCenter(s10);
-        setFillForeground(s10, IndexedColors.GREEN.index);
-        s10.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s10);
-        estilos.put(ALIGN_CENTER_GREEN_BOLD, s10);
+                if (s.hasBorders) {
+                    addBorders(style);
+                }
+            }
+        }
 
-        XSSFCellStyle s11 = wb.createCellStyle();
-        setAlignCenter(s11);
-        setFillForeground(s11, IndexedColors.WHITE.index);
-        s11.setFont(wb.getFontAt(FONTE_BOLD));
-        estilos.put(ALIGN_CENTER_WHITE_BOLD, s11);
-
-        XSSFCellStyle s12 = wb.createCellStyle();
-        s12.setFont(wb.getFontAt(FONTE_NORMAL));
-        s12.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
-        setAlignCenter(s12);
-        addBorders(s12);
-        estilos.put(STYLE_DATE, s12);
-
-        XSSFCellStyle s13 = wb.createCellStyle();
-        s13.setFont(wb.getFontAt(FONTE_NORMAL));
-        s13.setDataFormat(
-                createHelper.createDataFormat().getFormat("###,###,###,###,##0.00;[Red]-###,###,###,###,##0.00"));
-        setAlignRight(s13);
-        addBorders(s13);
-        estilos.put(STYLE_DECIMAL, s13);
-
-        XSSFCellStyle s14 = wb.createCellStyle();
-        addBorders(s14);
-        setAlignLeft(s14);
-        s14.setFont(wb.getFontAt(FONTE_NORMAL));
-        estilos.put(STYLE_TEXT, s14);
-
-        XSSFCellStyle s15 = wb.createCellStyle();
-        s15.setFont(wb.getFontAt(FONTE_NORMAL));
-        s15.setDataFormat(createHelper.createDataFormat().getFormat("##############0"));
-        s15.setVerticalAlignment(VerticalAlignment.CENTER);
-        addBorders(s15);
-        estilos.put(STYLE_NUMBER, s15);
-
-        XSSFCellStyle s16 = wb.createCellStyle();
-        s16.setFont(wb.getFontAt(FONTE_NORMAL));
-        s16.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy hh:mm"));
-        setAlignCenter(s16);
-        addBorders(s16);
-        estilos.put(STYLE_DATE_TIME, s16);
-
-        XSSFCellStyle s17 = wb.createCellStyle();
-        setAlignCenter(s17);
-        setFillForeground(s17, IndexedColors.LIGHT_BLUE.index);
-        s17.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        estilos.put(ALIGN_CENTER_BLUE_BOLD, s17);
-
-        XSSFCellStyle s19 = wb.createCellStyle();
-        setAlignRight(s19);
-        setFillForeground(s19, IndexedColors.RED.index);
-        s19.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        addBorders(s19);
-        estilos.put(ALIGN_RIGHT_RED_BOLD, s19);
-        
-        XSSFCellStyle s20 = wb.createCellStyle();
-        setAlignRight(s20);
-        setFillForeground(s20, IndexedColors.GREEN.index);
-        s20.setFont(wb.getFontAt(FONTE_WHITE_BOLD));
-        estilos.put(ALIGN_RIGHT_GREEN_BOLD, s20);
-
-        XSSFCellStyle s28 = wb.createCellStyle();
-        setAlignLeft(s28);
-        s28.setFont(wb.getFontAt(FONTE_BOLD));
-        estilos.put(ALIGN_LEFT_BOLD, s28);
-
-        XSSFCellStyle s21 = wb.createCellStyle();
-        setAlignLeft(s21);
-        s21.setFont(wb.getFontAt(FONTE_NORMAL));
-        estilos.put(ALIGN_LEFT, s21);
-
-        XSSFCellStyle s22 = wb.createCellStyle();
-        s22.setFont(wb.getFontAt(FONTE_BOLD));
-        setAlignLeft(s22);
-        setFillForeground(s22, IndexedColors.GREY_25_PERCENT.index);
-        addBorders(s22);
-        estilos.put(ALIGN_LEFT_GREY_25_PERCENT_BOLD, s22);
-
-        XSSFCellStyle s23 = wb.createCellStyle();
-        s23.setFont(wb.getFontAt(FONTE_NORMAL));
-        s23.setDataFormat(createHelper.createDataFormat().getFormat("###,###,###,###,##0.00000"));
-        addBorders(s23);
-        estilos.put(STYLE_DECIMAL_5DIGITS, s23);
-
-        XSSFCellStyle s24 = wb.createCellStyle();
-        setAlignCenter(s24);
-        setFillForeground(s24, IndexedColors.WHITE.index);
-        s24.setFont(wb.getFontAt(FONTE_NORMAL));
-        estilos.put(ALIGN_CENTER_WHITE, s24);
-
-        XSSFCellStyle s25 = wb.createCellStyle();
-        setAlignRight(s25);
-        s25.setFont(wb.getFontAt(FONTE_BOLD));
-        addBorders(s25);
-        estilos.put(ALIGN_RIGHT_BOLD, s25);
-
-        XSSFCellStyle s26 = wb.createCellStyle();
-        s26.setFont(wb.getFontAt(FONTE_NORMAL));
-        s26.setDataFormat(
-                createHelper.createDataFormat().getFormat("###,###,###,###,##0.00%;[Red]-###,###,###,###,##0.00%"));
-        setAlignRight(s26);
-        addBorders(s26);
-        estilos.put(STYLE_PERCENT, s26);
-
-        XSSFCellStyle s27 = wb.createCellStyle();
-        setAlignLeft(s27);
-        setFillForeground(s27, RGBColorsEnum.WHITE_SMOKE.color());
-        s27.setFont(wb.getFontAt(FONTE_BOLD));
-        addBorders(s27);
-        estilos.put(ALIGN_LEFT_WHITE_SMOKE_BOLD, s27);
-        
     }
 
     protected XSSFCell setCellFormula(XSSFCell cell, String formula) {
@@ -593,26 +353,27 @@ public abstract class Relatorio {
         return evaluateFormula(cell, formula, null);
     }
 
-    protected XSSFCell setCellFormula(XSSFCell cell, String formula, String style) {
+    protected XSSFCell setCellFormula(XSSFCell cell, String formula, CellStylesEnum style) {
         formula = formula.replaceAll("\\$1", String.valueOf(cell.getRow().getRowNum() + 1));
         return evaluateFormula(cell, formula, style);
     }
 
-    protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, int pos, String style) {
+    protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, int pos, CellStylesEnum style) {
         formula = formula.replaceAll("\\$1", String.valueOf(row.getRowNum() + 1));
         return evaluateFormula(sheet, row, pos, formula, style);
     }
 
-    protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, List<XSSFCell> listaValoresPrevistos, int pos) {
-        
+    protected XSSFCell setCellFormula(XSSFSheet sheet, XSSFRow row, String formula,
+            List<XSSFCell> listaValoresPrevistos, int pos) {
+
         if (Utils.isEmpty(listaValoresPrevistos)) {
-            return row.createCell(pos);    
+            return row.createCell(pos);
         }
-        
+
         formula = String.format(formula, //
-                        listaValoresPrevistos.get(0).getReference(), //
-                        listaValoresPrevistos.get(listaValoresPrevistos.size() - 1).getReference());
-        
+                listaValoresPrevistos.get(0).getReference(), //
+                listaValoresPrevistos.get(listaValoresPrevistos.size() - 1).getReference());
+
         return setCellFormula(sheet, row, formula, pos, null);
     }
 
@@ -621,7 +382,7 @@ public abstract class Relatorio {
     }
 
     protected void setCellFormula(XSSFSheet sheet, XSSFRow row, String formula, int pos, int posInicio, int posFinal,
-            String style) {
+            CellStylesEnum style) {
         formula = formula.replaceAll("\\$1", String.valueOf(posInicio));
         formula = formula.replaceAll("\\$2", String.valueOf(posFinal));
         evaluateFormula(sheet, row, pos, formula, style);
@@ -648,12 +409,13 @@ public abstract class Relatorio {
         indicadores.get(nuFatura).add(cell);
     }
 
-    protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura, IndicadorContratoDTO indicadorFNS) {
+    protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura,
+            IndicadorContratoDTO indicadorFNS) {
 
         if (indicadorFNS == null) {
             return null;
         }
-        
+
         List<Long> i = new ArrayList<>();
 
         for (Long key : indicadores.keySet()) {
@@ -737,7 +499,7 @@ public abstract class Relatorio {
         if (value != null) {
             setNoNull(row, pos, BigDecimal.valueOf(value.doubleValue()), null);
         } else {
-            setNoNull(row, pos, (BigDecimal)null, null);    
+            setNoNull(row, pos, (BigDecimal) null, null);
         }
     }
 
@@ -745,9 +507,9 @@ public abstract class Relatorio {
         setNoNull(row, pos, value, null);
     }
 
-    protected void setNoNull(XSSFRow row, int pos, BigDecimal value, String style) {
+    protected void setNoNull(XSSFRow row, int pos, BigDecimal value, CellStylesEnum style) {
         if (value == null) {
-            addCell(row, pos, "-", ALIGN_CENTER);
+            addCell(row, pos, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
         } else {
             if (style != null) {
                 addCell(row, pos, value, style);
@@ -757,10 +519,6 @@ public abstract class Relatorio {
         }
     }
 
-    protected XSSFCellStyle getCellStyle(String key) {
-        return estilos.get(key);
-    }
-    
     protected static void printVersion() {
         StringBuilder sb = new StringBuilder();
 

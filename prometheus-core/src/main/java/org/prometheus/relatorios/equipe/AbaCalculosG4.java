@@ -18,6 +18,7 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.IndicadorVinculadoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
@@ -114,7 +115,7 @@ public class AbaCalculosG4 extends Relatorio {
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
                     faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-                    ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                    CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             /**
              * Vigência dos Membros do Faturamento
@@ -126,16 +127,16 @@ public class AbaCalculosG4 extends Relatorio {
             int posRowVigencias = row.getRowNum(); // preciso guardar essa posicao
 
             addMergedRegion(sheet, row, 6, 10, "Vigência dos Membros do Faturamento", //
-                    ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                    CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             int pos = 6;
 
             row = addNewRow(sheet);
-            addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, pos++, "Qt. Dias Trab.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, pos++, "Qt. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, pos++, "Qt. Dias Trab.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, pos++, "Qt. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             XSSFCell cellInicioVigencias = null;
             XSSFCell cellFinalVigencias = null;
@@ -146,12 +147,14 @@ public class AbaCalculosG4 extends Relatorio {
                 addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
                 addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
                 addCell(row, pos++, vigencia.getQtMembrosEquipe());
-                addCell(row, pos++, vigencia.getQtDiasTrabalhados(), STYLE_DECIMAL);
+                addCell(row, pos++, vigencia.getQtDiasTrabalhados(), CellStylesEnum.DECIMAL);
 
                 if (cellInicioVigencias == null) {
-                    cellInicioVigencias = addCell(row, pos++, vigencia.getQtEfetiva(), STYLE_DECIMAL_5DIGITS);
+                    cellInicioVigencias = addCell(row, pos++, vigencia.getQtEfetiva(),
+                            CellStylesEnum.DECIMAL5);
                 } else {
-                    cellFinalVigencias = addCell(row, pos++, vigencia.getQtEfetiva(), STYLE_DECIMAL_5DIGITS);
+                    cellFinalVigencias = addCell(row, pos++, vigencia.getQtEfetiva(),
+                            CellStylesEnum.DECIMAL5);
                 }
             }
 
@@ -162,28 +165,28 @@ public class AbaCalculosG4 extends Relatorio {
             row = addNewRow(sheet);
             insumo.setQtEfetiva(setCellFormula(sheet, row, String.format("sum(%s:%s)", //
                     cellInicioVigencias.getReference(), cellFinalVigencias.getReference()), pos - 1,
-                    STYLE_DECIMAL_5DIGITS));
+                    CellStylesEnum.DECIMAL5));
 
             /**
              * Dias Trabalhados no Faturamento
              */
             row = getRow(sheet, posRowVigencias++);
             addMergedRegion(sheet, row, 0, 4, "Dias Trabalhados no Faturamento", //
-                    ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                    CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, posRowVigencias++);
-            addCell(row, 0, "Dt. Início", ALIGN_CENTER_BOLD);
-            addCell(row, 1, "Dt. Final", ALIGN_CENTER_BOLD);
-            addCell(row, 2, "Qt. Dias", ALIGN_CENTER_BOLD);
-            addCell(row, 3, "Qt. Dias Extra", ALIGN_CENTER_BOLD);
-            addCell(row, 4, "Qt. Dias Ausência", ALIGN_CENTER_BOLD);
+            addCell(row, 0, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Qt. Dias", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 3, "Qt. Dias Extra", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 4, "Qt. Dias Ausência", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, posRowVigencias++);
             addCell(row, 0, faturamento.getDtInicioFatura());
             addCell(row, 1, faturamento.getDtFinalFatura());
-            addCell(row, 2, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
-            insumo.setQtDiasExtra(addCell(row, 3, faturamento.getQtDiasServicoExtra(), STYLE_DECIMAL));
-            insumo.setQtDiasAusencia(addCell(row, 4, faturamento.getQtDiasAusencia(), STYLE_DECIMAL));
+            addCell(row, 2, faturamento.getQtDiasFaturamento(), CellStylesEnum.DECIMAL);
+            insumo.setQtDiasExtra(addCell(row, 3, faturamento.getQtDiasServicoExtra(), CellStylesEnum.DECIMAL));
+            insumo.setQtDiasAusencia(addCell(row, 4, faturamento.getQtDiasAusencia(), CellStylesEnum.DECIMAL));
 
             /**
              * Serviços Contratados
@@ -194,12 +197,12 @@ public class AbaCalculosG4 extends Relatorio {
             addBlank(sheet);
             row = addNewRow(sheet);
             XSSFCell cellTituloServicosContratados = addMergedRegion(sheet, row, 0, 2, "Serviços Contratados", //
-                    ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                    CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 0, "Solicitação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Data Prevista", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Data Efetiva", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
             if (Utils.isEmpty(servicosContratados)) {
                 row = addNewRow(sheet);
@@ -214,7 +217,7 @@ public class AbaCalculosG4 extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
             XSSFCell cellQtServicosContratados = addCell(row, 2, BigDecimal.valueOf(servicosContratados.size()));
 
             /**
@@ -226,12 +229,12 @@ public class AbaCalculosG4 extends Relatorio {
             addBlank(sheet);
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, 2, "Serviços Entregues", //
-                    ALIGN_CENTER_GREEN_BOLD);
+                    CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 0, "Solicitação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Data Prevista", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Data Efetiva", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
             if (Utils.isEmpty(servicosEntregues)) {
                 row = addNewRow(sheet);
@@ -246,7 +249,7 @@ public class AbaCalculosG4 extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
             XSSFCell cellQtServicosEntregues = addCell(row, 2, BigDecimal.valueOf(servicosEntregues.size()));
 
             /**
@@ -258,12 +261,12 @@ public class AbaCalculosG4 extends Relatorio {
             addBlank(sheet);
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, 2, "Serviços Entregues/Estoque", //
-                    ALIGN_CENTER_GREEN_BOLD);
+                    CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 0, "Solicitação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Data Prevista", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Data Efetiva", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
             if (Utils.isEmpty(servicosEntreguesEstoque)) {
                 row = addNewRow(sheet);
@@ -278,8 +281,9 @@ public class AbaCalculosG4 extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
+            addCell(row, 1, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            XSSFCell cellQtServicosEntreguesEstoque = addCell(row, 2,
+                    BigDecimal.valueOf(servicosEntreguesEstoque.size()));
 
             /**
              * Serviços Entregues com Atraso
@@ -290,12 +294,12 @@ public class AbaCalculosG4 extends Relatorio {
             addBlank(sheet);
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, 2, "Serviços Entregues com Atraso", //
-                    ALIGN_CENTER_ORANGE_BOLD);
+                    CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 0, "Solicitação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Data Prevista", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Data Efetiva", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
             if (Utils.isEmpty(servicosEntreguesComAtraso)) {
                 row = addNewRow(sheet);
@@ -310,7 +314,7 @@ public class AbaCalculosG4 extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
             XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 2,
                     BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
 
@@ -323,12 +327,12 @@ public class AbaCalculosG4 extends Relatorio {
             addBlank(sheet);
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, 2, "Serviços Devolvidos", //
-                    ALIGN_CENTER_RED_BOLD);
+                    CellStylesEnum.RED_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "Solicitação", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, "Data Prevista", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 2, "Data Efetiva", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 0, "Solicitação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, "Data Prevista", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 2, "Data Efetiva", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
             if (Utils.isEmpty(servicosDevolvidos)) {
                 row = addNewRow(sheet);
@@ -343,7 +347,7 @@ public class AbaCalculosG4 extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            addCell(row, 1, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+            addCell(row, 1, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
             XSSFCell cellQtServicosDevolvidos = addCell(row, 2, BigDecimal.valueOf(servicosDevolvidos.size()));
 
             addBlank(sheet);
@@ -359,14 +363,15 @@ public class AbaCalculosG4 extends Relatorio {
                 pos = cellTituloServicosContratados.getRowIndex();
 
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 10, "Equipes/Indicadores vinculados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                addMergedRegion(sheet, row, 4, 10, "Equipes/Indicadores vinculados",
+                        CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
                 row = getRow(sheet, pos++);
-                addCell(row, 4, "Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addMergedRegion(sheet, row, 5, 6, "Grupo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addCell(row, 9, "Dt. Geração", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addCell(row, 10, "Valor Calculado", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, 4, "Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addMergedRegion(sheet, row, 5, 6, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addCell(row, 9, "Dt. Geração", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addCell(row, 10, "Valor Calculado", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
                 if (Utils.isEmpty(indicadoresVinculados)) {
                     row = getRow(sheet, pos++);
@@ -380,16 +385,18 @@ public class AbaCalculosG4 extends Relatorio {
 
                     row = getRow(sheet, pos++);
                     addCell(row, 4, i.getCoEquipe());
-                    addMergedRegion(sheet, row, 5, 6, i.getNoTipoGrupo(), ALIGN_CENTER);
+                    addMergedRegion(sheet, row, 5, 6, i.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
                     addMergedRegion(sheet, row, 7, 8, i.getSgTipoIndicador() + " - " + i.getNoTipoIndicador(),
-                            ALIGN_CENTER);
-                    addCell(row, 9, i.getDhGeracaoIndicadorEquipe(), STYLE_DATE_TIME);
+                            CellStylesEnum.NORMAL_ALIGN_CENTER);
+                    addCell(row, 9, i.getDhGeracaoIndicadorEquipe(), CellStylesEnum.DATE_TIME);
 
                     if (primeiroVinculado == null) {
-                        primeiroVinculado = addCell(row, 10, i.getVrCalculoIndicador(), STYLE_DECIMAL_5DIGITS);
+                        primeiroVinculado = addCell(row, 10, i.getVrCalculoIndicador(),
+                                CellStylesEnum.DECIMAL5);
                         ultimoVinculado = primeiroVinculado;
                     } else {
-                        ultimoVinculado = addCell(row, 10, i.getVrCalculoIndicador(), STYLE_DECIMAL_5DIGITS);
+                        ultimoVinculado = addCell(row, 10, i.getVrCalculoIndicador(),
+                                CellStylesEnum.DECIMAL5);
                     }
 
                 }
@@ -400,15 +407,15 @@ public class AbaCalculosG4 extends Relatorio {
                 getRow(sheet, pos++); // blank
 
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 6, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                addMergedRegion(sheet, row, 4, 6, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
                 /**
                  * IEQQL - Qualidade do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQL - Qualidade do Serviço", ALIGN_LEFT);
+                addMergedRegion(sheet, row, 4, 5, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
-                XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", ALIGN_CENTER);
+                XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
                         && cellQtServicosEntregues.getNumericCellValue() != 0) {
@@ -416,7 +423,7 @@ public class AbaCalculosG4 extends Relatorio {
                             String.format("%s/(%s+%s)", //
                                     cellQtServicosEntregues.getReference(), //
                                     cellQtServicosEntregues.getReference(), cellQtServicosDevolvidos.getReference()), //
-                            STYLE_DECIMAL_5DIGITS);
+                            CellStylesEnum.DECIMAL5);
                 }
 
                 addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
@@ -425,16 +432,16 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQQPZ - Prazo do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQPZ - Prazo do Serviço", ALIGN_LEFT);
+                addMergedRegion(sheet, row, 4, 5, "IEQQPZ - Prazo do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
-                XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", ALIGN_CENTER);
+                XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
                         && cellQtServicosEntregues.getNumericCellValue() != 0) {
                     setCellFormula(cellFormulaIEQQPZ, //
                             String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
                                     cellQtServicosEntregues.getReference()), //
-                            STYLE_DECIMAL_5DIGITS);
+                            CellStylesEnum.DECIMAL5);
                 }
 
                 addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
@@ -443,16 +450,16 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQQET - Estoque do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQET - Estoque do Serviço", ALIGN_LEFT);
+                addMergedRegion(sheet, row, 4, 5, "IEQQET - Estoque do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
-                XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
+                XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
                         && cellQtServicosContratados.getNumericCellValue() != 0) {
                     setCellFormula(cellFormulaIEQQET, //
                             String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
                                     cellQtServicosContratados.getReference()), //
-                            STYLE_DECIMAL_5DIGITS);
+                            CellStylesEnum.DECIMAL5);
                 }
 
                 addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
@@ -461,14 +468,14 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQDES - Desenvolvimento
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQDES - Desenvolvimento", ALIGN_LEFT);
+                addMergedRegion(sheet, row, 4, 5, "IEQDES - Desenvolvimento", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
-                XSSFCell cellFormulaIEQDES = addCell(row, 6, "N/A", ALIGN_CENTER);
+                XSSFCell cellFormulaIEQDES = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                 if (primeiroVinculado != null && ultimoVinculado != null) {
                     setCellFormula(cellFormulaIEQDES, //
                             String.format("average(%s:%s)", primeiroVinculado.getReference(),
                                     ultimoVinculado.getReference()), //
-                            STYLE_DECIMAL_5DIGITS);
+                            CellStylesEnum.DECIMAL5);
                 }
 
                 addIndicador(listaIEQDES, faturamento.getNuFatura(), cellFormulaIEQDES);
@@ -479,13 +486,13 @@ public class AbaCalculosG4 extends Relatorio {
                 getRow(sheet, pos++); // blank
 
                 row = getRow(sheet, pos++);
-                addCell(row, 4, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
-                addCell(row, 5, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
+                addCell(row, 4, "Desempenho", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+                addCell(row, 5, "Valor FNS", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
                 row = getRow(sheet, pos++);
 
-                XSSFCell cellDesempenho = addCell(row, 4, "N/A", ALIGN_CENTER);
-                XSSFCell cellValorFNS = addCell(row, 5, "N/A", ALIGN_CENTER);
+                XSSFCell cellDesempenho = addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                XSSFCell cellValorFNS = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 getRow(sheet, pos++); // blank
 
@@ -534,7 +541,7 @@ public class AbaCalculosG4 extends Relatorio {
         if (s1.length() > 1) {
             setCellFormula(cell, //
                     String.format("(%s)/sum(%s)", s1.toString().substring(1), s2.toString().substring(1)), //
-                    STYLE_DECIMAL_5DIGITS);
+                    CellStylesEnum.DECIMAL5);
         }
     }
 
@@ -576,14 +583,13 @@ public class AbaCalculosG4 extends Relatorio {
 
             for (int i = 1; i <= qtFaixas; i++) {
 
-                formula.append(
-                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-                                cellDesempenho.getReference(), pos + i, //
-                                cellDesempenho.getReference(), pos + i, //
-                                pos + i));
+                formula.append(String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+                        cellDesempenho.getReference(), pos + i, //
+                        cellDesempenho.getReference(), pos + i, //
+                        pos + i));
             }
 
-            setCellFormula(cellValorFNS, formula.toString().substring(1), STYLE_DECIMAL);
+            setCellFormula(cellValorFNS, formula.toString().substring(1), CellStylesEnum.DECIMAL);
 
         }
 

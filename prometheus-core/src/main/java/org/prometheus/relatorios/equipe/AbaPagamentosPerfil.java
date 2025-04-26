@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.TermoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EquipeService;
@@ -47,17 +48,17 @@ public class AbaPagamentosPerfil extends Relatorio {
 
 		int pos = 0;
 
-		addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-		addCell(row, pos++, "Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Emissão", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Fatura Paga", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-		addCell(row, pos++, "Valor Termo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Emissão", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. de Membros", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Extras", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Ausências", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor Previsto", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Fatura Paga", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Valor Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		List<TermoDTO> termos = termoService.listar(equipe.getNuEquipe());
 
@@ -75,23 +76,23 @@ public class AbaPagamentosPerfil extends Relatorio {
 			addCell(row, pos++, termo.getDhEmissaoTermo());
 
 			XSSFCell cellVrPrevisto = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null, STYLE_DECIMAL);
+					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null, CellStylesEnum.DECIMAL);
 			
-			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null, STYLE_DECIMAL);
+			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null, CellStylesEnum.DECIMAL);
 			
 			XSSFCell cellVrAcrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null, STYLE_DECIMAL);
+					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null, CellStylesEnum.DECIMAL);
 			
 			XSSFCell cellVrDecrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null, STYLE_DECIMAL);
+					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null, CellStylesEnum.DECIMAL);
 
 			// FNS
 			XSSFCell cellVrFNS = null;
 			
 			if (termo.getVrFns() == null) {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? BigDecimal.ONE : null, STYLE_DECIMAL);
+				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? BigDecimal.ONE : null, CellStylesEnum.DECIMAL);
 			} else {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, STYLE_DECIMAL);
+				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, CellStylesEnum.DECIMAL);
 			}
 			
 			// Valor Previsto
@@ -102,7 +103,7 @@ public class AbaPagamentosPerfil extends Relatorio {
 								cellVrAcrescimo.getReference(),
 								cellVrDecrescimo.getReference(), //
 								cellVrFNS.getReference()), //
-						pos++,STYLE_DECIMAL);
+						pos++,CellStylesEnum.DECIMAL);
 			}
 
 			if (termo.getNuTipoTermo() == 12) {
@@ -112,10 +113,10 @@ public class AbaPagamentosPerfil extends Relatorio {
 			addCell(row, pos++, termo.getNuFaturaPaga() + " - " + termo.getDeFaturaPaga());
 
 			if (primeiraFatura == null) {
-				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),STYLE_DECIMAL);
+				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),CellStylesEnum.DECIMAL);
 				ultimaFatura = primeiraFatura;
 			} else {
-				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),STYLE_DECIMAL);
+				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),CellStylesEnum.DECIMAL);
 			}
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
@@ -128,14 +129,14 @@ public class AbaPagamentosPerfil extends Relatorio {
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, pos - 2, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos - 2, "TOTAL", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		XSSFCell result = addCell(row, pos - 1, "N/A");
 
 		if (primeiraFatura != null) {
 			setCellFormula(result,
 					String.format("sum(%s:%s)", //
 							primeiraFatura.getReference(), ultimaFatura.getReference()), //
-					STYLE_DECIMAL);
+					CellStylesEnum.DECIMAL);
 		}
 
 		return result;

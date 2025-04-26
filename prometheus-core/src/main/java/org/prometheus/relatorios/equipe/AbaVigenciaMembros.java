@@ -10,6 +10,7 @@ import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.QntdeMembrosEquipeDTO;
 import org.prometheus.dto.VigenciaMembrosEquipeDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.QntdeMembrosEquipeService;
@@ -65,14 +66,14 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		pos = 0;
 
-		addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
 
-		addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		for (QntdeMembrosEquipeDTO membro : membros) {
 			pos = 0;
@@ -95,18 +96,18 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		row = addNewRow(sheet, rownum++);
 		
-		addMergedRegion(sheet, row, 6, 10, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 6, 10, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		
 		List<VigenciaMembrosEquipeDTO> vigencias = vigenciaMembrosEquipeService.listar(equipe.getNuEquipe());
 
 		row = addNewRow(sheet, rownum++);
 		pos = 6;
 		
-		addCell(row, pos++, "Matrícula", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Nome", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Posição", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Fim", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Matrícula", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Nome", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Posição", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Fim", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		
 		for (VigenciaMembrosEquipeDTO vigencia : vigencias) {
 			

@@ -17,6 +17,7 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumoCalculoDescontoProporcionalDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.QuantidadePrecoMilheirosDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.CalculoValorMilheirosService;
@@ -75,21 +76,21 @@ public class AbaCalculosMilheiros extends Relatorio {
             row = addNewRow(sheet);
             MergeRegionUtil.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
                     "Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-                    getCellStyle(ALIGN_CENTER_GREY_40_PERCENT_BOLD));
+                    CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             addBlank(sheet);
 
             row = addNewRow(sheet);
-            addCell(row, 0, "QT. Dias Faturamento", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
-            addCell(row, 1, faturamento.getQtDiasFaturamento(), STYLE_DECIMAL);
+            addCell(row, 0, "QT. Dias Faturamento", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+            addCell(row, 1, faturamento.getQtDiasFaturamento(), CellStylesEnum.DECIMAL);
 
             List<QuantidadePrecoMilheirosDTO> quantidades = service.listarQuantidades(faturamento.getNuFatura(),
                     equipe.getNuEquipe());
 
-            addCell(row, 3, "Tipo Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, 4, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addCell(row, 5, "Quantidades", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-            addMergedRegion(sheet, row, 6, 7, "Valor", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addCell(row, 3, "Tipo Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 4, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, 5, "Quantidades", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addMergedRegion(sheet, row, 6, 7, "Valor", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             XSSFCell qtMilheiros = null;
             XSSFCell vrPreco = null;
@@ -104,18 +105,18 @@ public class AbaCalculosMilheiros extends Relatorio {
                 for (QuantidadePrecoMilheirosDTO dto : quantidades) {
                     row = addNewRow(sheet);
                     addCell(row, 3, dto.getNoTipoPreco());
-                    vrPreco = addCell(row, 4, dto.getVrPrecoGrupo(), STYLE_DECIMAL);
-                    qtMilheiros = addCell(row, 5, dto.getQtSolicitacao(), STYLE_DECIMAL);
+                    vrPreco = addCell(row, 4, dto.getVrPrecoGrupo(), CellStylesEnum.DECIMAL);
+                    qtMilheiros = addCell(row, 5, dto.getQtSolicitacao(), CellStylesEnum.DECIMAL);
 
                     if (vrPrevistoInicio == null) {
                         vrPrevistoInicio = setCellFormula(addMergedRegion(sheet, row, 6, 7, "N/A"), //
                                 String.format("%s*%s", qtMilheiros.getReference(), vrPreco.getReference()), //
-                                STYLE_DECIMAL);
+                                CellStylesEnum.DECIMAL);
                         vrPrevistoFinal = vrPrevistoInicio;
                     } else {
                         vrPrevistoFinal = setCellFormula(addMergedRegion(sheet, row, 6, 7, "N/A"), //
                                 String.format("%s*%s", qtMilheiros.getReference(), vrPreco.getReference()), //
-                                STYLE_DECIMAL);
+                                CellStylesEnum.DECIMAL);
                     }
                 }
             }
@@ -123,7 +124,7 @@ public class AbaCalculosMilheiros extends Relatorio {
             row = addNewRow(sheet);
             vrPrevistoQuantidade = setCellFormula(addMergedRegion(sheet, row, 6, 7, "N/A"), //
                     String.format("sum(%s:%s)", vrPrevistoInicio.getReference(), vrPrevistoFinal.getReference()), //
-                    STYLE_DECIMAL);
+                    CellStylesEnum.DECIMAL);
 
             addBlank(sheet);
 
@@ -133,7 +134,7 @@ public class AbaCalculosMilheiros extends Relatorio {
             List<CategoriaServicoMilheirosDTO> categorias = service.listarCategorias(equipe.getNuEquipe());
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, 5, "Categoria de Serviços", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+            addMergedRegion(sheet, row, 0, 5, "Categoria de Serviços", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             XSSFCell pcParticipacaoCategoria = null;
             XSSFCell pcDescontoCategoria = null;
@@ -154,13 +155,13 @@ public class AbaCalculosMilheiros extends Relatorio {
 
                 MergeRegionUtil.addMergedRegion(sheet, rowServicos, 0, 3, qtLinhas, //
                         dto.getNoTpCategoriaServico(), //
-                        getCellStyle(ALIGN_CENTER_GREY_25_PERCENT_BOLD));
+                        CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
                 int pos = 0;
 
                 row = getRow(sheet, rowServicos.getRowNum() + (pos++));
                 addCell(row, 4, "Participação");
-                pcParticipacaoCategoria = addCell(row, 5, dto.getPcParticipacao(), STYLE_PERCENT);
+                pcParticipacaoCategoria = addCell(row, 5, dto.getPcParticipacao(), CellStylesEnum.PERCENT);
 
                 if ("S".equalsIgnoreCase(dto.getIcAplicaDesconto())) {
 
@@ -173,7 +174,7 @@ public class AbaCalculosMilheiros extends Relatorio {
 
                     row = getRow(sheet, rowServicos.getRowNum() + (pos++));
                     addCell(row, 4, "Desconto Proporcional(DP)");
-                    pcDescontoCategoria = addCell(row, 5, BigDecimal.ZERO, STYLE_DECIMAL_5DIGITS);
+                    pcDescontoCategoria = addCell(row, 5, BigDecimal.ZERO, CellStylesEnum.DECIMAL5);
                     insumo.setPcDescontoProporcional(pcDescontoCategoria);
 
                     row = getRow(sheet, rowServicos.getRowNum() + (pos++));
@@ -231,7 +232,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
                         "Grupo configurado para aplicar Indicadores somente a partir de "
                                 + DateUtil.format(faturamento.getDtConsiderarFns()),
-                        ALIGN_LEFT_BOLD, false);
+                        CellStylesEnum.TEXT_BOLD);
                 addBlank(sheet);
             }
 
@@ -241,7 +242,7 @@ public class AbaCalculosMilheiros extends Relatorio {
 
                 int rownum = getLastRow(sheet).getRowNum();
 
-                addMergedRegion(sheet, row, 0, 1, "Serviços", ALIGN_CENTER_GREEN_BOLD);
+                addMergedRegion(sheet, row, 0, 1, "Serviços",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
                 XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
                 XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
@@ -249,9 +250,9 @@ public class AbaCalculosMilheiros extends Relatorio {
                 XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
                 XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 
-                addMergedRegion(sheet, row, 3, 5, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+                addMergedRegion(sheet, row, 3, 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
-                addMergedRegion(sheet, row, 7, 9, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
+                addMergedRegion(sheet, row, 7, 9, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 
                 rownum++;
 
@@ -259,46 +260,46 @@ public class AbaCalculosMilheiros extends Relatorio {
                  * ICQL - Qualidade do Serviço
                  */
                 row = getRow(sheet, rownum++);
-                addMergedRegion(sheet, row, 3, 4, "ICQL - Qualidade", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "ICQL - Qualidade", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                XSSFCell cellFormulaIEQQL = addCell(row, 5, "N/A", ALIGN_CENTER);
-                addCell(row, 9, "N/A", ALIGN_CENTER);
+                addMergedRegion(sheet, row, 3, 4, "ICQL - Qualidade", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "ICQL - Qualidade", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                XSSFCell cellFormulaIEQQL = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 /**
                  * IEQQPZ - Prazo do Serviço
                  */
                 row = getRow(sheet, rownum++);
-                addMergedRegion(sheet, row, 3, 4, "ICPZ - Prazo", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "ICPZ - Prazo", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                XSSFCell cellFormulaICPZ = addCell(row, 5, "N/A", ALIGN_CENTER);
-                addCell(row, 9, "N/A", ALIGN_CENTER);
+                addMergedRegion(sheet, row, 3, 4, "ICPZ - Prazo", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "ICPZ - Prazo", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                XSSFCell cellFormulaICPZ = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 /**
                  * ICET - Estoque
                  */
                 row = getRow(sheet, rownum++);
-                addMergedRegion(sheet, row, 3, 4, "ICET - Estoque", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "ICET - Estoque", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                XSSFCell cellFormulaICET = addCell(row, 5, "N/A", ALIGN_CENTER);
-                addCell(row, 9, "N/A", ALIGN_CENTER);
+                addMergedRegion(sheet, row, 3, 4, "ICET - Estoque", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "ICET - Estoque", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                XSSFCell cellFormulaICET = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 /**
                  * IEQDF - Disponibilidade das Ferramentas
                  */
                 row = getRow(sheet, rownum++);
-                addMergedRegion(sheet, row, 3, 4, "IEQDF - Disponiblidade Ferramentas", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "IEQDF - Disponiblidade Ferramentas", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                XSSFCell cellFormulaIEQDF = addCell(row, 5, "N/A", ALIGN_CENTER);
-                addCell(row, 9, "N/A", ALIGN_CENTER);
+                addMergedRegion(sheet, row, 3, 4, "IEQDF - Disponiblidade Ferramentas", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "IEQDF - Disponiblidade Ferramentas", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                XSSFCell cellFormulaIEQDF = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 /**
                  * IEQRSA - Resultado do Serviço Assistido
                  */
                 row = getRow(sheet, rownum++);
-                addMergedRegion(sheet, row, 3, 4, "IEQRSA - Resultado Serviço Assistido", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "IEQRSA - Resultado Serviço Assistido", ALIGN_LEFT_WHITE_SMOKE_BOLD);
-                XSSFCell cellFormulaIEQRSA = addCell(row, 5, "N/A", ALIGN_CENTER);
-                addCell(row, 9, "N/A", ALIGN_CENTER);
+                addMergedRegion(sheet, row, 3, 4, "IEQRSA - Resultado Serviço Assistido", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                addMergedRegion(sheet, row, 7, 8, "IEQRSA - Resultado Serviço Assistido", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
+                XSSFCell cellFormulaIEQRSA = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
                 // addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
 //
@@ -306,9 +307,9 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                 * ICET - Estoque
 //                 */
 //                row = getRow(sheet, rownum++);
-//                addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", ALIGN_LEFT);
+//                addMergedRegion(sheet, row, 4, 5, "ICET - Estoque", CellStylesEnum.NORMAL_ALIGN_LEFT);
 //                
-//                XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", ALIGN_CENTER);
+//                XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //
 //                if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
 //                        && cellQtServicosContratados.getNumericCellValue() != 0) {
@@ -316,7 +317,7 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                            String.format("%s/%s", //
 //                                    cellQtServicosEntreguesEstoque.getReference(),
 //                                    cellQtServicosContratados.getReference()), //
-//                            STYLE_DECIMAL_5DIGITS);
+//                            CellStylesEnum.STYLE_DECIMAL5);
 //                }
 //
 //                //addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
@@ -325,17 +326,17 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                 * IEQRCP - Resultado Capacitação
 //                 */
 //                row = getRow(sheet, rownum++);
-//                addMergedRegion(sheet, row, 4, 5, "IEQRCP - Resultado Capacitação", ALIGN_LEFT);
+//                addMergedRegion(sheet, row, 4, 5, "IEQRCP - Resultado Capacitação", CellStylesEnum.NORMAL_ALIGN_LEFT);
 //                
-//                XSSFCell cellFormulaIEQRCP = addCell(row, 6, "N/A", ALIGN_CENTER);
+//                XSSFCell cellFormulaIEQRCP = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                
 //                /**
 //                 * IEQRSA - Resultado Assistido
 //                 */
 //                row = getRow(sheet, rownum++);
-//                addMergedRegion(sheet, row, 4, 5, "IEQRSA - Resultado Assistido", ALIGN_LEFT);
+//                addMergedRegion(sheet, row, 4, 5, "IEQRSA - Resultado Assistido", CellStylesEnum.NORMAL_ALIGN_LEFT);
 //                
-//                XSSFCell cellFormulaIEQRSA = addCell(row, 6, "N/A", ALIGN_CENTER);
+//                XSSFCell cellFormulaIEQRSA = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                
 //                /**
 //                 * Média dos Indicadores
@@ -343,45 +344,45 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
 //
 //                row = getRow(sheet, rownum++);
-//                addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", ALIGN_CENTER_ORANGE_BOLD);
+//                addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 //
 //                row = getRow(sheet, rownum++);
 //                addMergedRegion(sheet, row, 8, 9, "ICQL - Qualidade");
-//                cellFormulaIEQQL = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                cellFormulaIEQQL = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) != null) {
 //                    setCellFormula(cellFormulaIEQQL, //
 //                            "average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) + ")", //
-//                            STYLE_DECIMAL_5DIGITS);
+//                            CellStylesEnum.STYLE_DECIMAL5);
 //                }
 //                addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
 //
 //                row = getRow(sheet, rownum++);
 //                addMergedRegion(sheet, row, 8, 9, "ICPZ - Prazo");
-//                cellFormulaIEQQPZ = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                cellFormulaIEQQPZ = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
 //                    setCellFormula(cellFormulaIEQQPZ, //
 //                            "average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) + ")", //
-//                            STYLE_DECIMAL_5DIGITS);
+//                            CellStylesEnum.STYLE_DECIMAL5);
 //                }
 //                addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
 //
 //                row = getRow(sheet, rownum++);
 //                addMergedRegion(sheet, row, 8, 9, "ICET - Estoque");
-//                cellFormulaIEQQET = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                cellFormulaIEQQET = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) != null) {
 //                    setCellFormula(cellFormulaIEQQET, //
 //                            "average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) + ")", //
-//                            STYLE_DECIMAL_5DIGITS);
+//                            CellStylesEnum.STYLE_DECIMAL5);
 //                }
 //                addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
 //
 //                row = getRow(sheet, rownum++);
 //                addMergedRegion(sheet, row, 8, 9, "IEQRCP - Resultado Capacitação");
-//                cellFormulaIEQRCP = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                cellFormulaIEQRCP = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //                
 //                row = getRow(sheet, rownum++);
 //                addMergedRegion(sheet, row, 8, 9, "IEQRSA - Resultado Assistido");
-//                cellFormulaIEQRSA = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                cellFormulaIEQRSA = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //
 //                /**
 //                 * Desempenho / Valor FNS
@@ -389,15 +390,15 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 13;
 //
 //                row = getRow(sheet, rownum++);
-//                addCell(row, 8, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
-//                addCell(row, 9, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
-//                addCell(row, 10, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
+//                addCell(row, 8, "Desempenho",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+//                addCell(row, 9, "Valor FNS",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+//                addCell(row, 10, "Valor Financeiro",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 //
 //                row = getRow(sheet, rownum++);
 //
-//                XSSFCell cellDesempenho = addCell(row, 8, "N/A", ALIGN_CENTER);
-//                XSSFCell cellValorFNS = addCell(row, 9, "N/A", ALIGN_CENTER);
-//                XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", ALIGN_CENTER);
+//                XSSFCell cellDesempenho = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//                XSSFCell cellValorFNS = addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//                XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 //
 //                setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
 //                setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
@@ -406,7 +407,7 @@ public class AbaCalculosMilheiros extends Relatorio {
 //                                "STRING".equalsIgnoreCase(cellValorFNS.getCellType().name()) ? //
 //                                        BigDecimal.ONE : cellValorFNS.getReference(), //
 //                                insumo.getVrPrevistoTermo().getReference()), //
-//                        STYLE_DECIMAL);
+//                        CellStylesEnum.STYLE_DECIMAL);
 //
 //                insumo.setVrFns(cellValorFNS);
             }
@@ -418,14 +419,14 @@ public class AbaCalculosMilheiros extends Relatorio {
              * Desempenho / Valor FNS
              */
             row = addNewRow(sheet);
-            addCell(row, 7, "Desempenho", ALIGN_CENTER_GREEN_BOLD);
-            addCell(row, 8, "Valor FNS", ALIGN_CENTER_GREEN_BOLD);
-            addCell(row, 9, "Valor Financeiro", ALIGN_CENTER_GREEN_BOLD);
+            addCell(row, 7, "Desempenho",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+            addCell(row, 8, "Valor FNS",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+            addCell(row, 9, "Valor Financeiro",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
-            addCell(row, 7, "N/A", ALIGN_CENTER);
+            addCell(row, 7, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
             vrFNS = addCell(row, 8, BigDecimal.ONE);
-            setCellFormula(addCell(row, 9, BigDecimal.ZERO, STYLE_DECIMAL), //
+            setCellFormula(addCell(row, 9, BigDecimal.ZERO, CellStylesEnum.DECIMAL), //
                     String.format("%s*%s", //
                             vrPrevisto.getReference(), //
                             vrFNS.getReference()));
@@ -439,7 +440,7 @@ public class AbaCalculosMilheiros extends Relatorio {
             //
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, 7, "Insumos do cálculo de Desconto proporcional (DP)", //
-                    ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                    CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             List<InsumoCalculoDescontoProporcionalDTO> insumosCalculoDesconto = service
                     .listar(faturamento.getNuFatura(), equipe.getNuEquipe());
@@ -455,12 +456,12 @@ public class AbaCalculosMilheiros extends Relatorio {
 
                 row = addNewRow(sheet);
                 
-                addCell(row, 0, "Ferramenta", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addCell(row, 1, "Participação(P)", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addMergedRegion(sheet, row, 2, 3, "Qtd. Min. Faturamento (QtF)", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addCell(row, 4, "Qtd. Min. Indisponível(QtMI)", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addCell(row, 5, "Qtd. Min. Disponível(QtMD)", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-                addMergedRegion(sheet, row, 6, 7, "Desconto Proporcional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, 0, "Ferramenta", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addCell(row, 1, "Participação(P)", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addMergedRegion(sheet, row, 2, 3, "Qtd. Min. Faturamento (QtF)", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addCell(row, 4, "Qtd. Min. Indisponível(QtMI)", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addCell(row, 5, "Qtd. Min. Disponível(QtMD)", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addMergedRegion(sheet, row, 6, 7, "Desconto Proporcional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 
                 // devemos definir a alttura da linha depois de fechar o conteudo
                 row.setHeight((short) (row.getHeight() * 2));
@@ -468,22 +469,22 @@ public class AbaCalculosMilheiros extends Relatorio {
                 for (InsumoCalculoDescontoProporcionalDTO dto : insumosCalculoDesconto) {
                     row = addNewRow(sheet);
                     addCell(row, 0, dto.getNoFerramentaSuporte());
-                    pcParticipacao = addCell(row, 1, dto.getPcParticipacao(), STYLE_PERCENT);
-                    qtMinutosFaturamento = addMergedRegion(sheet, row, 2, 3, dto.getQtMinutosFaturamento(), STYLE_NUMBER);
-                    qtMinutosIndisponivel = addCell(row, 4, dto.getQtMinutosIndisponivel(), STYLE_NUMBER);
-                    setCellFormula(addCell(row, 5, dto.getQtMinutosIndisponivel(), STYLE_NUMBER), //
+                    pcParticipacao = addCell(row, 1, dto.getPcParticipacao(), CellStylesEnum.PERCENT);
+                    qtMinutosFaturamento = addMergedRegion(sheet, row, 2, 3, dto.getQtMinutosFaturamento(), CellStylesEnum.NUMBER);
+                    qtMinutosIndisponivel = addCell(row, 4, dto.getQtMinutosIndisponivel(), CellStylesEnum.NUMBER);
+                    setCellFormula(addCell(row, 5, dto.getQtMinutosIndisponivel(), CellStylesEnum.NUMBER), //
                             String.format("%s-%s", qtMinutosFaturamento.getReference(),
                                     qtMinutosIndisponivel.getReference()));
 
                     if (qtPrimeiraFaixaDPC == null) {
-                        qtPrimeiraFaixaDPC = setCellFormula(addMergedRegion(sheet, row, 6, 7, BigDecimal.ZERO, STYLE_DECIMAL_5DIGITS), //
+                        qtPrimeiraFaixaDPC = setCellFormula(addMergedRegion(sheet, row, 6, 7, BigDecimal.ZERO, CellStylesEnum.DECIMAL5), //
                                 String.format("(%s/%s)*%s", //
                                         qtMinutosIndisponivel.getReference(), //
                                         qtMinutosFaturamento.getReference(), //
                                         pcParticipacao.getReference()));
                         qtUltimaFaixaDPC = qtPrimeiraFaixaDPC;
                     } else {
-                        qtPrimeiraFaixaDPC = setCellFormula(addMergedRegion(sheet, row, 6, 7, BigDecimal.ZERO, STYLE_DECIMAL_5DIGITS), //
+                        qtPrimeiraFaixaDPC = setCellFormula(addMergedRegion(sheet, row, 6, 7, BigDecimal.ZERO, CellStylesEnum.DECIMAL5), //
                                 String.format("(%s/%s)*%s", //
                                         qtMinutosIndisponivel.getReference(), //
                                         qtMinutosFaturamento.getReference(), //
@@ -493,10 +494,10 @@ public class AbaCalculosMilheiros extends Relatorio {
                 }
 
                 row = addNewRow(sheet);
-                addCell(row, 4, "Desconto Proporcional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+                addCell(row, 4, "Desconto Proporcional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 pcDesconto = setCellFormula(sheet, row, //
                         String.format("sum(%s:%s)", qtPrimeiraFaixaDPC.getReference(), qtUltimaFaixaDPC.getReference()),
-                        5, STYLE_DECIMAL_5DIGITS);
+                        5, CellStylesEnum.DECIMAL5);
 
                 setCellFormula(pcDescontoCategoria, String.format("%s", pcDesconto.getReference()));
             }
@@ -515,7 +516,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 .listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Atrasados", ALIGN_LEFT_WHITE_SMOKE_BOLD);
+        addCell(row, 0, "Atrasados", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
     }
 
@@ -525,7 +526,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Estoque", ALIGN_LEFT_WHITE_SMOKE_BOLD);
+        addCell(row, 0, "Estoque", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
     }
 
@@ -535,7 +536,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Contratados", ALIGN_LEFT_WHITE_SMOKE_BOLD);
+        addCell(row, 0, "Contratados", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosContratados.size()));
     }
 
@@ -545,7 +546,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Devolvidos", ALIGN_LEFT_WHITE_SMOKE_BOLD);
+        addCell(row, 0, "Devolvidos", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosDevolvidos.size()));
     }
 
@@ -555,7 +556,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Entregues", ALIGN_LEFT_WHITE_SMOKE_BOLD);
+        addCell(row, 0, "Entregues", CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosEntregues.size()));
     }
 

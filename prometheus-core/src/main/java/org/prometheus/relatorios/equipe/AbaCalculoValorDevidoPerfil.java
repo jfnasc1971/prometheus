@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.CalculoValorDevidoDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.CalculoValorDevidoService;
@@ -47,19 +48,19 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
 
         int pos = 0;
 
-        addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-        addCell(row, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Qtd. Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Valor Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Qtd. Dias Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "APEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Qtd. Dias Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "DPEC", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Vr. Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-        addCell(row, pos++, "Vr. Financeiro", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Valor Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Qtd. Dias Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "APEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Qtd. Dias Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "DPEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Vr. Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 30);
+        addCell(row, pos++, "Vr. Financeiro", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
         XSSFCell primeiraFatura = null;
         XSSFCell ultimaFatura = null;
@@ -91,9 +92,9 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                     
                     cellQtDiasFaturamento = addCell(row, pos++, faturamento.getQtDiasFaturamento());
 
-                    cellVrPrecoPerfil = addCell(row, pos++, vigencia.getVrPrecoGrupo(), STYLE_DECIMAL);
+                    cellVrPrecoPerfil = addCell(row, pos++, vigencia.getVrPrecoGrupo(), CellStylesEnum.DECIMAL);
 
-                    cellQtEfetivaPerfil = addCell(row, pos++, vigencia.getQtMembrosEfetiva(), STYLE_DECIMAL);
+                    cellQtEfetivaPerfil = addCell(row, pos++, vigencia.getQtMembrosEfetiva(), CellStylesEnum.DECIMAL);
 
                     cellVrPrevistoPerfil = setCellFormula(sheet, row, //
                             String.format("%s*%s", //
@@ -102,7 +103,7 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                             pos++);
 
                     // EXTRAS
-                    cellQtDiasExtraPerfil = addCell(row, pos++, vigencia.getQtDiasExtra(), STYLE_DECIMAL);
+                    cellQtDiasExtraPerfil = addCell(row, pos++, vigencia.getQtDiasExtra(), CellStylesEnum.DECIMAL);
 
                     cellVrDiasExtraPerfil = setCellFormula(sheet, row, //
                             String.format("(%s/%s)*%s", //
@@ -112,7 +113,7 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                             pos++);
 
                     // AUSENCIAS
-                    cellQtDiasAusenciaPerfil = addCell(row, pos++, vigencia.getQtDiasAusencia(), STYLE_DECIMAL);
+                    cellQtDiasAusenciaPerfil = addCell(row, pos++, vigencia.getQtDiasAusencia(), CellStylesEnum.DECIMAL);
 
                     cellVrDiasAusenciaPerfil = setCellFormula(sheet, row, //
                             String.format("(%s/%s)*%s", //
@@ -131,7 +132,7 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                     
                     // FNS
                     if (insumo.getVrFns() == null) {
-                        addCell(row, pos++, "N/A", STYLE_DECIMAL);
+                        addCell(row, pos++, "N/A", CellStylesEnum.DECIMAL);
                     } else {
                         setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getVrFns()), pos++);
                     }
@@ -140,12 +141,12 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                     if (primeiraFatura == null) {
                         primeiraFatura = setCellFormula(sheet, row,
                                 "IF(L%s=\"N/A\",K%s,L%s*K%s)".replaceAll("%s", String.valueOf(row.getRowNum() + 1)), //
-                                pos++, STYLE_DECIMAL);
+                                pos++, CellStylesEnum.DECIMAL);
 
                     } else {
                         ultimaFatura = setCellFormula(sheet, row,
                                 "IF(L%s=\"N/A\",K%s,L%s*K%s)".replaceAll("%s", String.valueOf(row.getRowNum() + 1)), //
-                                pos++, STYLE_DECIMAL);
+                                pos++, CellStylesEnum.DECIMAL);
 
                     }                    
                     
@@ -160,14 +161,14 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
         }
 
         row = addNewRow(sheet);
-        addCell(row, pos - 2, "TOTAL", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos - 2, "TOTAL", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
         XSSFCell result = null;
 
         if (primeiraFatura != null) {
             result = setCellFormula(sheet, row,
                     String.format("sum(%s:%s)", primeiraFatura.getReference(), ultimaFatura.getReference()), //
-                    pos - 1, STYLE_DECIMAL);
+                    pos - 1, CellStylesEnum.DECIMAL);
         } else {
             result = addCell(row, pos - 1, "N/A");
         }

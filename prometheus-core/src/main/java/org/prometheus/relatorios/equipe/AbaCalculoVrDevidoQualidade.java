@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.utils.XSSFUtils;
@@ -38,14 +39,14 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
         int pos = 0;
 
-        addCell(row, pos++, "Faturamento", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 50);
-        addCell(row, pos++, "Qtd. Dias Fat.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Qtd. de Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Valor Equipe", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Extras", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "Ausências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-        addCell(row, pos++, "FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD, 30);
-        addCell(row, pos++, "Valor Previsto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+        addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Qtd. de Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Valor Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 30);
+        addCell(row, pos++, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
         List<XSSFCell> listaValoresPrevistos = new ArrayList<XSSFCell>();
 
@@ -115,7 +116,7 @@ public class AbaCalculoVrDevidoQualidade extends Relatorio {
 
         row = addNewRow(sheet);
         pos = 6;
-        addCell(row, pos++, "TOTAL", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+        addCell(row, pos++, "TOTAL", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         XSSFCell result = setCellFormula(sheet, row, "sum(%s:%s)", listaValoresPrevistos, pos++);
 

@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.prometheus.dto.CicloTrabalhoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.CicloTrabalhoService;
 import org.prometheus.service.EquipeService;
@@ -49,7 +50,7 @@ public class AbaSprints extends Relatorio {
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-					ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+					CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 			List<CicloTrabalhoDTO> ciclos = cicloTrabalhoService.listar(faturamento.getNuFatura(),
 					equipe.getNuEquipe());
@@ -57,7 +58,7 @@ public class AbaSprints extends Relatorio {
 			if (ciclos == null || ciclos.isEmpty()) {
 				row = addNewRow(sheet);
 				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhum ciclo encontrado.", //
-						ALIGN_LEFT);
+						CellStylesEnum.NORMAL_ALIGN_LEFT);
 			}
 
 			addNewRow(sheet);
@@ -65,20 +66,20 @@ public class AbaSprints extends Relatorio {
 			if (ciclos != null && !ciclos.isEmpty()) {
 				row = addNewRow(sheet);
 				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Ciclos", //
-						ALIGN_CENTER_WHITE_BOLD);
+				        CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 				int pos = 0;
 
 				row = addNewRow(sheet);
 
-				addCell(row, pos++, "Ciclo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Data Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Data Alvo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Falha", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Vr. Quest.", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Nota Produto", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addCell(row, pos++, "Total Avaliação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+				addCell(row, pos++, "Ciclo", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Situação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Data Início", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Data Alvo", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Falha", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Vr. Quest.", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Nota Produto", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+				addCell(row, pos++, "Total Avaliação", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 				for (CicloTrabalhoDTO ciclo : ciclos) {
 					pos = 0;
@@ -97,7 +98,7 @@ public class AbaSprints extends Relatorio {
 				addNewRow(sheet);
 				
 				row = addNewRow(sheet);
-				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Solicitações", ALIGN_CENTER_WHITE_BOLD);
+				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Solicitações", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 				addNewRow(sheet);
 

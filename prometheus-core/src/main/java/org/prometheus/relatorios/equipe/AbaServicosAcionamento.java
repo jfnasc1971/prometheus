@@ -16,6 +16,7 @@ import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
@@ -76,7 +77,7 @@ public class AbaServicosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					"Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-					ALIGN_CENTER_GREEN_BOLD);
+					 CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
 			addBlank(sheet);
 
@@ -99,19 +100,19 @@ public class AbaServicosAcionamento extends Relatorio {
 				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
-		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Compõe FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Falha Caixa", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
 			row = addNewRow(sheet);
@@ -124,16 +125,16 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
-			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
-			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addCell(row, 0, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 
@@ -146,19 +147,19 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
-		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Compõe FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Falha Caixa", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		if (Utils.isEmpty(servicosEntreguesEstoque)) {
 			row = addNewRow(sheet);
@@ -171,16 +172,16 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
-			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
-			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addCell(row, 0, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 
@@ -194,19 +195,19 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura(), 19L);
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Contratados", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Contratados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
-		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Compõe FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Falha Caixa", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		if (Utils.isEmpty(servicosContratados)) {
 			row = addNewRow(sheet);
@@ -219,16 +220,16 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
-			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
-			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addCell(row, 0, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 
@@ -242,19 +243,19 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
-		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Compõe FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Falha Caixa", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		if (Utils.isEmpty(servicosDevolvidos)) {
 			row = addNewRow(sheet);
@@ -267,16 +268,16 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
-			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
-			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addCell(row, 0, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 
@@ -290,19 +291,19 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Entregues", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, 0, 10, "Serviços Entregues", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
-		addCell(row, pos++, "Solicitação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
-		addCell(row, pos++, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Prevista", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data c/ Pendências", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Data Efetiva", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Compõe FNS", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Falha Caixa", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data c/ Pendências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Data Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Compõe FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Falha Caixa", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		if (Utils.isEmpty(servicosEntregues)) {
 			row = addNewRow(sheet);
@@ -315,16 +316,16 @@ public class AbaServicosAcionamento extends Relatorio {
 			addCell(row, pos++, e.getCoSolicitacao());
 			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
-			addCell(row, pos++, e.getDeSituacaoSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
 			addCell(row, pos++, e.getDhPrevistaPendencias());
 			addCell(row, pos++, e.getDhEfetiva());
-			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), ALIGN_CENTER);
-			addCell(row, pos++, e.getCoFalhaSolicitacao(), ALIGN_CENTER);
+			addCell(row, pos++, e.getIcServicoCompoeCalculoFns(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+			addCell(row, pos++, e.getCoFalhaSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, 0, "Quantidade", ALIGN_LEFT_GREY_25_PERCENT_BOLD);
+		addCell(row, 0, "Quantidade", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 

@@ -13,6 +13,7 @@ import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.PrecosEquipeDTO;
 import org.prometheus.dto.QntdeMembrosEquipeDTO;
 import org.prometheus.dto.SituacaoEntregaIndicadorDTO;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaixaIndicadorService;
@@ -70,7 +71,7 @@ public class AbaEquipe extends Relatorio {
 		int pos = 0;
 
 		addMergedRegion(sheet, row, 0, 4, equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
-				ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		addMergedRegion(sheet, row, 0, 1, "Contrato");
@@ -132,20 +133,20 @@ public class AbaEquipe extends Relatorio {
 		row = addNewRow(sheet);
 
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, 0, 4, "Preços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+			addMergedRegion(sheet, row, 0, 4, "Preços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		} else {
-			addMergedRegion(sheet, row, 0, 2, "Preços", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+			addMergedRegion(sheet, row, 0, 2, "Preços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		}
 
 		pos = 0;
 		row = addNewRow(sheet);
 
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, pos++, pos++, "Perfil", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		}
-		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Preço", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (PrecosEquipeDTO preco : precos) {
 
@@ -157,7 +158,7 @@ public class AbaEquipe extends Relatorio {
 			}
 			addCell(row, pos++, preco.getDtInicioVigencia());
 			addCell(row, pos++, preco.getDtFinalVigencia());
-			addCell(row, pos++, preco.getVrPrecoGrupo(), STYLE_DECIMAL);
+			addCell(row, pos++, preco.getVrPrecoGrupo(), CellStylesEnum.DECIMAL);
 
 		}
 
@@ -172,18 +173,18 @@ public class AbaEquipe extends Relatorio {
 		row = addNewRow(sheet);
 
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, 0, 4, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+			addMergedRegion(sheet, row, 0, 4, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		} else {
-			addMergedRegion(sheet, row, 0, 2, "Vigências de Membros da Equipe", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+			addMergedRegion(sheet, row, 0, 2, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		}
 
 		row = addNewRow(sheet);
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		}
-		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Qt. Membros", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qt. Membros", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (QntdeMembrosEquipeDTO membro : membros) {
 			pos = 0;
@@ -211,15 +212,15 @@ public class AbaEquipe extends Relatorio {
 		int rownum = row.getRowNum() + 2;
 		pos = 0;
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 5, "Faturamentos", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos, pos + 5, "Faturamentos", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
-		addCell(row, pos++, "Mes Referencia", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Início", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dt. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dias Trabalhados", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dias Extra", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Dias Ausência", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Mes Referencia", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Trabalhados", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Extra", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Ausência", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		for (FaturamentoDTO faturamento : faturamentos) {
 
@@ -243,23 +244,23 @@ public class AbaEquipe extends Relatorio {
 		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe());
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 5, "Indicadores", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos, pos + 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 1, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos + 2, "Peso", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos + 3, "Fator Ajuste", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos + 4, "Limite Máximo", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos + 5, "Qtd. Fat. Média", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos, pos + 1, "Indicador", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos + 2, "Peso", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos + 3, "Fator Ajuste", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos + 4, "Limite Máximo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos + 5, "Qtd. Fat. Média", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (IndicadorContratoDTO indicador : indicadores) {
 			pos = 7;
 			row = addNewRow(sheet, rownum++);
 
 			addMergedRegion(sheet, row, pos, pos + 1, indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador());
-			setNoNull(row, pos + 2, indicador.getVrPesoTipoIndicador(), STYLE_DECIMAL);
-			setNoNull(row, pos + 3, indicador.getVrFatorAjuste(), STYLE_DECIMAL);
-			setNoNull(row, pos + 4, indicador.getVrLimiteMaximoIndicador(), STYLE_DECIMAL_5DIGITS);
+			setNoNull(row, pos + 2, indicador.getVrPesoTipoIndicador(), CellStylesEnum.DECIMAL);
+			setNoNull(row, pos + 3, indicador.getVrFatorAjuste(), CellStylesEnum.DECIMAL);
+			setNoNull(row, pos + 4, indicador.getVrLimiteMaximoIndicador(), CellStylesEnum.DECIMAL5);
 			setNoNull(row, pos + 5, indicador.getQtFaturamento());
 		}
 
@@ -273,20 +274,20 @@ public class AbaEquipe extends Relatorio {
 		pos = 7;
 		rownum = 13;
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, pos, pos + 2, "Valores Faixas Indicador", ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+		addMergedRegion(sheet, row, pos, pos + 2, "Valores Faixas Indicador", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
-		addCell(row, pos++, "Vr. Inicial", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Vr. Final", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-		addCell(row, pos++, "Valor", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+		addCell(row, pos++, "Vr. Inicial", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Vr. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		for (FaixaIndicadorDTO faixa : faixas) {
 			pos = 7;
 			row = addNewRow(sheet, rownum++);
 
-			addCell(row, pos++, faixa.getQtInicioFaixa(), STYLE_DECIMAL);
-			addCell(row, pos++, faixa.getQtFinalFaixa(), STYLE_DECIMAL);
-			addCell(row, pos++, faixa.getVrFatorFaixa(), STYLE_DECIMAL);
+			addCell(row, pos++, faixa.getQtInicioFaixa(), CellStylesEnum.DECIMAL);
+			addCell(row, pos++, faixa.getQtFinalFaixa(), CellStylesEnum.DECIMAL);
+			addCell(row, pos++, faixa.getVrFatorFaixa(), CellStylesEnum.DECIMAL);
 		}
 
 		addNewRow(sheet, rownum++);
@@ -300,31 +301,31 @@ public class AbaEquipe extends Relatorio {
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
 			addMergedRegion(sheet, row, pos, pos + 5, //
 					"Situações Consideradas para Serviços Contratados", //
-					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+					CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		} else {
 			addMergedRegion(sheet, row, pos, pos + 3, //
 					"Situações Consideradas para Serviços Contratados", //
-					ALIGN_CENTER_GREY_40_PERCENT_BOLD);
+					CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		}
 
 		List<SituacaoEntregaIndicadorDTO> situacoes = situacaoEntregaIndicadorService.listar(equipe.getNuEquipe());
 
 		if (Utils.isEmpty(situacoes)) {
 			row = addNewRow(sheet, rownum++);
-			addMergedRegion(sheet, row, pos, pos + 3, "Nenhuma situação configurada.", ALIGN_CENTER_RED_BOLD);
+			addMergedRegion(sheet, row, pos, pos + 3, "Nenhuma situação configurada.", CellStylesEnum.RED_ALIGN_CENTER_BOLD);
 		}
 
 		if (Utils.isNotEmpty(situacoes)) {
 
 			row = addNewRow(sheet, rownum++);
 
-			addMergedRegion(sheet, row, pos, pos + 1, "Indicador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+			addMergedRegion(sheet, row, pos, pos + 1, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 			if ("D".equals(equipe.getIcDistribuiProfissional())) {
-				addMergedRegion(sheet, row, pos + 2, pos + 3, "Agrupador", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
-				addMergedRegion(sheet, row, pos + 4, pos + 5, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+				addMergedRegion(sheet, row, pos + 2, pos + 3, "Agrupador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+				addMergedRegion(sheet, row, pos + 4, pos + 5, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			} else {
-				addMergedRegion(sheet, row, pos + 2, pos + 3, "Situação", ALIGN_CENTER_GREY_25_PERCENT_BOLD);
+				addMergedRegion(sheet, row, pos + 2, pos + 3, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			}
 
 			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {

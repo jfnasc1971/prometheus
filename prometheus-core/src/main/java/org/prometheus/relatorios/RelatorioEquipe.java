@@ -311,7 +311,9 @@ public class RelatorioEquipe extends Relatorio {
 
         XSSFCell cellValorDevido = null;
 
+        //
         // Calculos Valor Devido
+        //
         if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
             if (equipe.getNuTipoGrupo() != 70L) {
@@ -348,6 +350,9 @@ public class RelatorioEquipe extends Relatorio {
         
         XSSFWorkbook wb = new XSSFWorkbook();
 
+        carregarFontes(wb);
+        carregarEstilos(wb);
+        
         return wb;
     }
 }

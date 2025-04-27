@@ -122,7 +122,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 			row = addNewRow(sheet);
 			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					"Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-					CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+					CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
 
 			/**
 			 * Vigência dos Membros do Faturamento

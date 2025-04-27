@@ -32,7 +32,7 @@ public class RelatorioDemanda extends Relatorio {
 
     public static final String ABA_DEMANDA = "Demanda";
     public static final String ABA_TERMOS = "Termos";
-    public static final Integer NU_CONTRATO = 909;
+    public static final Integer NU_CONTRATO = 649;
 
     @Autowired
     private DemandaService demandaService;
@@ -101,6 +101,10 @@ public class RelatorioDemanda extends Relatorio {
 
     public String gerar(String coDemanda) throws Exception {
         DemandaDTO demanda = demandaService.findByDemanda(coDemanda);
+        if (demanda == null) {
+            System.out.println("Demanda: " + coDemanda + " NAO encontrada;");
+            return null;
+        }
         return gerar(demanda);
     }
 

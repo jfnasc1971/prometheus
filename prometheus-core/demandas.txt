@@ -1,4 +1,6 @@
-#SP202003479
-#SP202200308
-#SP202300675
-#SP202300897
+#
+# LISTA DE DEMANDAS A SEREM PROCESSADAS
+#
+# Informar o código da demanda, uma em cada linha.
+# Para comentar um determinada equipe, usar o #
+#

@@ -39,18 +39,18 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 		int pos = 0;
 
-		addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
-		addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Valor Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Qtd. Dias Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "APEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Qtd. Dias Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "DPEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Vr. Previsto Termo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "FNS", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 30);
-		addCell(row, pos++, "Vr. Financeiro", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Valor Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Dias Extras", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "APEC", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Qtd. Dias Ausências", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "DPEC", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Vr. Previsto Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 30);
+		addCell(row, pos++, "Vr. Financeiro", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		XSSFCell primeiraFatura = null;
 		XSSFCell ultimaFatura = null;
@@ -125,7 +125,7 @@ public class AbaCalculoValorDevido extends Relatorio {
 		}
 
 		row = addNewRow(sheet);
-		addCell(row, pos - 2, "TOTAL", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos - 2, "TOTAL", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		
 		XSSFCell result = null;
 		

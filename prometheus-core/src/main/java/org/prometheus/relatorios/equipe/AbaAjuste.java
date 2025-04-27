@@ -25,10 +25,6 @@ public class AbaAjuste extends Relatorio {
 	public XSSFCell write(XSSFWorkbook workBook, String coEquipe, XSSFCell cellValorDevido,
 			XSSFCell cellValorPagamentos) throws InvalidFormatException, IOException {
 
-		carregarFontes(workBook);
-
-		carregarEstilos(workBook);
-
 		XSSFSheet sheet = workBook.createSheet("Ajuste");
 
 		sheet.setDisplayGridlines(false);
@@ -41,17 +37,17 @@ public class AbaAjuste extends Relatorio {
 		addMergedRegion(sheet, row, 0, 2, coEquipe, CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 1, "Vr. Devido Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, 0, 1, "Vr. Devido Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_LEFT);
 		setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_CALCULO_VALOR_DEVIDO, //
 				cellValorDevido.getReference()), 2, CellStylesEnum.DECIMAL);
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, 0, 1, "Vr. Pago Empenho", CellStylesEnum.LIGHT_GREY_ALIGN_LEFT);
 		setCellFormula(sheet, row, getCellReference(RelatorioEquipe.ABA_PAGAMENTOS, //
 				cellValorPagamentos.getReference()), 2, CellStylesEnum.DECIMAL);
 		
 		row = addNewRow(sheet);
-		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFCell cell = addMergedRegion(sheet, row, 0, 1, "Valor Ajuste", CellStylesEnum.LIGHT_GREY_ALIGN_LEFT_BOLD);
 		XSSFCell result = setCellFormula(sheet, row, "if(C2<>\"N/A\",C2-C3,\"0\")", 2, CellStylesEnum.DECIMAL);
 		setCellComment(cell, "Corresponde à diferença entre o valor devido calculado e que foi pago.\n" //
 				+ "Esse valor tende a 0(zero).");

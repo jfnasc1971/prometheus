@@ -53,9 +53,8 @@ public class RelatorioEquipe extends Relatorio {
     public static final String ABA_PAGAMENTOS = "Pagamentos";
     public static final String ABA_SERVICOS = "Serviços";
 
-    //private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    
-    private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";
+    private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+    //private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";
 
     @Autowired
     private EquipeService equipeService;

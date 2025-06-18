@@ -33,13 +33,13 @@ public class AbaCalculoValorDevido extends Relatorio {
 
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 60);
 
 		XSSFRow row = addNewRow(sheet);
 
 		int pos = 0;
 
-		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 80);
 		addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -49,7 +49,7 @@ public class AbaCalculoValorDevido extends Relatorio {
 		addCell(row, pos++, "Qtd. Dias Ausências", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "DPEC", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Vr. Previsto Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 30);
+		addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
 		addCell(row, pos++, "Vr. Financeiro", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		XSSFCell primeiraFatura = null;

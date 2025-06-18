@@ -44,8 +44,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 public class AbaCalculosSprintUnisys extends Relatorio {
 
     private static final Logger LOG = LogManager.getLogger(AbaCalculosSprintUnisys.class.getSimpleName());
-    
-    private static final int LAYOUT_COLUMNS_COUNT = 15;
+
+    private static final int LAYOUT_COLUMNS_COUNT = 19;
 
     @Autowired
     private SolicitacaoService solicitacaoService;
@@ -70,10 +70,10 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
     @Autowired
     private IndicadorService indicadorService;
-    
+
     @Autowired
     private AusenciaExtraFaturamentoService ausenciExtraService;
-    
+
     private Map<Long, List<XSSFCell>> indicadoresProdutividade;
     private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
     private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
@@ -97,15 +97,9 @@ public class AbaCalculosSprintUnisys extends Relatorio {
         sheet.setZoom(90);
         sheet.setDisplayGridlines(false);
 
-        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
-        
-//        setColumnWidth(sheet, 8, 5);
-//        setColumnWidth(sheet, 9, 120);
-//        setColumnWidth(sheet, 10, 25);
-//        setColumnWidth(sheet, 11, 25);
-//        setColumnWidth(sheet, 12, 25);
-//        setColumnWidth(sheet, 13, 25);
-//        setColumnWidth(sheet, 14, 25);
+        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, DEFAULT_COLUMNS_WIDTH);
+
+        setColumnWidth(sheet, 9, 5);
 
         XSSFRow row = null;
 
@@ -143,7 +137,7 @@ public class AbaCalculosSprintUnisys extends Relatorio {
         XSSFCell cellValorFNS = null;
 
         IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
-        
+
         InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
         insumo.setNuFatura(faturamento.getNuFatura());
@@ -154,7 +148,7 @@ public class AbaCalculosSprintUnisys extends Relatorio {
         row = addNewRow(sheet);
         addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
                 faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-                CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         /**
          * Vigência dos Membros do Faturamento
@@ -165,9 +159,9 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
         int posRowVigencias = row.getRowNum(); // preciso guardar essa posicao
 
-        int posColVigencias = 6;
-        
-        addMergedRegion(sheet, row, posColVigencias, 14, "Vigência dos Membros do Faturamento", //
+        int posColVigencias = 10;
+
+        addMergedRegion(sheet, row, posColVigencias, LAYOUT_COLUMNS_COUNT - 1, "Vigência dos Membros do Faturamento", //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         if (Utils.isNotEmpty(vigencias)) {
@@ -175,7 +169,7 @@ public class AbaCalculosSprintUnisys extends Relatorio {
             int pos = posColVigencias;
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, pos++, pos+=1, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addMergedRegion(sheet, row, pos++, pos += 1, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             pos++;
             addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -190,16 +184,16 @@ public class AbaCalculosSprintUnisys extends Relatorio {
             for (VigenciaMembrosDTO vigencia : vigencias) {
                 pos = posColVigencias;
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, pos++, pos+=1, vigencia.getDePerfil());
+                addMergedRegion(sheet, row, pos++, pos += 1, vigencia.getDePerfil());
                 pos++;
                 addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
                 addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
                 addCell(row, pos++, vigencia.getQtMembrosEquipe());
                 addCell(row, pos++, vigencia.getQtDiasTrabalhados(), CellStylesEnum.DECIMAL);
-                
+
                 BigDecimal vrPrecoPerfil = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
-                        faturamento.getNuFatura(), vigencia.getNuPerfil()); 
-                
+                        faturamento.getNuFatura(), vigencia.getNuPerfil());
+
                 addCell(row, pos++, vrPrecoPerfil, CellStylesEnum.DECIMAL);
 
                 if (cellInicioVigencias == null) {
@@ -207,14 +201,15 @@ public class AbaCalculosSprintUnisys extends Relatorio {
                 } else {
                     cellFinalVigencias = addCell(row, pos++, vigencia.getQtEfetiva(), CellStylesEnum.DECIMAL5);
                 }
-                
-                insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(), vigencia.getQtEfetiva());
+
+                insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(),
+                        vigencia.getQtEfetiva());
                 insumo.addVrPrecoPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(), vrPrecoPerfil);
-                
-                AusenciaExtraFaturamentoDTO ausenciaExtra = 
-                        ausenciExtraService.findBy(vigencia.getNuEquipe(), faturamento.getNuFatura(), vigencia.getNuPerfil());
-                
-                if(ausenciaExtra == null) {
+
+                AusenciaExtraFaturamentoDTO ausenciaExtra = ausenciExtraService.findBy(vigencia.getNuEquipe(),
+                        faturamento.getNuFatura(), vigencia.getNuPerfil());
+
+                if (ausenciaExtra == null) {
                     insumo.addQtDiasExtraPerfil(vigencia.getNuPerfil(), BigDecimal.ZERO);
                     insumo.addQtDiasAusenciaPerfil(vigencia.getNuPerfil(), BigDecimal.ZERO);
                 } else {
@@ -228,7 +223,7 @@ public class AbaCalculosSprintUnisys extends Relatorio {
             }
 
             row = addNewRow(sheet);
-            
+
             insumo.setQtEfetiva(setCellFormula(sheet, row, String.format("sum(%s:%s)", //
                     cellInicioVigencias.getReference(), cellFinalVigencias.getReference()), pos - 1,
                     CellStylesEnum.DECIMAL5));
@@ -238,22 +233,52 @@ public class AbaCalculosSprintUnisys extends Relatorio {
          * Dias Trabalhados no Faturamento
          */
         row = getRow(sheet, posRowVigencias++);
-        addMergedRegion(sheet, row, 0, 4, "Dias Trabalhados no Faturamento", //
-                CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados no Faturamento", //
+                CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         row = getRow(sheet, posRowVigencias++);
-        addCell(row, 0, "Data Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addCell(row, 1, "Data Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addCell(row, 2, "Dias Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addCell(row, 3, "Dias Extra", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addCell(row, 4, "Dias Ausência", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, 0, "Data Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 1, "Data Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 2, "Dias Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         row = getRow(sheet, posRowVigencias++);
         addCell(row, 0, faturamento.getDtInicioFatura());
         addCell(row, 1, faturamento.getDtFinalFatura());
         addCell(row, 2, faturamento.getQtDiasFaturamento(), CellStylesEnum.DECIMAL);
-        insumo.setQtDiasExtra(addCell(row, 3, faturamento.getQtDiasServicoExtra(), CellStylesEnum.DECIMAL));
-        insumo.setQtDiasAusencia(addCell(row, 4, faturamento.getQtDiasAusencia(), CellStylesEnum.DECIMAL));
+
+        getRow(sheet, posRowVigencias++);
+        
+        /**
+         * Ausencias e extras
+         */
+        row = getRow(sheet, posRowVigencias++);
+        addMergedRegion(sheet, row, 0, 8, "Ausências e extras", //
+                CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+
+        row = getRow(sheet, posRowVigencias++);
+        addCell(row, 0, "Dt. Registro", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addMergedRegion(sheet, row, 1, 3, "Perfil Profissional", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 4, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 5, "Qt. Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 6, "Qt. Dias Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 7, "Vr. Dia Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, 8, "Vr. Dia Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+
+        List<AusenciaExtraFaturamentoDTO> ausenciasExtras = ausenciExtraService.listarAusenciasExtrasPerfil(
+                equipe.getCoEquipe(), faturamento.getNuFatura());
+        
+        if (Utils.isNotEmpty(ausenciasExtras)) {
+            for(AusenciaExtraFaturamentoDTO ausenciaExtra : ausenciasExtras) {
+                row = getRow(sheet, posRowVigencias++);
+                addCell(row, 0, ausenciaExtra.getDhInclusaoInformacao());
+                addMergedRegion(sheet, row, 1, 3, ausenciaExtra.getDePerfil());
+                addCell(row, 4, precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), faturamento.getNuFatura(), ausenciaExtra.getNuPerfil()));
+                addCell(row, 5, ausenciaExtra.getQtDiaServicoExtra());
+                addCell(row, 6, ausenciaExtra.getQtDiaAusencia());
+                addCell(row, 7, ausenciaExtra.getQtDiaServicoExtra());
+                addCell(row, 8, ausenciaExtra.getQtDiaServicoExtra());
+            }
+        }
 
         // ciclos
         List<CicloTrabalhoDTO> ciclos = cicloTrabalhoService.listar(faturamento.getNuFatura(), equipe.getNuEquipe());
@@ -268,8 +293,8 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                    "Nenhuma Sprint avaliada. Os indicadores não serão apurados.", //
-                    CellStylesEnum.TEXT_BOLD);
+                    "Nenhuma Sprint avaliada ou indicadores não configurados. O FNS não será apurado.", //
+                    CellStylesEnum.NOTA_BOLD);
 
             addIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), cellQualidadeProduto);
             addIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), cellValorAgregado);
@@ -288,18 +313,17 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
                     addBlank(sheet);
 
-                    LOG.info(
-                            String.format("Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
-                                    equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
-                                    faturamento.getNuFatura(), faturamento.getDeFatura(), //
-                                    ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
+                    LOG.info(String.format("Contrato: %s Equipe: %s Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
+                            equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
+                            faturamento.getNuFatura(), faturamento.getDeFatura(), //
+                            ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 
                     CicloTrabalhoDTO diasTrabalhados = cicloTrabalhoService.getDiasTrabalhados(
                             faturamento.getNuFatura(), equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
 
                     row = addNewRow(sheet);
                     addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                            "Sprint " + ciclo.getNuCicloTrabalho(),CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
+                            "Sprint " + ciclo.getNuCicloTrabalho(), CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
 
                     int rowNumTituloSprint = row.getRowNum();
 
@@ -353,7 +377,8 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
                     row = addNewRow(sheet);
                     addCell(row, 1, "Falha Caixa");
-                    addCell(row, 2, "NF".equals(ciclo.getCoFalhaCicloTrabalho()) ? "Não" : "Sim", CellStylesEnum.NORMAL_ALIGN_CENTER);
+                    addCell(row, 2, "NF".equals(ciclo.getCoFalhaCicloTrabalho()) ? "Não" : "Sim",
+                            CellStylesEnum.NORMAL_ALIGN_CENTER);
                     addCell(row, 4, "");
                     addCell(row, 5, "");
                     addCell(row, 7, "");
@@ -455,7 +480,8 @@ public class AbaCalculosSprintUnisys extends Relatorio {
                             posInicialSolicitacoes = row.getRowNum() + 1;
                         }
                         addCell(row, pos++, s.getCoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-                        addMergedRegion(sheet, row, pos++, pos + 1, s.getNoTipoServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+                        addMergedRegion(sheet, row, pos++, pos + 1, s.getNoTipoServico(),
+                                CellStylesEnum.NORMAL_ALIGN_CENTER);
                         addCell(row, pos + 2, s.getNuTamanhoServico(), CellStylesEnum.DECIMAL);
                     }
 
@@ -511,19 +537,25 @@ public class AbaCalculosSprintUnisys extends Relatorio {
 
             if (getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaProdutividade, //
-                        "average(" + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         CellStylesEnum.DECIMAL5);
             }
 
             if (getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaQualidadeProduto, //
-                        "average(" + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         CellStylesEnum.DECIMAL5);
             }
 
             if (getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaValorAgregado, //
-                        "average(" + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS) + ")", //
+                        "average("
+                                + getMediaIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), indicadorFNS)
+                                + ")", //
                         CellStylesEnum.DECIMAL5);
             }
 
@@ -531,8 +563,8 @@ public class AbaCalculosSprintUnisys extends Relatorio {
              * Desempenho / Valor FNS
              */
             row = getRow(sheet, posRowMediaIndicadores + 1);
-            addCell(row, 7, "Desempenho",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-            addCell(row, 8, "Valor FNS",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+            addCell(row, 7, "Desempenho", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+            addCell(row, 8, "Valor FNS", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, posRowMediaIndicadores + 2);
             cellDesempenho = addCell(row, 7, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
@@ -561,11 +593,10 @@ public class AbaCalculosSprintUnisys extends Relatorio {
             StringBuilder formula = new StringBuilder();
 
             for (int i = 1; i <= qtFaixas; i++) {
-                formula.append(
-                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-                                cellDesempenho.getReference(), pos + i, //
-                                cellDesempenho.getReference(), pos + i, //
-                                pos + i));
+                formula.append(String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+                        cellDesempenho.getReference(), pos + i, //
+                        cellDesempenho.getReference(), pos + i, //
+                        pos + i));
             }
 
             setCellFormula(cellValorFNS, formula.toString().substring(1), CellStylesEnum.DECIMAL);

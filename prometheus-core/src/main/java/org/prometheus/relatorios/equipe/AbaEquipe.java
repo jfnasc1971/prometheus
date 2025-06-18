@@ -63,8 +63,11 @@ public class AbaEquipe extends Relatorio {
 
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 75);
-		setColumnWidth(sheet, 6, 10); // Coluna G
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, DEFAULT_COLUMNS_WIDTH);
+		
+		setColumnWidth(sheet, 0, 80); // Coluna A
+		setColumnWidth(sheet, 1, 80); // Coluna B
+		setColumnWidth(sheet, 6, 5); // Coluna G
 
 		XSSFRow row = addNewRow(sheet);
 
@@ -142,7 +145,7 @@ public class AbaEquipe extends Relatorio {
 		row = addNewRow(sheet);
 
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, pos++, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		}
 		addCell(row, pos++, "Dt. Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -180,7 +183,7 @@ public class AbaEquipe extends Relatorio {
 
 		row = addNewRow(sheet);
 		if ("D".equals(equipe.getIcDistribuiProfissional())) {
-			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		}
 		addCell(row, pos++, "Dt. Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -215,12 +218,12 @@ public class AbaEquipe extends Relatorio {
 		addMergedRegion(sheet, row, pos, pos + 5, "Faturamentos", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
-		addCell(row, pos++, "Mes Referencia", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Dias Trabalhados", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Dias Extra", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Dias Ausência", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Mes Referencia", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dt. Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Trabalhados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (FaturamentoDTO faturamento : faturamentos) {
 

@@ -92,11 +92,11 @@ public class AbaCalculosSprint extends Relatorio {
         sheet.setZoom(90);
         sheet.setDisplayGridlines(false);
 
-        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 75);
-        setColumnWidth(sheet, 0, 7);
-        setColumnWidth(sheet, 3, 7);
-        setColumnWidth(sheet, 6, 7);
-        setColumnWidth(sheet, 9, 7);
+        setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+        setColumnWidth(sheet, 0, 15);
+        setColumnWidth(sheet, 3, 15);
+        setColumnWidth(sheet, 6, 15);
+        setColumnWidth(sheet, 9, 15);
 
         XSSFRow row = null;
 
@@ -234,7 +234,7 @@ public class AbaCalculosSprint extends Relatorio {
 
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                    "Nenhuma Sprint foi avaliada no período. Os indicadores não serão calculados para este faturamento.",
+                    "Nenhuma Sprint foi avaliada no período.",
                     CellStylesEnum.NOTA_BOLD);
 
             addIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), cellQualidadeProduto);

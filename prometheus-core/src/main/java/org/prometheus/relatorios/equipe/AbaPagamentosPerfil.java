@@ -42,13 +42,13 @@ public class AbaPagamentosPerfil extends Relatorio {
 
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, DEFAULT_COLUMNS_WIDTH);
 
 		XSSFRow row = addNewRow(sheet);
 
 		int pos = 0;
 
-		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 80);
 		addCell(row, pos++, "Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Emissão", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Valor Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -57,7 +57,7 @@ public class AbaPagamentosPerfil extends Relatorio {
 		addCell(row, pos++, "Ausências", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Valor Previsto", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Fatura Paga", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+		addCell(row, pos++, "Fatura Paga", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 80);
 		addCell(row, pos++, "Valor Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		List<TermoDTO> termos = termoService.listar(equipe.getNuEquipe());

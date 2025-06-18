@@ -37,13 +37,15 @@ import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
 
+    public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
+    
     protected void setColumnWidth(XSSFSheet sheet, int colNum, int width) {
-        sheet.setColumnWidth(colNum, (int) sheet.getColumnWidthInPixels(colNum) * width);
+        sheet.setColumnWidth(colNum, (int) sheet.getDefaultColumnWidth() * width * 8);
     }
 
     protected void setAllColumnsWidth(XSSFSheet sheet, int colsCount, int width) {
         for (int i = 0; i < colsCount; i++) {
-            sheet.setColumnWidth(i, (int) sheet.getColumnWidthInPixels(i) * width);
+            sheet.setColumnWidth(i, (int) sheet.getDefaultColumnWidth() * width * 8);
         }
     }
 

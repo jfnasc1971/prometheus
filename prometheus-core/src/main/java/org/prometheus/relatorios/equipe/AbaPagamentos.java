@@ -42,25 +42,25 @@ public class AbaPagamentos extends Relatorio {
 
 		sheet.setDisplayGridlines(false);
 
-		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+		setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 60);
 
 		XSSFRow row = addNewRow(sheet);
 
 		int pos = 0;
 
-        addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 80);
         addCell(row, pos++, "Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Data Emissão", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-        addCell(row, pos++, "Vr. Previsto", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Vr. Previsto Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Qtd. Dias Extras", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "APEC", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Qtd. Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "DPEC", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Vr. Previsto Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-        addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-        addCell(row, pos++, "Fatura Paga", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 40);
+        addCell(row, pos++, "Fatura Paga", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD, 80);
         addCell(row, pos++, "Vr. Termo", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		List<TermoDTO> termos = termoService.listar(equipe.getNuEquipe());

@@ -64,6 +64,8 @@ public class RelatorioEquipe extends Relatorio {
 
     public static void main(String[] args) {
 
+        java.util.logging.LogManager.getLogManager().reset();
+        
         printVersion();
 
         (new File(PATH)).mkdirs();

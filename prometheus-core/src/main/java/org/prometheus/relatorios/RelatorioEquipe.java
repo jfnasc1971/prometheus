@@ -53,9 +53,6 @@ public class RelatorioEquipe extends Relatorio {
     public static final String ABA_PAGAMENTOS = "Pagamentos";
     public static final String ABA_SERVICOS = "Serviços";
 
-    private static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    //private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";
-
     @Autowired
     private EquipeService equipeService;
 
@@ -69,7 +66,16 @@ public class RelatorioEquipe extends Relatorio {
         printVersion();
 
         (new File(PATH)).mkdirs();
-
+        
+        File file = (new File(PATH + File.separator + "consolidado.csv"));
+        try {
+            file.delete();
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        
         String coEquipe = null;
 
         if (args != null && args.length > 0) {
@@ -341,7 +347,7 @@ public class RelatorioEquipe extends Relatorio {
 
         // Ajuste
         AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
-        abaAjuste.write(wb, coEquipe, cellValorDevido, cellValorPagamentos);
+        abaAjuste.write(wb, equipe, cellValorDevido, cellValorPagamentos);
 
         wb.write(fos);
         wb.close();

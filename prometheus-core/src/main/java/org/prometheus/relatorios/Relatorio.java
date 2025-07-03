@@ -1,5 +1,6 @@
 package org.prometheus.relatorios;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +38,9 @@ import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
 
+    public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+    //private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";    
+    
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
     
     protected void setColumnWidth(XSSFSheet sheet, int colNum, int width) {

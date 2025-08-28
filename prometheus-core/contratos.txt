@@ -1,24 +1,13 @@
 #
-# LISTA DE CONTRATOS A SEREM PROCESSADOS
+# LISTA DE CONTRATOS A SEREM PROCESSADAS
 #
-# Informar o código do contrato, um em cada linha.
-# Para comentar um determinado contrato, usar o #
+# Informar o código da contrato, um em cada linha.
+# Use # se quiser ignorar um determinado contrato
 #
-
-#Solicitamos memória de cálculo referente ao mês de maio/2025 para os contratos 
-# 3776/2023 da Stefanini - Resource 6837/2021 - Globalweb 6285/2021 - 
-#Fóton 6834/2021 e 3034/2023 e Spread 3438/2023, do período de início até os dias atuais.
-
-03776/2023
 06837/2021
-06285/2021
-06834/2021
-3034/2023
-3438/2023
-
+0729/2024
+#03776/2023
+#03438/2023
 #06834/2021
-#13994/2020
-#08718/2023
-#15396/2020
-#08718/2023
-#15396/2020
+#03034/2023
+#06285/2021

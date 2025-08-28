@@ -96,11 +96,11 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
 
                     cellQtEfetivaPerfil = addCell(row, pos++, vigencia.getQtMembrosEfetiva(), CellStylesEnum.DECIMAL);
 
-//                    cellVrPrevistoPerfil = setCellFormula(sheet, row, //
-//                            String.format("%s*%s", //
-//                                    cellVrPrecoPerfil.getReference(), //
-//                                    cellQtEfetivaPerfil.getReference()), //
-//                            pos++);
+                    cellVrPrevistoPerfil = setCellFormula(sheet, row, //
+                            String.format("%s*%s", //
+                                    cellVrPrecoPerfil.getReference(), //
+                                    cellQtEfetivaPerfil.getReference()), //
+                            pos++);
 
                     // EXTRAS
                     cellQtDiasExtraPerfil = addCell(row, pos++, vigencia.getQtDiasExtra(), CellStylesEnum.DECIMAL);

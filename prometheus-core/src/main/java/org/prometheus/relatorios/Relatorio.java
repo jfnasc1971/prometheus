@@ -272,12 +272,16 @@ public abstract class Relatorio {
     protected final XSSFCell evaluateFormula(XSSFSheet sheet, XSSFRow row, int pos, String formula,
             CellStylesEnum style) {
 
+        XSSFCell c0 = row.createCell(pos);
+
         FormulaEvaluator evaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 
-        XSSFCell c0 = row.createCell(pos);
         c0.setCellFormula(formula);
-        c0.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
-        evaluator.evaluateFormulaCell(c0);
+        XSSFCellStyle cellStyle = row.getSheet().getWorkbook().getCellStyleAt(style.index);
+        if(cellStyle != null) {
+            c0.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
+            evaluator.evaluateFormulaCell(c0);
+        }
 
         return c0;
 

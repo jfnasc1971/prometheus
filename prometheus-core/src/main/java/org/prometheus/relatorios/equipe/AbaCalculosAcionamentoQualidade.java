@@ -165,7 +165,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
             row = getRow(sheet, rowNumSecao2++);
             pos = 4;
-            addCell(row, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addCell(row, pos++, "Perfils", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Qt. Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Qt. Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -208,11 +208,11 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
                 listaVrAusencias.add(setCellFormula(sheet, row, //
                         String.format("(%s/%s)*%s", cellQtAusencias, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-                        pos++));
+                        pos++, CellStylesEnum.DECIMAL));
 
                 listaVrExtras.add(setCellFormula(sheet, row, //
                         String.format("(%s/%s)*%s", cellQtExtras, cellQtDiasFaturamento, cellvrPrecoGrupo), //
-                        pos++));
+                        pos++, CellStylesEnum.DECIMAL));
             }
 
             // blank
@@ -459,7 +459,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     XSSFCell cellValorFNS = addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                     XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
-                    setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+                    //setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
                     setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
                     setCellFormula(cellValorFinanceiro, //
                             String.format("%s*%s", //

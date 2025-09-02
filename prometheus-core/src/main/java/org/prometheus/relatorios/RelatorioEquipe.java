@@ -62,11 +62,11 @@ public class RelatorioEquipe extends Relatorio {
     public static void main(String[] args) {
 
         java.util.logging.LogManager.getLogManager().reset();
-        
+
         printVersion();
 
         (new File(PATH)).mkdirs();
-        
+
         File file = (new File(PATH + File.separator + "consolidado.csv"));
         try {
             file.delete();
@@ -75,7 +75,7 @@ public class RelatorioEquipe extends Relatorio {
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         String coEquipe = null;
 
         if (args != null && args.length > 0) {
@@ -180,7 +180,7 @@ public class RelatorioEquipe extends Relatorio {
             return null;
         }
 
-        //String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
+        // String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
         String dir = equipe.getCoContrato().replaceAll("[ /]", "_") + "/" + equipe.getNoTipoGrupo();
 
         (new File(PATH + "/" + dir)).mkdirs();
@@ -231,73 +231,109 @@ public class RelatorioEquipe extends Relatorio {
         //
         // Cálculos
         //
-        if (!equipe.getCoContrato().equals("08718/2023")) {
-            
-            if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-
-                if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-
-                    boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
-
-                    if (!isTipoGrupoG4) {
-                        AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
-                                .getBean(AbaCalculosAcionamento.class);
-                        insumos = calculos.write(wb, coEquipe, faturamentos);
-                    }
-
-                    if (isTipoGrupoG4) {
-                        AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-                        insumos = calculos.write(wb, coEquipe, faturamentos);
-                    }
-
-                }
-
-                if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-                    AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
-                    insumos = calculos.gerar(wb, coEquipe, faturamentos);
-                }
-            }
-
-            if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-
-                if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-                    AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-                            .getBean(AbaCalculosAcionamentoQualidade.class);
-                    calculos.gerar(wb, coEquipe, faturamentos, insumos);
-                }
-
-            }
-        }
-
-        if (equipe.getCoContrato().equals("08718/2023")) {
+        if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
             if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-                
-                if (equipe.getNuTipoGrupo() != 70L) {
-                
-                    AbaCalculosAcionamentoUnisys calculos = AppConfig.getApplicationContext()
-                            .getBean(AbaCalculosAcionamentoUnisys.class);
-                    calculos.gerar(wb, coEquipe, faturamentos, insumos);
-                    
+
+                boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
+
+                if (!isTipoGrupoG4) {
+                    AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
+                            .getBean(AbaCalculosAcionamento.class);
+                    insumos = calculos.write(wb, coEquipe, faturamentos);
                 }
-                
-                if (equipe.getNuTipoGrupo() == 70L) {
-                    
-                    AbaCalculosMilheiros calculos = AppConfig.getApplicationContext()
-                            .getBean(AbaCalculosMilheiros.class);
-                    calculos.gerar(wb, coEquipe, faturamentos, insumos);
-                    
+
+                if (isTipoGrupoG4) {
+                    AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+                    insumos = calculos.write(wb, coEquipe, faturamentos);
                 }
-                
+
             }
 
             if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-                AbaCalculosSprintUnisys calculos = AppConfig.getApplicationContext()
-                        .getBean(AbaCalculosSprintUnisys.class);
+                AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
                 insumos = calculos.gerar(wb, coEquipe, faturamentos);
-            }
-
+            }            
+            
         }
+        
+        if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+            
+            if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+                AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
+                        .getBean(AbaCalculosAcionamentoQualidade.class);
+                calculos.gerar(wb, coEquipe, faturamentos, insumos);
+            }            
+            
+        }
+        
+//        if (!equipe.getCoContrato().equals("08718/2023")) {
+//
+//            if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+//
+//                if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+//
+//                    boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
+//
+//                    if (!isTipoGrupoG4) {
+//                        AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
+//                                .getBean(AbaCalculosAcionamento.class);
+//                        insumos = calculos.write(wb, coEquipe, faturamentos);
+//                    }
+//
+//                    if (isTipoGrupoG4) {
+//                        AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+//                        insumos = calculos.write(wb, coEquipe, faturamentos);
+//                    }
+//
+//                }
+//
+//                if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+//                    AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
+//                    insumos = calculos.gerar(wb, coEquipe, faturamentos);
+//                }
+//            }
+//
+//            if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+//
+//                if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+//                    AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
+//                            .getBean(AbaCalculosAcionamento.class);
+//                    insumos = calculos.write(wb, coEquipe, faturamentos);
+//                }
+//
+//            }
+//        }
+
+//        if (equipe.getCoContrato().equals("08718/2023")) {
+//
+//            if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+//
+//                if (equipe.getNuTipoGrupo() != 70L) {
+//
+//                    AbaCalculosAcionamentoUnisys calculos = AppConfig.getApplicationContext()
+//                            .getBean(AbaCalculosAcionamentoUnisys.class);
+//                    calculos.gerar(wb, coEquipe, faturamentos, insumos);
+//
+//                }
+//
+//                if (equipe.getNuTipoGrupo() == 70L) {
+//
+//                    AbaCalculosMilheiros calculos = AppConfig.getApplicationContext()
+//                            .getBean(AbaCalculosMilheiros.class);
+//                    calculos.gerar(wb, coEquipe, faturamentos, insumos);
+//
+//                }
+//
+//            }
+//
+//            if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+//                AbaCalculosSprintUnisys calculos = AppConfig.getApplicationContext()
+//                        .getBean(AbaCalculosSprintUnisys.class);
+//                insumos = calculos.gerar(wb, coEquipe, faturamentos);
+//            }
+//
+//        }
 
         //
         // Serviços (SOMENTE ACIONAMENTO)
@@ -356,12 +392,12 @@ public class RelatorioEquipe extends Relatorio {
     }
 
     private XSSFWorkbook createWorkbook() {
-        
+
         XSSFWorkbook wb = new XSSFWorkbook();
 
         carregarFontes(wb);
         carregarEstilos(wb);
-        
+
         return wb;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -277,10 +278,13 @@ public abstract class Relatorio {
         FormulaEvaluator evaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 
         c0.setCellFormula(formula);
-        XSSFCellStyle cellStyle = row.getSheet().getWorkbook().getCellStyleAt(style.index);
-        if(cellStyle != null) {
-            c0.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
-            evaluator.evaluateFormulaCell(c0);
+        evaluator.evaluateFormulaCell(c0);
+        
+        if (style != null) {
+            XSSFCellStyle cellStyle = row.getSheet().getWorkbook().getCellStyleAt(style.index);
+            if(cellStyle != null) {
+                c0.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
+            }
         }
 
         return c0;
@@ -291,9 +295,18 @@ public abstract class Relatorio {
 
         FormulaEvaluator evaluator = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
 
-        cell.setCellFormula(formula);
-        cell.setCellStyle(cell.getSheet().getWorkbook().getCellStyleAt(style.index));
-        evaluator.evaluateFormulaCell(cell);
+        try {
+            cell.setCellFormula(formula);
+            evaluator.evaluateFormulaCell(cell);
+
+            if (style != null) {
+                cell.setCellStyle(cell.getSheet().getWorkbook().getCellStyleAt(style.index));
+            }
+        } catch (FormulaParseException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
 
         return cell;
     }

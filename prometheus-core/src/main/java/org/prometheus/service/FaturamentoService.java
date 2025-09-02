@@ -128,6 +128,7 @@ public class FaturamentoService {
 		sb.append("  inner join gct.gcttb170_termo_equipe t on ( "); 
 		sb.append("    t.nu_equipe = e.nu_equipe "); 
 		sb.append("    and t.nu_tipo_termo = 11 "); 
+		sb.append("    and t.nu_situacao_termo in (1,3) ");
         sb.append("    and trunc(t.vr_financeiro_termo,2) <> 0.00 "); 
 		sb.append("  ) "); 
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = t.nu_fatura_gerada "); 

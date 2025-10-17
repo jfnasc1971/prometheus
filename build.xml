@@ -8,26 +8,26 @@
 	</target>
 
 	<target name="update-revision">
-		<exec executable="/bin/bash" outputproperty="revision.number" failonerror="true">
+		<exec executable="cmd" outputproperty="revision.number" failonerror="true">
 			<arg value="-c" />
 			<arg value="git log --format='%H' -n 1" />
 		</exec>
 		
 		<echo>Commit ID: ${revision.number}</echo>
 
-		<exec executable="/bin/bash" failonerror="true">
+		<exec executable="cmd" failonerror="true">
 			<arg value="-c" />
 			<arg value="git log -1 > /tmp/repoinfo.properties" />
 		</exec>
 		
-		<exec executable="/bin/bash" failonerror="true">
+		<exec executable="cmd" failonerror="true">
 			<arg value="-c" />
 			<arg value="iconv -t ISO-8859-1 -f UTF-8 /tmp/repoinfo.properties > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
 		</exec>
 	</target>
 
 	<target name="package" depends="init">
-		<exec executable="/bin/bash" failonerror="true">
+		<exec executable="cmd" failonerror="true">
 			<arg value="-c" />
 			<arg value="mvn -DskipTests -Dapp.version=${app.version} clean install" />
 		</exec>

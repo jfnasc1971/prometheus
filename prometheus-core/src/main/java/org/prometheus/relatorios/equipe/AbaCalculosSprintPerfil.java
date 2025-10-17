@@ -41,9 +41,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Component
-public class AbaCalculosSprintUnisys extends Relatorio {
+public class AbaCalculosSprintPerfil extends Relatorio {
 
-    private static final Logger LOG = LogManager.getLogger(AbaCalculosSprintUnisys.class.getSimpleName());
+    private static final Logger LOG = LogManager.getLogger(AbaCalculosSprintPerfil.class.getSimpleName());
 
     private static final int LAYOUT_COLUMNS_COUNT = 19;
 

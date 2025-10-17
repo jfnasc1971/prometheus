@@ -135,7 +135,7 @@ public class FaturamentoService {
 		sb.append("  inner join gct.gcttb103_faturamento fat on fat.nu_faturamento = f.nu_faturamento "); 
 		sb.append("where "); 
 		sb.append("  e.co_equipe = ? ");
-		//sb.append("  and f.nu_fatura = 5673 ");
+		sb.append("  and f.nu_situacao_fatura in (3,4,5) ");
 		sb.append("order by "); 
 		sb.append("  f.dt_final_fatura ");
 

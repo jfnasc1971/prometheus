@@ -284,10 +284,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                 addCell(row, 4, vrPrecoGrupo);
                 addCell(row, 5, ausenciaExtra.getQtDiaAusencia());
                 addCell(row, 6, ausenciaExtra.getQtDiaServicoExtra());
-                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaAusencia())) {
+                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaAusencia()) && vrPrecoGrupo != null) {
                 	addCell(row, 7, vrPrecoGrupo.multiply(ausenciaExtra.getQtDiaAusencia().divide(faturamento.getQtDiasFaturamento(), 5, RoundingMode.HALF_UP)));	
                 }
-                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaServicoExtra())) {
+                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaServicoExtra()) && vrPrecoGrupo != null) {
                 	addCell(row, 8, vrPrecoGrupo.multiply(ausenciaExtra.getQtDiaServicoExtra().divide(faturamento.getQtDiasFaturamento(), 5, RoundingMode.HALF_UP)));
                 }
             }

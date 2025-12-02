@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -71,6 +72,13 @@ public class RelatorioEquipe extends Relatorio {
 		try {
 			file.delete();
 			file.createNewFile();
+			
+	        FileWriter fw = new FileWriter(file, true);
+	        LOG.info(file.getAbsolutePath());
+	        
+	        fw.write("CONTRATO;GRUPO;EQUIPE;VALOR AJUSTE\n");	        
+			
+	        fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);

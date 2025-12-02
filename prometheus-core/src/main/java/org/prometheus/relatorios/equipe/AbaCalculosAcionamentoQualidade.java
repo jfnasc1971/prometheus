@@ -91,6 +91,9 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
         sheet.setDisplayGridlines(false);
 
         setAllColumnsWidth(sheet, LAYOUT_COLUMNS_COUNT, 70);
+        setColumnWidth(sheet, 0, 55); // Coluna E
+        setColumnWidth(sheet, 1, 55); // Coluna E
+        setColumnWidth(sheet, 2, 55); // Coluna E
         setColumnWidth(sheet, 3, 5); // Coluna D
         setColumnWidth(sheet, 4, 75); // Coluna E
 
@@ -161,11 +164,12 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
              * Ausências/Extras
              */
             row = getRow(sheet, rowNumSecao2++);
-            addMergedRegion(sheet, row, 4, 9, "Ausências/Extras", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+            addMergedRegion(sheet, row, 4, 10, "Ausências/Extras", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, rowNumSecao2++);
             pos = 4;
-            addCell(row, pos++, "Perfils", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            //addCell(row, pos++, "Perfis", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            addMergedRegion(sheet, row, pos++, pos++, "Perfis", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Qt. Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Qt. Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -187,7 +191,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 row = getRow(sheet, rowNumSecao2++);
                 pos = 4;
 
-                addCell(row, pos++, perfil.getDePerfil());
+                addMergedRegion(sheet, row, pos++, pos++, perfil.getDePerfil());
 
                 XSSFCell cellvrPrecoGrupo = null;
                 XSSFCell cellQtExtras = null;
@@ -222,7 +226,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
              * Vigência dos Membros do Faturamento
              */
             row = getRow(sheet, rowNumSecao2++);
-            addMergedRegion(sheet, row, 4, 11, "Vigência dos Membros do Faturamento", //
+            addMergedRegion(sheet, row, 4, 12, "Vigência dos Membros do Faturamento", //
                     CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
@@ -233,7 +237,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 pos = 4;
 
                 row = addNewRow(sheet);
-                addCell(row, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                addMergedRegion(sheet, row, pos++, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);

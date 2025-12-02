@@ -232,8 +232,8 @@ public class AusenciaExtraFaturamentoService {
         sb.append("  dh_inclusao_informacao, "); 
         sb.append("  nu_perfil, "); 
         sb.append("  de_perfil, "); 
-        sb.append("  sum(qt_dia_ausencia) as qt_dia_ausencia, "); 
-        sb.append("  sum(qt_dia_servico_extra) as qt_dia_servico_extra "); 
+        sb.append("  coalesce(sum(qt_dia_ausencia),0) as qt_dia_ausencia, "); 
+        sb.append("  coalesce(sum(qt_dia_servico_extra),0) as qt_dia_servico_extra "); 
         sb.append("from "); 
         sb.append("  ( "); 
         sb.append("    select "); 

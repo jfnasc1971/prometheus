@@ -48,9 +48,9 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
 
         int pos = 0;
 
-        addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
+        addCell(row, pos++, "Faturamento", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 80);
         addCell(row, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addCell(row, pos++, "Qtd. Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        addCell(row, pos++, "Dias Fat.", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD, 50);
         addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Qtd. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
         addCell(row, pos++, "Valor Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -100,7 +100,8 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                             String.format("%s*%s", //
                                     cellVrPrecoPerfil.getReference(), //
                                     cellQtEfetivaPerfil.getReference()), //
-                            pos++);
+                            pos++, //
+                            CellStylesEnum.DECIMAL);
 
                     // EXTRAS
                     cellQtDiasExtraPerfil = addCell(row, pos++, vigencia.getQtDiasExtra(), CellStylesEnum.DECIMAL);
@@ -110,7 +111,8 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                                     cellQtDiasExtraPerfil.getReference(), //
                                     cellQtDiasFaturamento.getReference(), //
                                     cellVrPrecoPerfil.getReference()), //
-                            pos++);
+                            pos++, //
+                            CellStylesEnum.DECIMAL);
 
                     // AUSENCIAS
                     cellQtDiasAusenciaPerfil = addCell(row, pos++, vigencia.getQtDiasAusencia(), CellStylesEnum.DECIMAL);
@@ -120,7 +122,8 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                                     cellQtDiasAusenciaPerfil.getReference(), //
                                     cellQtDiasFaturamento.getReference(), //
                                     cellVrPrecoPerfil.getReference()), //
-                            pos++);
+                            pos++, //
+                            CellStylesEnum.DECIMAL);
                     
                     // VALOR PREVISTO
                     setCellFormula(sheet, row, //
@@ -128,13 +131,14 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                                     cellVrPrevistoPerfil.getReference(), //
                                     cellVrDiasExtraPerfil.getReference(), //
                                     cellVrDiasAusenciaPerfil.getReference()), //
-                            pos++);
+                            pos++, //
+                            CellStylesEnum.DECIMAL);
                     
                     // FNS
                     if (insumo.getVrFns() == null) {
-                        addCell(row, pos++, "N/A", CellStylesEnum.DECIMAL);
+                        addCell(row, pos++, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                     } else {
-                        setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getVrFns()), pos++);
+                        setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getVrFns()), pos++, CellStylesEnum.DECIMAL);
                     }
 
                     // J20*K20

@@ -2,6 +2,7 @@ package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -267,16 +268,28 @@ public class AbaCalculosSprintPerfil extends Relatorio {
         List<AusenciaExtraFaturamentoDTO> ausenciasExtras = ausenciExtraService.listarAusenciasExtrasPerfil(
                 equipe.getCoEquipe(), faturamento.getNuFatura());
         
+        if (Utils.isEmpty(ausenciasExtras)) {
+        	row = getRow(sheet, posRowVigencias++);
+            addMergedRegion(sheet, row, 0, 8, "Nenhum lançamento registrado.");
+        }
+        
         if (Utils.isNotEmpty(ausenciasExtras)) {
             for(AusenciaExtraFaturamentoDTO ausenciaExtra : ausenciasExtras) {
                 row = getRow(sheet, posRowVigencias++);
+                
+                BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), faturamento.getNuFatura(), ausenciaExtra.getNuPerfil());
+                
                 addCell(row, 0, ausenciaExtra.getDhInclusaoInformacao());
                 addMergedRegion(sheet, row, 1, 3, ausenciaExtra.getDePerfil());
-                addCell(row, 4, precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), faturamento.getNuFatura(), ausenciaExtra.getNuPerfil()));
-                addCell(row, 5, ausenciaExtra.getQtDiaServicoExtra());
-                addCell(row, 6, ausenciaExtra.getQtDiaAusencia());
-                addCell(row, 7, ausenciaExtra.getQtDiaServicoExtra());
-                addCell(row, 8, ausenciaExtra.getQtDiaServicoExtra());
+                addCell(row, 4, vrPrecoGrupo);
+                addCell(row, 5, ausenciaExtra.getQtDiaAusencia());
+                addCell(row, 6, ausenciaExtra.getQtDiaServicoExtra());
+                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaAusencia())) {
+                	addCell(row, 7, vrPrecoGrupo.multiply(ausenciaExtra.getQtDiaAusencia().divide(faturamento.getQtDiasFaturamento(), 5, RoundingMode.HALF_UP)));	
+                }
+                if (!BigDecimal.ZERO.equals(ausenciaExtra.getQtDiaServicoExtra())) {
+                	addCell(row, 8, vrPrecoGrupo.multiply(ausenciaExtra.getQtDiaServicoExtra().divide(faturamento.getQtDiasFaturamento(), 5, RoundingMode.HALF_UP)));
+                }
             }
         }
 
@@ -293,7 +306,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
             row = addNewRow(sheet);
             addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                    "Nenhuma Sprint avaliada ou indicadores não configurados. O FNS não será apurado.", //
+                    "Se não houver Sprint no período ou se os indicadores não estiverem configurados, o FNS não será apurado.", //
                     CellStylesEnum.NOTA_BOLD);
 
             addIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), cellQualidadeProduto);

@@ -59,8 +59,8 @@ public class AbaAjuste extends Relatorio {
                 + "Esse valor tende a 0(zero).");
 
         File file = (new File(PATH + File.separator + "consolidado.csv"));
-        LOG.info(file.getAbsolutePath());
         FileWriter fw = new FileWriter(file, true);
+        LOG.info(file.getAbsolutePath());
 
         String vrAjuste = "N/A";
         try {

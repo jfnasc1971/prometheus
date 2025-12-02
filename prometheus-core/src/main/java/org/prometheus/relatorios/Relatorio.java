@@ -243,7 +243,7 @@ public abstract class Relatorio {
         XSSFCell cell1 = row.createCell(pos);
         cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));
         cell1.setCellValue(value);
-        cell1.getCellStyle().setWrapText(true);
+        cell1.getCellStyle().setWrapText(false);
         return cell1;
     }
 

@@ -70,10 +70,10 @@ public class AbaAjuste extends Relatorio {
 			e.printStackTrace();
 		}
 
-		LOG.info(equipe.getCoContrato() + ";" + equipe.getNoTipoGrupo() + ";" + //
+		LOG.info(equipe.getNuContrato() + ";" + equipe.getCoContrato() + ";" + equipe.getNoTipoGrupo() + ";" + //
 				equipe.getNuEquipe() + ";" + equipe.getCoEquipe() + ";" + vrAjuste);
 
-		fw.write(equipe.getCoContrato() + ";" + equipe.getNoTipoGrupo() + ";" + //
+		fw.write(equipe.getNuContrato() + ";" + equipe.getCoContrato() + ";" + equipe.getNoTipoGrupo() + ";" + //
 				equipe.getNuEquipe() + ";" + equipe.getCoEquipe() + ";" + vrAjuste + "\n");
 		
 		fw.flush();

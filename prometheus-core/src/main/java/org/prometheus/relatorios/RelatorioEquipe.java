@@ -76,7 +76,7 @@ public class RelatorioEquipe extends Relatorio {
 	        FileWriter fw = new FileWriter(file, true);
 	        LOG.info(file.getAbsolutePath());
 	        
-	        fw.write("CONTRATO;GRUPO;NU_EQUIPE;CO_EQUIPE;VALOR AJUSTE\n");	        
+	        fw.write("NU_CONTRATO;CO_CONTRATO;GRUPO;NU_EQUIPE;CO_EQUIPE;VALOR AJUSTE\n");	        
 			
 	        fw.close();
 		} catch (IOException e) {

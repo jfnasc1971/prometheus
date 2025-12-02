@@ -79,7 +79,7 @@ public class AbaVigenciaMembros extends Relatorio {
 			pos = 0;
 			row = addNewRow(sheet, rownum++);
 
-			addMergedRegion(sheet, row, pos++, pos++, Utils.isEmpty(membro.getDePerfil()) ? "-":membro.getDePerfil());
+			addMergedRegion(sheet, row, pos++, pos++, Utils.isEmpty(membro.getDePerfil()) ? "-" : membro.getNuPerfil() + " - " + membro.getDePerfil());
 			addCell(row, pos++, membro.getDtInicioVigenciaMembros());
 			addCell(row, pos++, membro.getDtFinalVigenciaMembros());
 			addCell(row, pos++, membro.getQtMembrosEquipe());

@@ -46,6 +46,7 @@ public class QntdeMembrosEquipeService {
 				dto.setDtFinalVigenciaMembros(rs.getDate("dt_final_vigencia_membros"));
 				dto.setQtMembrosEquipe(rs.getBigDecimal("qt_membros_equipe"));
 				dto.setDePerfil(rs.getString("de_perfil"));
+				dto.setNuPerfil(rs.getLong("nu_perfil"));
 
 				result.add(dto);
 			}
@@ -63,6 +64,7 @@ public class QntdeMembrosEquipeService {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("SELECT "); 
+		sb.append("  null :: numeric as nu_perfil, ");
 		sb.append("  null :: text as de_perfil, "); 
 		sb.append("  q.nu_equipe, "); 
 		sb.append("  q.dt_inicio_vigencia_membros, "); 
@@ -78,6 +80,7 @@ public class QntdeMembrosEquipeService {
 		sb.append("union "); 
 		sb.append("all "); 
 		sb.append("SELECT "); 
+		sb.append("  pp.nu_perfil, ");
 		sb.append("  pp.de_perfil, "); 
 		sb.append("  q.nu_equipe, "); 
 		sb.append("  q.dt_inicio_vigencia as dt_inicio_vigencia_membros, "); 
@@ -86,11 +89,17 @@ public class QntdeMembrosEquipeService {
 		sb.append("  sum(q.qt_membros) as qt_membros_equipe "); 
 		sb.append("FROM "); 
 		sb.append("  gct.gcttb087_equipe e "); 
-		sb.append("  INNER JOIN gct.gcttb523_qntde_membro_equipe_perfil q ON q.nu_equipe = e.nu_equipe "); 
+		sb.append("  INNER JOIN gct.gcttb523_qntde_membro_equipe_perfil q ON q.nu_equipe = e.nu_equipe ");
+		sb.append("  INNER JOIN gct.gcttb419_vigencia_membros_equipe vme on ( "); 
+		sb.append("    vme.nu_equipe = q.nu_equipe "); 
+		sb.append("    and vme.dt_inicio_membro = q.dt_inicio_vigencia "); 
+		sb.append("    and vme.nu_perfil = q.nu_perfil "); 
+		sb.append("  ) "); 		
 		sb.append("  inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = q.nu_perfil "); 
 		sb.append("WHERE "); 
 		sb.append("  e.co_equipe = ? "); 
 		sb.append("group by "); 
+		sb.append("  pp.nu_perfil, ");
 		sb.append("  pp.de_perfil, "); 
 		sb.append("  q.nu_equipe, "); 
 		sb.append("  q.dt_inicio_vigencia, "); 

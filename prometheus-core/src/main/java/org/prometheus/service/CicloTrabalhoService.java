@@ -247,14 +247,16 @@ public class CicloTrabalhoService {
 		sb.append("      from gct.gcttb199_avlco_atndmnto_equipe "); 
 		sb.append("     where nu_equipe = ct.nu_equipe "); 
 		sb.append("       and nu_tipo_indicador = 14 "); 
-		sb.append("       and nu_ciclo_trabalho = ct.nu_ciclo_trabalho "); 
+		sb.append("       and nu_ciclo_trabalho = ct.nu_ciclo_trabalho ");
+		sb.append("     order by dh_avaliacao_equipe desc limit 1 ");
 		sb.append("  ) as vr_questionario_avaliacao, "); 
 		sb.append("  ( "); 
 		sb.append("    select vr_avaliacao "); 
 		sb.append("      from gct.gcttb199_avlco_atndmnto_equipe "); 
 		sb.append("     where nu_equipe = ct.nu_equipe "); 
 		sb.append("       and nu_tipo_indicador = 15 "); 
-		sb.append("       and nu_ciclo_trabalho = ct.nu_ciclo_trabalho "); 
+		sb.append("       and nu_ciclo_trabalho = ct.nu_ciclo_trabalho ");
+		sb.append("     order by dh_avaliacao_equipe desc limit 1 ");
 		sb.append("  ) as vr_nota_qualidade_produto, "); 
 		sb.append("  ct.vr_total_apurado_avaliacao, "); 
 		sb.append("  ct.nu_mtrca_avaliacao_equipe, "); 

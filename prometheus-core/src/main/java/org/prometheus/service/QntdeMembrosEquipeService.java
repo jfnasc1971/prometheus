@@ -107,7 +107,7 @@ public class QntdeMembrosEquipeService {
 		sb.append("  q.nu_perfil "); 
 		sb.append("ORDER BY "); 
 		sb.append("  de_perfil, "); 
-		sb.append("  dt_inicio_vigencia_membros");
+		sb.append("  dt_inicio_vigencia_membros desc");
 
 		return sb.toString();
 	}

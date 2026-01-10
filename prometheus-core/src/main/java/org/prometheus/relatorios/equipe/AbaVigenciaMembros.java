@@ -52,7 +52,9 @@ public class AbaVigenciaMembros extends Relatorio {
 		setColumnWidth(sheet, 0, 90);
 		setColumnWidth(sheet, 1, 90);
 		setColumnWidth(sheet, 5, 10);
-		setColumnWidth(sheet, 7, 180);
+		setColumnWidth(sheet, 6, 180);
+		setColumnWidth(sheet, 7, 60);
+		setColumnWidth(sheet, 8, 180);
 
 		int pos = 0;
 		int rownum = 0;
@@ -96,16 +98,17 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		row = addNewRow(sheet, rownum++);
 		
-		addMergedRegion(sheet, row, 6, 10, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addMergedRegion(sheet, row, 6, 11, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		
 		List<VigenciaMembrosEquipeDTO> vigencias = vigenciaMembrosEquipeService.listar(equipe.getNuEquipe());
 
 		row = addNewRow(sheet, rownum++);
 		pos = 6;
 		
+		addCell(row, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Matrícula", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Nome", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addCell(row, pos++, "Posição", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		addCell(row, pos++, "% Alocação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Fim", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		
@@ -114,9 +117,10 @@ public class AbaVigenciaMembros extends Relatorio {
 			row = addNewRow(sheet, rownum++);
 			pos = 6;
 
+			addCell(row, pos++, vigencia.getDePerfil());
 			addCell(row, pos++, vigencia.getCoMatricula());
 			addCell(row, pos++, Utils.isEmpty(vigencia.getNoMembro()) ? "-":vigencia.getNoMembro());
-			addCell(row, pos++, vigencia.getNuPosicaoMembro());
+			addCell(row, pos++, vigencia.getPcAlocacao(), CellStylesEnum.PERCENT);
 			addCell(row, pos++, vigencia.getDtInicioMembro());
 			addCell(row, pos++, vigencia.getDtFimMembro());
 

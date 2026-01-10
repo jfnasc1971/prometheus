@@ -13,7 +13,7 @@
     class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
       <list>
-        <value>classpath:application-local-des.properties</value>
+        <value>classpath:application-local.properties</value>
       </list>
     </property>
   </bean>

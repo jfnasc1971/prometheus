@@ -47,6 +47,7 @@ public class VigenciaMembrosEquipeService {
 				dto.setNuPosicaoMembro(rs.getLong("nu_posicao_membro"));
 				dto.setDtInicioMembro(rs.getDate("dt_inicio_membro"));
 				dto.setDtFimMembro(rs.getDate("dt_fim_membro"));
+				dto.setPcAlocacao(rs.getBigDecimal("pc_alocacao_membro"));
 
 				result.add(dto);
 			}
@@ -68,7 +69,8 @@ public class VigenciaMembrosEquipeService {
 		sb.append("   m.no_membro, "); 
 		sb.append("   vme.nu_posicao_membro, "); 
 		sb.append("   vme.dt_inicio_membro, "); 
-		sb.append("   vme.dt_fim_membro, "); 
+		sb.append("   vme.dt_fim_membro, ");
+		sb.append("   vme.pc_alocacao_membro, "); 
 		sb.append("   m.tp_matricula, "); 
 		sb.append("   m.nu_matricula "); 
 		sb.append(" from "); 
@@ -87,7 +89,8 @@ public class VigenciaMembrosEquipeService {
 		sb.append("   m.no_membro, "); 
 		sb.append("   vme.nu_posicao_membro, "); 
 		sb.append("   vme.dt_inicio_membro, "); 
-		sb.append("   vme.dt_fim_membro, "); 
+		sb.append("   vme.dt_fim_membro, ");
+		sb.append("   vme.pc_alocacao_membro, ");
 		sb.append("   m.tp_matricula, "); 
 		sb.append("   m.nu_matricula "); 
 		sb.append(" from "); 
@@ -102,7 +105,7 @@ public class VigenciaMembrosEquipeService {
 		sb.append(" where "); 
 		sb.append("   e.nu_equipe = ? "); 
 		sb.append(" order by "); 
-		sb.append("   co_matricula, dt_inicio_membro ");
+		sb.append("   co_matricula, dt_inicio_membro desc ");
 		
 		return sb.toString();
 	}

@@ -176,7 +176,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
             addCell(row, pos++, "Valor Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Valor Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
-            List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
+            List<PerfilDTO> perfis = perfilService.listar(equipe);
 
             XSSFCell cellVrExtras = null;
             XSSFCell cellVrAusencias = null;

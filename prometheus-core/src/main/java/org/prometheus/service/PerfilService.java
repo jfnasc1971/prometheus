@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.PerfilDTO;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
@@ -55,7 +56,7 @@ public class PerfilService {
         return result;
     }
 
-    public List<PerfilDTO> listar(Long nuContrato) {
+    public List<PerfilDTO> listar(EquipeDTO equipe) {
         List<PerfilDTO> result = new ArrayList<PerfilDTO>();
 
         Connection conn = null;
@@ -68,7 +69,7 @@ public class PerfilService {
 
             pstmt = conn.prepareStatement(getDML());
 
-            pstmt.setLong(1, nuContrato);
+            pstmt.setLong(1, equipe.getNuEquipe());
 
             rs = pstmt.executeQuery();
 
@@ -94,15 +95,16 @@ public class PerfilService {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" select distinct ");
-        sb.append("   pp.nu_perfil,");
-        sb.append("   pp.de_perfil");
-        sb.append(" from");
-        sb.append("   gct.gcttb522_dstrbco_profissional_perfil p");
-        sb.append("   inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = p.nu_perfil");
-        sb.append(" where");
-        sb.append("   nu_contrato = ?");
-
+        sb.append(" select distinct "); 
+        sb.append("   pp.nu_perfil, "); 
+        sb.append("   pp.de_perfil "); 
+        sb.append(" from "); 
+        sb.append("   gct.gcttb087_equipe e "); 
+        sb.append("   inner join gct.gcttb523_qntde_membro_equipe_perfil q on q.nu_equipe = e.nu_equipe "); 
+        sb.append("   inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = q.nu_perfil "); 
+        sb.append(" where "); 
+        sb.append("   e.nu_equipe=? ");
+        
         return sb.toString();
     }
 

@@ -41,7 +41,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 	private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoPerfil.class.getSimpleName());
 
-	private static final int LAYOUT_COLUMNS_COUNT = 12;
+	private static final int LAYOUT_COLUMNS_COUNT = 13;
 
 	@Autowired
 	private AusenciaExtraFaturamentoService ausenciaExtraService;
@@ -169,14 +169,14 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 			row = getRow(sheet, rowNumSecao2++);
 			pos = 4;
 			// addCell(row, pos++, "Perfis", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-			addMergedRegion(sheet, row, pos++, pos++, "Perfis", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+			addMergedRegion(sheet, row, pos++, pos++, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			addCell(row, pos++, "Qt. Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			addCell(row, pos++, "Qt. Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			addCell(row, pos++, "Preço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			addCell(row, pos++, "Valor Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			addCell(row, pos++, "Valor Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
-			List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
+			List<PerfilDTO> perfis = perfilService.listar(equipe);
 
 			XSSFCell cellVrExtras = null;
 			XSSFCell cellVrAusencias = null;
@@ -257,7 +257,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					pos = 4;
 					row = addNewRow(sheet);
 
-					addCell(row, pos++, vigencia.getDePerfil());
+					addMergedRegion(sheet, row, pos++, pos++, vigencia.getDePerfil());
 					addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
 					addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
 					addCell(row, pos++, vigencia.getQtMembrosEquipe());
@@ -268,7 +268,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					listaValorPrevisto.add(setCellFormula(sheet, row, //
 							String.format("%s*%s", row.getCell(row.getLastCellNum() - 2).getReference(), //
 									row.getCell(row.getLastCellNum() - 1).getReference()),
-							pos++));
+							pos++, CellStylesEnum.DECIMAL));
 
 					insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(),
 							vigencia.getQtEfetiva());
@@ -277,45 +277,37 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 				row = addNewRow(sheet);
 
-				pos = 8;
-				addCell(row, pos++, "Qtd. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-				insumo.setQtEfetivaTotal(setCellFormula(sheet, row, //
-						String.format("sum(%s:%s)", //
-								listaQtEfetiva.get(0).getReference(),
-								listaQtEfetiva.get(listaValorPrevisto.size() - 1).getReference()), //
-						pos++));
-
-				pos = 10;
+				pos = 11;
 				addCell(row, pos++, "Valor Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 				insumo.setVrEquipe(setCellFormula(sheet, row, //
 						String.format("sum(%s:%s)", //
 								listaValorPrevisto.get(0).getReference(),
 								listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference()), //
-						pos++));
+						pos++, CellStylesEnum.DECIMAL));
 
 				if (Utils.isNotEmpty(listaVrExtras)) {
-					pos = 10;
+					pos = 11;
 					row = addNewRow(sheet);
 					addCell(row, pos++, "Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 					cellVrExtras = setCellFormula(sheet, row, //
 							"sum(" + listaVrExtras.get(0).getReference() + ":" + //
 									listaVrExtras.get(listaVrExtras.size() - 1).getReference() + ")",
-							pos++);
+							pos++, CellStylesEnum.DECIMAL);
 					insumo.setVrExtras(cellVrExtras);
 				}
 
 				if (Utils.isNotEmpty(listaVrAusencias)) {
-					pos = 10;
+					pos = 11;
 					row = addNewRow(sheet);
 					addCell(row, pos++, "Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 					cellVrAusencias = setCellFormula(sheet, row, //
 							"sum(" + listaVrAusencias.get(0).getReference() + ":" + //
 									listaVrAusencias.get(listaVrAusencias.size() - 1).getReference() + ")",
-							pos++);
+							pos++, CellStylesEnum.DECIMAL);
 					insumo.setVrAusencias(cellVrAusencias);
 				}
 
-				pos = 10;
+				pos = 11;
 				row = addNewRow(sheet);
 				addCell(row, pos++, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 				insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
@@ -323,7 +315,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 								listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
 								cellVrExtras.getReference() + " - " + //
 								cellVrAusencias.getReference(),
-						pos++));
+						pos++, CellStylesEnum.DECIMAL));
 
 				int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
 

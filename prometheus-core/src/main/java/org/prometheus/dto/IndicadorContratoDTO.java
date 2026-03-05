@@ -9,6 +9,7 @@ public class IndicadorContratoDTO {
     private Integer qtFaturamento;
     private java.math.BigDecimal vrLimiteMaximoIndicador;
     private String icApenasFaturamentoAtual;
+    private String icAplicaIndicador;
 
     public void setSgTipoIndicador(String sgTipoIndicador){
         this.sgTipoIndicador = sgTipoIndicador;
@@ -66,5 +67,18 @@ public class IndicadorContratoDTO {
         return this.icApenasFaturamentoAtual;
     }
 
+	/**
+	 * @return the icAplicaIndicador
+	 */
+	public String getIcAplicaIndicador() {
+		return icAplicaIndicador;
+	}
+
+	/**
+	 * @param icAplicaIndicador the icAplicaIndicador to set
+	 */
+	public void setIcAplicaIndicador(String icAplicaIndicador) {
+		this.icAplicaIndicador = icAplicaIndicador;
+	}
 
 }

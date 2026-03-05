@@ -342,7 +342,7 @@ public class AbaCalculosAcionamentoUnisys extends Relatorio {
                     XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-                    XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
+                    XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesNoPeriodo(equipe, sheet, faturamento);
                     XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 
                     row = getRow(sheet, rownum++);
@@ -514,13 +514,13 @@ public class AbaCalculosAcionamentoUnisys extends Relatorio {
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
     }
 
-    private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+    private XSSFCell contarServicosEntreguesNoPeriodo(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 
-        List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+        List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesNoPeriodo(equipe.getNuEquipe(),
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);
-        addCell(row, 0, "Estoque", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+        addCell(row, 0, "Entregues no Período", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesEstoque.size()));
     }
 

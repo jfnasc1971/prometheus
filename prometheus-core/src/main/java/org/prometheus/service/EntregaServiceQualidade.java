@@ -35,8 +35,8 @@ public class EntregaServiceQualidade {
 		return listar(nuEquipe, nuFatura, getDMLServicosDevolvidos());
 	}
 
-	public List<EntregaDTO> listarServicosEntreguesEstoque(Long nuEquipe, Long nuFatura) {
-		return listar(nuEquipe, nuFatura, getDMLServicosEntreguesEstoque());
+	public List<EntregaDTO> listarServicosEntreguesNoPeriodo(Long nuEquipe, Long nuFatura) {
+		return listar(nuEquipe, nuFatura, getDMLServicosEntreguesNoPeriodo());
 	}
 
 	private List<EntregaDTO> listar(Long nuEquipe, Long nuFatura, String sql) {
@@ -117,7 +117,10 @@ public class EntregaServiceQualidade {
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
 		sb.append("where "); 
 		sb.append("  se.nu_equipe = ? "); 
-		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
+		sb.append("  and ( "); 
+		sb.append("    f.dt_inicio_fatura <= gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) "); 
+		sb.append("    and f.dt_final_fatura >= gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) "); 
+		sb.append(") "); 
 		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
 		sb.append("  and (se.co_falha_solicitacao is null or se.co_falha_solicitacao = 'NF') "); 
 		sb.append("  and exists ("); 
@@ -127,57 +130,8 @@ public class EntregaServiceQualidade {
 		sb.append("      gct.gcttb192_servico_contratado se1 "); 
 		sb.append("    where "); 
 		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
-		sb.append("  ); ");
-
-		return sb.toString();
-	}
-
-	private String getDMLServicosEntregues() {
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("select "); 
-		sb.append("  distinct s.co_solicitacao, "); 
-		sb.append("  s.de_situacao_solicitacao, "); 
-		sb.append("  s.de_solicitacao, "); 
-		sb.append("  s.no_solicitacao, "); 
-		sb.append("  s.dh_prevista, "); 
-		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
-		sb.append("  s.dh_efetiva, "); 
-		sb.append("  sc.ic_servico_compoe_calculo_fns ic_servico_compoe_calculo_fns, "); 
-		sb.append("  se.co_falha_solicitacao, "); 
-		sb.append("  case when "); 
-		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date "); 
-		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, "); 
-		sb.append("  ( "); 
-		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) "); 
-		sb.append("      from gct.gcttb225_pendencia_solicitacao "); 
-		sb.append("     where nu_solicitacao = se.nu_solicitacao "); 
-		sb.append("  ) qt_dias_pendencia "); 
-		sb.append("from "); 
-		sb.append("  gct.gcttb087_equipe e "); 
-		sb.append("  inner join gct.gcttb086_solicitacao_equipe se on e.nu_equipe = se.nu_equipe "); 
-		sb.append("  inner join gct.gcttb005_solicitacao s on se.nu_solicitacao = s.nu_solicitacao "); 
-		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( "); 
-		sb.append("    sc.nu_contrato = e.nu_contrato "); 
-		sb.append("    and sc.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("    and sc.nu_tipo_servico = se.nu_tipo_servico "); 
-		sb.append("  ) "); 
-		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
-		sb.append("where "); 
-		sb.append("  se.nu_equipe = ? "); 
-		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
-		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
-		sb.append("  and (se.co_falha_solicitacao is null or se.co_falha_solicitacao = 'NF') "); 
-		sb.append("  and exists ( "); 
-		sb.append("    select "); 
-		sb.append("      se1.nu_situacao_atendimento "); 
-		sb.append("    from "); 
-		sb.append("      gct.gcttb191_servico_entregue se1 "); 
-		sb.append("    where "); 
-		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
+		sb.append("      and se1.nu_contrato = e.nu_contrato ");
+		sb.append("      and se1.nu_situacao_atendimento = s.nu_situacao_solicitacao ");
 		sb.append("  ); ");
 
 		return sb.toString();
@@ -221,15 +175,6 @@ public class EntregaServiceQualidade {
 		sb.append("  and s.dh_efetiva::date > gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date "); 
 		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
 		sb.append("  and (se.co_falha_solicitacao is null or se.co_falha_solicitacao = 'NF') "); 
-		sb.append("  and exists ( "); 
-		sb.append("    select "); 
-		sb.append("      se1.nu_situacao_atendimento "); 
-		sb.append("    from "); 
-		sb.append("      gct.gcttb193_servico_atraso se1 "); 
-		sb.append("    where "); 
-		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
-		sb.append("  ); ");
 		
 		return sb.toString();
 	}
@@ -291,7 +236,49 @@ public class EntregaServiceQualidade {
 		return sb.toString();
 	}
 
-	private String getDMLServicosEntreguesEstoque() {
+	private String getDMLServicosEntregues() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select "); 
+		sb.append("  distinct s.co_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao, "); 
+		sb.append("  s.de_solicitacao, "); 
+		sb.append("  s.no_solicitacao, "); 
+		sb.append("  s.dh_prevista, "); 
+		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
+		sb.append("  s.dh_efetiva, "); 
+		sb.append("  sc.ic_servico_compoe_calculo_fns ic_servico_compoe_calculo_fns, "); 
+		sb.append("  se.co_falha_solicitacao, "); 
+		sb.append("  case when "); 
+		sb.append("    coalesce(s.dh_efetiva,current_date)::date > f.dt_final_fatura::date "); 
+		sb.append("  then 'S' else 'N' end ic_entrega_fora_periodo, "); 
+		sb.append("  ( "); 
+		sb.append("    select floor(sum(coalesce(qt_intervalo,0))/3600/24) "); 
+		sb.append("      from gct.gcttb225_pendencia_solicitacao "); 
+		sb.append("     where nu_solicitacao = se.nu_solicitacao "); 
+		sb.append("  ) qt_dias_pendencia "); 
+		sb.append("from "); 
+		sb.append("  gct.gcttb087_equipe e "); 
+		sb.append("  inner join gct.gcttb086_solicitacao_equipe se on e.nu_equipe = se.nu_equipe "); 
+		sb.append("  inner join gct.gcttb005_solicitacao s on se.nu_solicitacao = s.nu_solicitacao "); 
+		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( "); 
+		sb.append("    sc.nu_contrato = e.nu_contrato "); 
+		sb.append("    and sc.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("    and sc.nu_tipo_servico = se.nu_tipo_servico "); 
+		sb.append("  ) "); 
+		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
+		sb.append("where "); 
+		sb.append("  se.nu_equipe = ? "); 
+		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) between f.dt_inicio_fatura and f.dt_final_fatura");
+		sb.append("  and s.dh_efetiva is not null ");
+		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
+		sb.append("  and (se.co_falha_solicitacao is null or se.co_falha_solicitacao = 'NF') "); 
+
+		return sb.toString();
+	}	
+	
+	private String getDMLServicosEntreguesNoPeriodo() {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -325,19 +312,9 @@ public class EntregaServiceQualidade {
 		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
 		sb.append("where "); 
 		sb.append("  se.nu_equipe = ? "); 
-		sb.append("  and gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista))::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
-		sb.append("  and s.dh_efetiva::date is not null "); 
+		sb.append("  and s.dh_efetiva::date between f.dt_inicio_fatura and f.dt_final_fatura "); 
 		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
 		sb.append("  and (se.co_falha_solicitacao is null or se.co_falha_solicitacao = 'NF') "); 
-		sb.append("  and exists ( "); 
-		sb.append("    select "); 
-		sb.append("      se1.nu_situacao_atendimento "); 
-		sb.append("    from "); 
-		sb.append("      gct.gcttb191_servico_entregue se1 "); 
-		sb.append("    where "); 
-		sb.append("      se1.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("      and se1.nu_contrato = e.nu_contrato "); 
-		sb.append("  ); "); 
 
 		return sb.toString();
 	}

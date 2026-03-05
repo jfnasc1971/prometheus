@@ -26,6 +26,7 @@ import org.prometheus.relatorios.equipe.AbaCalculoValorDevido;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoMilheiros;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
+import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoQualidade;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoUnisys;
 import org.prometheus.relatorios.equipe.AbaCalculosG4;
@@ -268,8 +269,8 @@ public class RelatorioEquipe extends Relatorio {
 		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
 			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-						.getBean(AbaCalculosAcionamentoQualidade.class);
+				AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
+						.getBean(AbaCalculosAcionamentoPerfil.class);
 				calculos.gerar(wb, coEquipe, faturamentos, insumos);
 			}
 

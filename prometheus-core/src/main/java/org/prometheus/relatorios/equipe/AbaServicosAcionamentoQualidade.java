@@ -152,7 +152,7 @@ public class AbaServicosAcionamentoQualidade extends Relatorio {
 	}
 
 	private XSSFCell listarServicosEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesNoPeriodo(equipe.getNuEquipe(),
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);

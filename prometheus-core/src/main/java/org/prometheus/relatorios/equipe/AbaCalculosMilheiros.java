@@ -247,7 +247,7 @@ public class AbaCalculosMilheiros extends Relatorio {
                 XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
                 XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
                 XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-                XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
+                XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesNoPeriodo(equipe, sheet, faturamento);
                 XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 
                 addMergedRegion(sheet, row, 3, 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -520,9 +520,9 @@ public class AbaCalculosMilheiros extends Relatorio {
         return addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
     }
 
-    private XSSFCell contarServicosEntreguesEstoque(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
+    private XSSFCell contarServicosEntreguesNoPeriodo(EquipeDTO equipe, XSSFSheet sheet, FaturamentoDTO faturamento) {
 
-        List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesEstoque(equipe.getNuEquipe(),
+        List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEntreguesNoPeriodo(equipe.getNuEquipe(),
                 faturamento.getNuFatura());
 
         XSSFRow row = addNewRow(sheet);

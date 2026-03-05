@@ -90,6 +90,7 @@ public class IndicadorService {
                 dto.setQtFaturamento(rs.getInt("qt_faturamento"));
                 dto.setVrLimiteMaximoIndicador(rs.getBigDecimal("vr_limite_maximo_indicador"));
                 dto.setIcApenasFaturamentoAtual(rs.getString("ic_apenas_faturamento_atual"));
+                dto.setIcAplicaIndicador(rs.getString("ic_aplica_indicador"));
 
             }
         } catch (SQLException e) {
@@ -316,7 +317,8 @@ public class IndicadorService {
 		sb.append("  gi.vr_fator_ajuste, ");
 		sb.append("  gi.qt_faturamento, ");
 		sb.append("  gi.vr_limite_maximo_indicador, ");
-		sb.append("  gi.ic_apenas_faturamento_atual ");
+		sb.append("  gi.ic_apenas_faturamento_atual, ");
+		sb.append("  gi.ic_aplica_indicador ");
 		sb.append("FROM ");
 		sb.append("  gct.gcttb087_equipe e ");
 		sb.append("  INNER JOIN gct.gcttb010_contrato c ON c.nu_contrato = e.nu_contrato ");
@@ -331,9 +333,12 @@ public class IndicadorService {
 		sb.append("  INNER JOIN gct.gcttb112_tipo_indicador ti ON ti.nu_tipo_indicador = gi.nu_tipo_indicador ");
 		sb.append("WHERE ");
 		sb.append("  e.co_equipe = ? ");
+		
 		if(somenteFNS) {
 		    sb.append("  and gi.ic_aplica_indicador = 'S'");
 		}
+		
+		sb.append(" order by gi.ic_aplica_indicador, ti.sg_tipo_indicador");
 
 		return sb.toString();
 	}

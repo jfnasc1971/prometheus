@@ -26,7 +26,7 @@ public class AppConfig {
 
 			if (Utils.isEmpty(env.getActiveProfiles())) {
 				LOG.info("ARQUIVO DE CONFIGURACAO: profile-des.xml");
-				ctx.load("profile-des.xml");
+				ctx.load("profile-local.xml");
 			} else {
 				LOG.info("ARQUIVO DE CONFIGURACAO: profile-" + env.getActiveProfiles()[0] + ".xml");
 				ctx.load("profile-" + env.getActiveProfiles()[0] + ".xml");

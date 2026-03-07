@@ -2,176 +2,191 @@ package org.prometheus.dto;
 
 public class EquipeDTO {
 
-    private Long nuContrato;
-    private String noContrato;
-    private String coContrato;
-    private Long nuTipoGrupo;
-    private String noTipoGrupo;
-    private Long nuEquipe;
-    private String coEquipe;
-    private String coSitio;
-    private java.util.Date dtInicioAtendimento;
-    private java.util.Date dtFinalAtendimento;
-    private String noSituacaoEquipe;
-    private String icDiasCalculoPagamento;
-    private String icCalculoProRata;
-    private String icTipoAtendimento;
-    private String noTipoAtendimento;
-    private String icPermiteServicoExtra;
-    private String icPermiteRegistroAusencia;
-    private java.util.Date dtConsiderarFns;
-    private String icDistribuiProfissional;
+	private Long nuContrato;
+	private String noContrato;
+	private String coContrato;
+	private Long nuTipoGrupo;
+	private String noTipoGrupo;
+	private Long nuEquipe;
+	private String coEquipe;
+	private String coSitio;
+	private java.util.Date dtInicioAtendimento;
+	private java.util.Date dtFinalAtendimento;
+	private String noSituacaoEquipe;
+	private String icDiasCalculoPagamento;
+	private String icCalculoProRata;
+	private String icTipoAtendimento;
+	private String noTipoAtendimento;
+	private String icPermiteServicoExtra;
+	private String icPermiteRegistroAusencia;
+	private java.util.Date dtConsiderarFns;
+	private String icDistribuiProfissional;
+	private Long nuTpFormaCalculoPagamento;
 
-    public void setNuContrato(Long nuContrato) {
-        this.nuContrato = nuContrato;
-    }
+	public void setNuContrato(Long nuContrato) {
+		this.nuContrato = nuContrato;
+	}
 
-    public Long getNuContrato() {
-        return this.nuContrato;
-    }
+	public Long getNuContrato() {
+		return this.nuContrato;
+	}
 
-    public void setNoContrato(String noContrato) {
-        this.noContrato = noContrato;
-    }
+	public void setNoContrato(String noContrato) {
+		this.noContrato = noContrato;
+	}
 
-    public String getNoContrato() {
-        return this.noContrato;
-    }
+	public String getNoContrato() {
+		return this.noContrato;
+	}
 
-    public void setCoContrato(String coContrato) {
-        this.coContrato = coContrato;
-    }
+	public void setCoContrato(String coContrato) {
+		this.coContrato = coContrato;
+	}
 
-    public String getCoContrato() {
-        return this.coContrato;
-    }
+	public String getCoContrato() {
+		return this.coContrato;
+	}
 
-    public void setNuTipoGrupo(Long nuTipoGrupo) {
-        this.nuTipoGrupo = nuTipoGrupo;
-    }
+	public void setNuTipoGrupo(Long nuTipoGrupo) {
+		this.nuTipoGrupo = nuTipoGrupo;
+	}
 
-    public Long getNuTipoGrupo() {
-        return this.nuTipoGrupo;
-    }
+	public Long getNuTipoGrupo() {
+		return this.nuTipoGrupo;
+	}
 
-    public void setNoTipoGrupo(String noTipoGrupo) {
-        this.noTipoGrupo = noTipoGrupo;
-    }
+	public void setNoTipoGrupo(String noTipoGrupo) {
+		this.noTipoGrupo = noTipoGrupo;
+	}
 
-    public String getNoTipoGrupo() {
-        return this.noTipoGrupo;
-    }
+	public String getNoTipoGrupo() {
+		return this.noTipoGrupo;
+	}
 
-    public void setNuEquipe(Long nuEquipe) {
-        this.nuEquipe = nuEquipe;
-    }
+	public void setNuEquipe(Long nuEquipe) {
+		this.nuEquipe = nuEquipe;
+	}
 
-    public Long getNuEquipe() {
-        return this.nuEquipe;
-    }
+	public Long getNuEquipe() {
+		return this.nuEquipe;
+	}
 
-    public void setCoEquipe(String coEquipe) {
-        this.coEquipe = coEquipe;
-    }
+	public void setCoEquipe(String coEquipe) {
+		this.coEquipe = coEquipe;
+	}
 
-    public String getCoEquipe() {
-        return this.coEquipe;
-    }
+	public String getCoEquipe() {
+		return this.coEquipe;
+	}
 
-    public void setCoSitio(String coSitio) {
-        this.coSitio = coSitio;
-    }
+	public void setCoSitio(String coSitio) {
+		this.coSitio = coSitio;
+	}
 
-    public String getCoSitio() {
-        return this.coSitio;
-    }
+	public String getCoSitio() {
+		return this.coSitio;
+	}
 
-    public void setDtInicioAtendimento(java.util.Date dtInicioAtendimento) {
-        this.dtInicioAtendimento = dtInicioAtendimento;
-    }
+	public void setDtInicioAtendimento(java.util.Date dtInicioAtendimento) {
+		this.dtInicioAtendimento = dtInicioAtendimento;
+	}
 
-    public java.util.Date getDtInicioAtendimento() {
-        return this.dtInicioAtendimento;
-    }
+	public java.util.Date getDtInicioAtendimento() {
+		return this.dtInicioAtendimento;
+	}
 
-    public void setDtFinalAtendimento(java.util.Date dtFinalAtendimento) {
-        this.dtFinalAtendimento = dtFinalAtendimento;
-    }
+	public void setDtFinalAtendimento(java.util.Date dtFinalAtendimento) {
+		this.dtFinalAtendimento = dtFinalAtendimento;
+	}
 
-    public java.util.Date getDtFinalAtendimento() {
-        return this.dtFinalAtendimento;
-    }
+	public java.util.Date getDtFinalAtendimento() {
+		return this.dtFinalAtendimento;
+	}
 
-    public void setNoSituacaoEquipe(String noSituacaoEquipe) {
-        this.noSituacaoEquipe = noSituacaoEquipe;
-    }
+	public void setNoSituacaoEquipe(String noSituacaoEquipe) {
+		this.noSituacaoEquipe = noSituacaoEquipe;
+	}
 
-    public String getNoSituacaoEquipe() {
-        return this.noSituacaoEquipe;
-    }
+	public String getNoSituacaoEquipe() {
+		return this.noSituacaoEquipe;
+	}
 
-    public void setIcDiasCalculoPagamento(String icDiasCalculoPagamento) {
-        this.icDiasCalculoPagamento = icDiasCalculoPagamento;
-    }
+	public void setIcDiasCalculoPagamento(String icDiasCalculoPagamento) {
+		this.icDiasCalculoPagamento = icDiasCalculoPagamento;
+	}
 
-    public String getIcDiasCalculoPagamento() {
-        return this.icDiasCalculoPagamento;
-    }
+	public String getIcDiasCalculoPagamento() {
+		return this.icDiasCalculoPagamento;
+	}
 
-    public void setIcCalculoProRata(String icCalculoProRata) {
-        this.icCalculoProRata = icCalculoProRata;
-    }
+	public void setIcCalculoProRata(String icCalculoProRata) {
+		this.icCalculoProRata = icCalculoProRata;
+	}
 
-    public String getIcCalculoProRata() {
-        return this.icCalculoProRata;
-    }
+	public String getIcCalculoProRata() {
+		return this.icCalculoProRata;
+	}
 
-    public void setIcTipoAtendimento(String icTipoAtendimento) {
-        this.icTipoAtendimento = icTipoAtendimento;
-    }
+	public void setIcTipoAtendimento(String icTipoAtendimento) {
+		this.icTipoAtendimento = icTipoAtendimento;
+	}
 
-    public String getIcTipoAtendimento() {
-        return this.icTipoAtendimento;
-    }
+	public String getIcTipoAtendimento() {
+		return this.icTipoAtendimento;
+	}
 
-    public void setIcPermiteServicoExtra(String icPermiteServicoExtra) {
-        this.icPermiteServicoExtra = icPermiteServicoExtra;
-    }
+	public void setIcPermiteServicoExtra(String icPermiteServicoExtra) {
+		this.icPermiteServicoExtra = icPermiteServicoExtra;
+	}
 
-    public String getIcPermiteServicoExtra() {
-        return this.icPermiteServicoExtra;
-    }
+	public String getIcPermiteServicoExtra() {
+		return this.icPermiteServicoExtra;
+	}
 
-    public void setIcPermiteRegistroAusencia(String icPermiteRegistroAusencia) {
-        this.icPermiteRegistroAusencia = icPermiteRegistroAusencia;
-    }
+	public void setIcPermiteRegistroAusencia(String icPermiteRegistroAusencia) {
+		this.icPermiteRegistroAusencia = icPermiteRegistroAusencia;
+	}
 
-    public String getIcPermiteRegistroAusencia() {
-        return this.icPermiteRegistroAusencia;
-    }
+	public String getIcPermiteRegistroAusencia() {
+		return this.icPermiteRegistroAusencia;
+	}
 
-    public void setDtConsiderarFns(java.util.Date dtConsiderarFns) {
-        this.dtConsiderarFns = dtConsiderarFns;
-    }
+	public void setDtConsiderarFns(java.util.Date dtConsiderarFns) {
+		this.dtConsiderarFns = dtConsiderarFns;
+	}
 
-    public java.util.Date getDtConsiderarFns() {
-        return this.dtConsiderarFns;
-    }
+	public java.util.Date getDtConsiderarFns() {
+		return this.dtConsiderarFns;
+	}
 
-    public String getIcDistribuiProfissional() {
-        return icDistribuiProfissional;
-    }
+	public String getIcDistribuiProfissional() {
+		return icDistribuiProfissional;
+	}
 
-    public void setIcDistribuiProfissional(String icDistribuiProfissional) {
-        this.icDistribuiProfissional = icDistribuiProfissional;
-    }
+	public void setIcDistribuiProfissional(String icDistribuiProfissional) {
+		this.icDistribuiProfissional = icDistribuiProfissional;
+	}
 
-    public String getNoTipoAtendimento() {
-        return noTipoAtendimento;
-    }
+	public String getNoTipoAtendimento() {
+		return noTipoAtendimento;
+	}
 
-    public void setNoTipoAtendimento(String noTipoAtendimento) {
-        this.noTipoAtendimento = noTipoAtendimento;
-    }
+	public void setNoTipoAtendimento(String noTipoAtendimento) {
+		this.noTipoAtendimento = noTipoAtendimento;
+	}
+
+	/**
+	 * @return the nuTpFormaCalculoPagamento
+	 */
+	public Long getNuTpFormaCalculoPagamento() {
+		return nuTpFormaCalculoPagamento;
+	}
+
+	/**
+	 * @param nuTpFormaCalculoPagamento the nuTpFormaCalculoPagamento to set
+	 */
+	public void setNuTpFormaCalculoPagamento(Long nuTpFormaCalculoPagamento) {
+		this.nuTpFormaCalculoPagamento = nuTpFormaCalculoPagamento;
+	}
 
 }

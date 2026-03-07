@@ -21,16 +21,14 @@ import org.prometheus.dto.FaturamentoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.enums.DistribuicaoProfissionalEnum;
 import org.prometheus.enums.TipoAtendimentoEnum;
+import org.prometheus.enums.TipoFormaCalculoPagamentoEnum;
 import org.prometheus.relatorios.equipe.AbaAjuste;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevido;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoMilheiros;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoPerfil;
-import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoQualidade;
-import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoUnisys;
 import org.prometheus.relatorios.equipe.AbaCalculosG4;
-import org.prometheus.relatorios.equipe.AbaCalculosMilheiros;
 import org.prometheus.relatorios.equipe.AbaCalculosSprint;
 import org.prometheus.relatorios.equipe.AbaCalculosSprintPerfil;
 import org.prometheus.relatorios.equipe.AbaEquipe;
@@ -240,48 +238,75 @@ public class RelatorioEquipe extends Relatorio {
 		//
 		// Cálculos
 		//
-		if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+		
+		if (TipoFormaCalculoPagamentoEnum.ESPECIALIZADOS.TIPO.equals(equipe.getNuTpFormaCalculoPagamento())){
+			
+		}
+		
+		else {
+		
+			if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+	
+				if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+	
+					boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
+	
+					if (!isTipoGrupoG4) {
+						AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
+								.getBean(AbaCalculosAcionamento.class);
+						insumos = calculos.write(wb, coEquipe, faturamentos);
+					}
+	
+					if (isTipoGrupoG4) {
+						AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+						insumos = calculos.write(wb, coEquipe, faturamentos);
+					}
+	
+				}
+	
+				if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+					AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
+					insumos = calculos.gerar(wb, coEquipe, faturamentos);
+				}
+	
+			}
+	
+			if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+	
+				if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+					AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
+							.getBean(AbaCalculosAcionamentoPerfil.class);
+					calculos.gerar(wb, coEquipe, faturamentos, insumos);
+				}
+	
+				if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+					AbaCalculosSprintPerfil calculos = AppConfig.getApplicationContext()
+							.getBean(AbaCalculosSprintPerfil.class);
+					insumos = calculos.gerar(wb, coEquipe, faturamentos);
+				}
+	
+			}
 
+			//
+			// Serviços (SOMENTE ACIONAMENTO)
+			//
 			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
 
-				boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
-
-				if (!isTipoGrupoG4) {
-					AbaCalculosAcionamento calculos = AppConfig.getApplicationContext()
-							.getBean(AbaCalculosAcionamento.class);
-					insumos = calculos.write(wb, coEquipe, faturamentos);
+				if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+					AbaServicosAcionamento servicos = AppConfig.getApplicationContext()
+							.getBean(AbaServicosAcionamento.class);
+					servicos.write(wb, coEquipe, faturamentos);
 				}
 
-				if (isTipoGrupoG4) {
-					AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-					insumos = calculos.write(wb, coEquipe, faturamentos);
+				if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+					AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext()
+							.getBean(AbaServicosAcionamentoQualidade.class);
+					servicos.write(wb, coEquipe, faturamentos);
 				}
 
 			}
-
-			if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosSprint calculos = AppConfig.getApplicationContext().getBean(AbaCalculosSprint.class);
-				insumos = calculos.gerar(wb, coEquipe, faturamentos);
-			}
-
 		}
-
-		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-
-			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
-						.getBean(AbaCalculosAcionamentoPerfil.class);
-				calculos.gerar(wb, coEquipe, faturamentos, insumos);
-			}
-
-			if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosSprintPerfil calculos = AppConfig.getApplicationContext()
-						.getBean(AbaCalculosSprintPerfil.class);
-				insumos = calculos.gerar(wb, coEquipe, faturamentos);
-			}
-
-		}
-
+		
 //        if (!equipe.getCoContrato().equals("08718/2023")) {
 //
 //            if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
@@ -349,25 +374,6 @@ public class RelatorioEquipe extends Relatorio {
 //            }
 //
 //        }
-
-		//
-		// Serviços (SOMENTE ACIONAMENTO)
-		//
-		if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-
-			if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-				AbaServicosAcionamento servicos = AppConfig.getApplicationContext()
-						.getBean(AbaServicosAcionamento.class);
-				servicos.write(wb, coEquipe, faturamentos);
-			}
-
-			if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-				AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext()
-						.getBean(AbaServicosAcionamentoQualidade.class);
-				servicos.write(wb, coEquipe, faturamentos);
-			}
-
-		}
 
 		XSSFCell cellValorDevido = null;
 

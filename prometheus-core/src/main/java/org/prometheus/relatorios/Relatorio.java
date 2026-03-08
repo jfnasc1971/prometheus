@@ -86,8 +86,8 @@ public abstract class Relatorio {
         return row;
     }
 
-    protected final void addBlank(XSSFSheet sheet) {
-        sheet.createRow(sheet.getLastRowNum() + 1);
+    protected final XSSFRow addBlank(XSSFSheet sheet) {
+    	return sheet.createRow(sheet.getLastRowNum() + 1);
     }
 
     protected final XSSFRow addNewRow(XSSFSheet sheet) {

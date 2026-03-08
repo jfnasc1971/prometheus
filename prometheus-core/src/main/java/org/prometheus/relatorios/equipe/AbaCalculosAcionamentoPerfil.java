@@ -2,6 +2,7 @@ package org.prometheus.relatorios.equipe;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,10 @@ import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.PerfilDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.enums.CellStylesEnum;
+import org.prometheus.enums.SimNaoEnum;
+import org.prometheus.indicadores.IndicadorBase;
+import org.prometheus.indicadores.IndicadorFactory;
+import org.prometheus.indicadores.ResultadoIndicador;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.AusenciaExtraFaturamentoService;
@@ -67,6 +72,8 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 	@Autowired
 	private IndicadorService indicadorService;
 
+	Map<Long, List<ResultadoIndicador>> listaIndicadores = null;	
+	
 	Map<Long, List<XSSFCell>> listaIEQQL = null;
 	Map<Long, List<XSSFCell>> listaIEQQPZ = null;
 	Map<Long, List<XSSFCell>> listaIEQQET = null;
@@ -333,6 +340,30 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 				if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
+					row = getRow(sheet, rownum++);
+					addMergedRegion(sheet, row, 4, 6, "Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+
+					List<IndicadorContratoDTO> indicadores = indicadorService
+							.listarIndicadoresContrato(equipe.getCoEquipe());
+
+					for (IndicadorContratoDTO indicador : indicadores) {
+						
+						if (SimNaoEnum.NAO.sigla.equalsIgnoreCase(indicador.getIcAplicaIndicador())) {
+							IndicadorBase i = IndicadorFactory.getIndicador(indicador.getSgTipoIndicador());
+							
+							if (i != null) {
+								ResultadoIndicador resultadoIndicador = i.calcularIndicador(sheet, rownum, equipe, faturamento); 
+								rownum = resultadoIndicador.getRownum();
+								registrarResultadoIndicador(faturamento, resultadoIndicador);
+							}
+						}
+					}
+				}
+				
+				row = getRow(sheet, rownum++);
+				
+				if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+
 					row = getRow(sheet, rownum);
 
 					addMergedRegion(sheet, row, 0, 1, "Serviços", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
@@ -412,16 +443,18 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					/**
 					 * Média dos Indicadores
 					 */
+					int posMedias = 8;
+					
 					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
 
 					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores",
+					addMergedRegion(sheet, row, posMedias, posMedias + 2, "Média dos Indicadores",
 							CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 
 					//
 					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "IEQQET - Estoque do Serviço");
-					cellFormulaIEQQET = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+					addMergedRegion(sheet, row, posMedias, posMedias + 1, "IEQQET - Estoque do Serviço");
+					cellFormulaIEQQET = addCell(row, posMedias + 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 					if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) != null) {
 						setCellFormula(cellFormulaIEQQET, //
 								"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS)
@@ -432,8 +465,8 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 					//
 					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "IEQQPZ - Prazo do Serviço");
-					cellFormulaIEQQPZ = addCell(row, 10, "N/A", CellStylesEnum.DECIMAL5);
+					addMergedRegion(sheet, row, posMedias, posMedias + 1, "IEQQPZ - Prazo do Serviço");
+					cellFormulaIEQQPZ = addCell(row, posMedias + 2, "N/A", CellStylesEnum.DECIMAL5);
 					if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
 						setCellFormula(cellFormulaIEQQPZ, //
 								"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS)
@@ -444,8 +477,8 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 					//
 					row = getRow(sheet, rownum++);
-					addMergedRegion(sheet, row, 8, 9, "IEQQL  - Qualidade do Serviço");
-					cellFormulaIEQQL = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+					addMergedRegion(sheet, row, posMedias, posMedias + 1, "IEQQL  - Qualidade do Serviço");
+					cellFormulaIEQQL = addCell(row, posMedias + 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 					if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) != null) {
 						setCellFormula(cellFormulaIEQQL, //
 								"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS)
@@ -457,18 +490,18 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 					/**
 					 * Desempenho / Valor FNS
 					 */
-					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 12;
+					rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 11;
 
 					row = getRow(sheet, rownum++);
-					addCell(row, 8, "Desempenho", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-					addCell(row, 9, "Valor FNS", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-					addCell(row, 10, "Valor Financeiro", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+					addCell(row, posMedias, "Desempenho", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+					addCell(row, posMedias + 1, "Valor FNS", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+					addCell(row, posMedias + 2, "Valor Financeiro", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
 					row = getRow(sheet, rownum++);
 
-					XSSFCell cellDesempenho = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-					XSSFCell cellValorFNS = addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-					XSSFCell cellValorFinanceiro = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+					XSSFCell cellDesempenho = addCell(row, posMedias, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+					XSSFCell cellValorFNS = addCell(row, posMedias + 1, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+					XSSFCell cellValorFinanceiro = addCell(row, posMedias + 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
 					setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
 					setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
@@ -617,4 +650,17 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
 	}
 
+	private void registrarResultadoIndicador(FaturamentoDTO faturamento, ResultadoIndicador resultadoIndicador) {
+		
+		if (this.listaIndicadores == null) {
+			this.listaIndicadores = new LinkedHashMap<Long, List<ResultadoIndicador>>();
+		}
+		
+		if (this.listaIndicadores.get(faturamento.getNuFatura()) == null){
+			this.listaIndicadores.put(faturamento.getNuFatura(), new ArrayList<ResultadoIndicador>());
+		}
+		
+		this.listaIndicadores.get(faturamento.getNuFatura()).add(resultadoIndicador);
+	}
+	
 }

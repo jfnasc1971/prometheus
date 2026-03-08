@@ -129,6 +129,7 @@ public class IndicadorService {
 				dto.setQtFaturamento(rs.getInt("qt_faturamento"));
 				dto.setVrLimiteMaximoIndicador(rs.getBigDecimal("vr_limite_maximo_indicador"));
 				dto.setIcApenasFaturamentoAtual(rs.getString("ic_apenas_faturamento_atual"));
+				dto.setIcAplicaIndicador(rs.getString("ic_aplica_indicador"));
 
 				result.add(dto);
 			}

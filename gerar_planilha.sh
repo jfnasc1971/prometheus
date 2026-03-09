@@ -3,7 +3,7 @@ IFS=$'\n'
 JAVA_CMD="/projetos/lib/jvm/jdk1.8.0_421/bin/java"
 CLASSPATH="/projetos/prometheus/dist/prometheus.jar"
 
-$JAVA_CMD -Dfile.encoding=UTF-8 -Dspring.profiles.active=des -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
+$JAVA_CMD -Dfile.encoding=UTF-8 -Dspring.profiles.active=local -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
 
 echo -e "\n\n"
 echo "----------------------------------------------------"

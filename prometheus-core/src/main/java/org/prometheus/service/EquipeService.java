@@ -112,6 +112,7 @@ public class EquipeService {
                 dto.setIcPermiteRegistroAusencia(rs.getString("ic_permite_registro_ausencia"));
                 dto.setDtConsiderarFns(rs.getDate("dt_considerar_fns"));
                 dto.setIcDistribuiProfissional(rs.getString("ic_distribui_profissional"));
+                dto.setNuTpFormaCalculoPagamento(rs.getLong("nu_tp_frma_calculo_pgto"));
 
             }
         } catch (SQLException e) {
@@ -174,7 +175,8 @@ public class EquipeService {
         sb.append("  gc.ic_permite_servico_extra, ");
         sb.append("  gc.ic_permite_registro_ausencia, ");
         sb.append("  gc.ic_calculo_pro_rata, ");
-        sb.append("  gc.dt_considerar_fns ");
+        sb.append("  gc.dt_considerar_fns, ");
+        sb.append("  gc.nu_tp_frma_calculo_pgto ");
         sb.append("FROM ");
         sb.append("  gct.gcttb087_equipe e ");
         sb.append("  INNER JOIN gct.gcttb010_contrato c ON c.nu_contrato = e.nu_contrato ");

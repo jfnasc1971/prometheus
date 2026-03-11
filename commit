@@ -1,15 +1,15 @@
 #!/bin/bash
 git pull
 
-if [ -z "$1" ];then
-  echo "Erro! Informe o comentário."
-  exit 
-fi
+# if [ -z "$1" ];then
+#   echo "Erro! Informe o comentário."
+#   exit 
+# fi
 
 for f in $(git ls-files --others --exclude-standard);do
   git add $f
 done
 
-git commit -a -m "$1"
+git commit -a -m "Item de Backlog 24588485: SIGCT - Solicitação de Memória de Cálculo  - Fevereiro/2026"
 git push
 

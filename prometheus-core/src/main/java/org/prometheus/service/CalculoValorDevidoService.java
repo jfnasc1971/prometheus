@@ -152,8 +152,9 @@ public class CalculoValorDevidoService {
         sb.append("        p.nu_contrato = gc.nu_contrato "); 
         sb.append("        and p.nu_tipo_grupo = gc.nu_tipo_grupo "); 
         sb.append("        and p.nu_perfil = q.nu_perfil "); 
-        sb.append("        and f.dt_final_fatura between p.dt_inicio_vigencia and p.dt_final_vigencia "); 
-        sb.append("      ) "); 
+        sb.append("        and p.dt_inicio_vigencia <= f.dt_final_fatura "); 
+        sb.append("        and p.dt_final_vigencia >= f.dt_inicio_fatura "); 
+        sb.append("      ) ");
         sb.append("    where "); 
         sb.append("      q.nu_equipe = ? "); 
         sb.append("      and q.dt_inicio_vigencia <= f.dt_final_fatura ");

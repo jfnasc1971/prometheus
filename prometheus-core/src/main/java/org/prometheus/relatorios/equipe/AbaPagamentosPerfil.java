@@ -30,7 +30,8 @@ public class AbaPagamentosPerfil extends Relatorio {
 	@Autowired
 	private EquipeService equipeService;
 
-	public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, Map<Long, InsumosFaturamentoDTO> insumos) throws Exception {
+	public XSSFCell gerar(XSSFWorkbook workBook, String coEquipe, Map<Long, InsumosFaturamentoDTO> insumos)
+			throws Exception {
 
 		EquipeDTO equipe = equipeService.findBy(coEquipe);
 
@@ -75,57 +76,69 @@ public class AbaPagamentosPerfil extends Relatorio {
 			addCell(row, pos++, termo.getCoTermo());
 			addCell(row, pos++, termo.getDhEmissaoTermo());
 
-			XSSFCell cellVrPrevisto = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrPrevistoEquipe() : null, CellStylesEnum.DECIMAL);
-			
-			addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getQtMembroEquipeVigente() : null, CellStylesEnum.DECIMAL);
-			
-			XSSFCell cellVrAcrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrAcrescimo() : null, CellStylesEnum.DECIMAL);
-			
-			XSSFCell cellVrDecrescimo = addCell(row, pos++,
-					termo.getNuTipoTermo() == 11 ? termo.getVrDecrescimo() : null, CellStylesEnum.DECIMAL);
+			XSSFCell cellVrPrevisto = null;
+			XSSFCell cellVrAcrescimo = null;
+			XSSFCell cellVrDecrescimo = null;
+
+			// TME
+			if (termo.getNuTipoTermo() == 11) {
+				cellVrPrevisto = addCell(row, pos++, termo.getVrPrevistoEquipe(), CellStylesEnum.DECIMAL);
+				addCell(row, pos++, termo.getQtMembroEquipeVigente(), CellStylesEnum.DECIMAL);
+				cellVrAcrescimo = addCell(row, pos++, termo.getVrAcrescimo(), CellStylesEnum.DECIMAL);
+				cellVrDecrescimo = addCell(row, pos++, termo.getVrDecrescimo(), CellStylesEnum.DECIMAL);
+			}
+
+			// TMAE
+			if (termo.getNuTipoTermo() == 12) {
+				cellVrPrevisto = addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
+				addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
+				cellVrAcrescimo = addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
+				cellVrDecrescimo = addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
+			}
 
 			// FNS
 			XSSFCell cellVrFNS = null;
-			
-			if (termo.getVrFns() == null) {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? BigDecimal.ONE : null, CellStylesEnum.DECIMAL);
-			} else {
-				cellVrFNS = addCell(row, pos++, termo.getNuTipoTermo() == 11 ? termo.getVrFns() : null, CellStylesEnum.DECIMAL);
+
+			if (termo.getNuTipoTermo() == 11) {
+				cellVrFNS = addCell(row, pos++, //
+						termo.getVrFns() == null ? BigDecimal.ONE : termo.getVrFns(), //
+						CellStylesEnum.DECIMAL);
 			}
-			
+
+			if (termo.getNuTipoTermo() == 12) {
+				cellVrFNS = addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
+			}
+
 			// Valor Previsto
 			if (termo.getNuTipoTermo() == 11) {
 				setCellFormula(sheet, row, //
 						String.format("(%s+%s-%s)*%s", //
 								cellVrPrevisto.getReference(), //
-								cellVrAcrescimo.getReference(),
-								cellVrDecrescimo.getReference(), //
+								cellVrAcrescimo.getReference(), cellVrDecrescimo.getReference(), //
 								cellVrFNS.getReference()), //
-						pos++,CellStylesEnum.DECIMAL);
+						pos++, CellStylesEnum.DECIMAL);
 			}
 
 			if (termo.getNuTipoTermo() == 12) {
-				addCell(row, pos++);
+				addCell(row, pos++, "-", CellStylesEnum.NORMAL_ALIGN_CENTER);
 			}
-			
+
 			addCell(row, pos++, termo.getNuFaturaPaga() + " - " + termo.getDeFaturaPaga());
 
 			if (primeiraFatura == null) {
-				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),CellStylesEnum.DECIMAL);
+				primeiraFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(), CellStylesEnum.DECIMAL);
 				ultimaFatura = primeiraFatura;
 			} else {
-				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(),CellStylesEnum.DECIMAL);
+				ultimaFatura = addCell(row, pos++, termo.getVrFinanceiroTermo(), CellStylesEnum.DECIMAL);
 			}
 
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 			insumo.setVrPago(ultimaFatura);
 			insumo.setNuFatura(termo.getNuFaturaGerada());
 			insumo.setNuEquipe(equipe.getNuEquipe());
-			
+
 			insumos.put(termo.getNuFaturaGerada(), insumo);
-			
+
 		}
 
 		row = addNewRow(sheet);
@@ -133,9 +146,8 @@ public class AbaPagamentosPerfil extends Relatorio {
 		XSSFCell result = addCell(row, pos - 1, "N/A");
 
 		if (primeiraFatura != null) {
-			setCellFormula(result,
-					String.format("sum(%s:%s)", //
-							primeiraFatura.getReference(), ultimaFatura.getReference()), //
+			setCellFormula(result, String.format("sum(%s:%s)", //
+					primeiraFatura.getReference(), ultimaFatura.getReference()), //
 					CellStylesEnum.DECIMAL);
 		}
 

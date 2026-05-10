@@ -21,6 +21,7 @@ import org.prometheus.service.DetalheFaturamentoService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.IndicadorService;
 import org.prometheus.service.PrecosEquipeService;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +66,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 		XSSFRow row = addNewRow(sheet);
 
-		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, coEquipe, //
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, coEquipe, //
 		        CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		for (FaturamentoDTO faturamento : faturamentos) {
@@ -75,7 +76,7 @@ public class AbaMemoriaCalculo extends Relatorio {
 
 			row = addNewRow(sheet);
 
-			addMergedRegion(
+			XSSFSheetUtils.addMergedRegion(
 					sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, String.format("%s - %s - %s", faturamento.getNuFatura(),
 							faturamento.getDeFatura(), faturamento.getDtFinalFatura()),
 					CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);

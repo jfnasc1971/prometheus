@@ -17,6 +17,7 @@ import org.prometheus.service.FaixaIndicadorService;
 import org.prometheus.service.IndicadorService;
 import org.prometheus.service.SituacaoEntregaIndicadorService;
 import org.prometheus.utils.Utils;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +67,7 @@ public class AbaIndicadores extends Relatorio {
 		int rownum = 0;
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, 0, 4, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 4, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		pos = 0;
 		row = addNewRow(sheet, rownum++);
@@ -92,27 +93,27 @@ public class AbaIndicadores extends Relatorio {
 		 */
 		addNewRow(sheet, rownum++);
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, 0, 2, "Situações Consideradas para Serviços Contratados",
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Situações Consideradas para Serviços Contratados",
 				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		List<SituacaoEntregaIndicadorDTO> situacoes = situacaoEntregaIndicadorService.listar(equipe.getNuEquipe());
 
 		if (Utils.isEmpty(situacoes)) {
 			row = addNewRow(sheet, rownum++);
-			addMergedRegion(sheet, row, 0, 2, "Nenhuma situação configurada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma situação configurada.");
 		}
 
 //		if (Utils.isNotEmpty(situacoes)) {
 //
 //			row = addNewRow(sheet, rownum++);
 //			addCell(row, 0, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-//			addMergedRegion(sheet, row, 1, 2, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+//			XSSFSheetUtils.addMergedRegion(sheet, row, 1, 2, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 //
 //			for (SituacaoEntregaIndicadorDTO situacao : situacoes) {
 //				row = addNewRow(sheet, rownum++);
 //				addCell(row, 0, situacao.getSgTipoIndicador() + //
 //						" - " + situacao.getNoTipoIndicador());
-//				addMergedRegion(sheet, row, 1, 2, situacao.getNuSituacaoAtendimento() + //
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 1, 2, situacao.getNuSituacaoAtendimento() + //
 //						" - " + situacao.getNoSituacaoAtendimento());
 //			}
 //		}
@@ -125,7 +126,7 @@ public class AbaIndicadores extends Relatorio {
 		List<FaixaIndicadorDTO> faixas = faixaIndicadorService.listar(equipe.getNuEquipe());
 
 		row = addNewRow(sheet, rownum++);
-		addMergedRegion(sheet, row, 6, 8, "Valores Faixas Indicador", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 6, 8, "Valores Faixas Indicador", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
 		pos = 6;

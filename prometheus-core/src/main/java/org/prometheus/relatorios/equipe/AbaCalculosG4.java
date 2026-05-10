@@ -28,6 +28,7 @@ import org.prometheus.service.IndicadorVinculadoService;
 import org.prometheus.service.PrecosEquipeService;
 import org.prometheus.service.VigenciaMembrosService;
 import org.prometheus.utils.Utils;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -113,7 +114,7 @@ public class AbaCalculosG4 extends Relatorio {
             insumo.setVrPreco(vrPrecoGrupo);
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
                     faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
                     CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
@@ -126,7 +127,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             int posRowVigencias = row.getRowNum(); // preciso guardar essa posicao
 
-            addMergedRegion(sheet, row, 6, 10, "Vigência dos Membros do Faturamento", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 6, 10, "Vigência dos Membros do Faturamento", //
                     CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             int pos = 6;
@@ -171,7 +172,7 @@ public class AbaCalculosG4 extends Relatorio {
              * Dias Trabalhados no Faturamento
              */
             row = getRow(sheet, posRowVigencias++);
-            addMergedRegion(sheet, row, 0, 4, "Dias Trabalhados no Faturamento", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 4, "Dias Trabalhados no Faturamento", //
                     CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, posRowVigencias++);
@@ -196,7 +197,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             addBlank(sheet);
             row = addNewRow(sheet);
-            XSSFCell cellTituloServicosContratados = addMergedRegion(sheet, row, 0, 2, "Serviços Contratados", //
+            XSSFCell cellTituloServicosContratados = XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Serviços Contratados", //
                     CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
@@ -206,7 +207,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             if (Utils.isEmpty(servicosContratados)) {
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
+                XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
             }
 
             for (EntregaDTO e : servicosContratados) {
@@ -228,7 +229,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             addBlank(sheet);
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, 2, "Serviços Entregues", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Serviços Entregues", //
                     CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
@@ -238,7 +239,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             if (Utils.isEmpty(servicosEntregues)) {
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
+                XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
             }
 
             for (EntregaDTO e : servicosEntregues) {
@@ -260,7 +261,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             addBlank(sheet);
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, 2, "Serviços Entregues/Estoque", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Serviços Entregues/Estoque", //
                     CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
@@ -270,7 +271,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             if (Utils.isEmpty(servicosEntreguesEstoque)) {
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
+                XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
             }
 
             for (EntregaDTO e : servicosEntreguesEstoque) {
@@ -293,7 +294,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             addBlank(sheet);
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, 2, "Serviços Entregues com Atraso", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Serviços Entregues com Atraso", //
                     CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
@@ -303,7 +304,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             if (Utils.isEmpty(servicosEntreguesComAtraso)) {
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
+                XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
             }
 
             for (EntregaDTO e : servicosEntreguesComAtraso) {
@@ -326,7 +327,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             addBlank(sheet);
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, 2, "Serviços Devolvidos", //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Serviços Devolvidos", //
                     CellStylesEnum.RED_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
@@ -336,7 +337,7 @@ public class AbaCalculosG4 extends Relatorio {
 
             if (Utils.isEmpty(servicosDevolvidos)) {
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
+                XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Nenhuma entrega registrada.");
             }
 
             for (EntregaDTO e : servicosDevolvidos) {
@@ -363,19 +364,19 @@ public class AbaCalculosG4 extends Relatorio {
                 pos = cellTituloServicosContratados.getRowIndex();
 
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 10, "Equipes/Indicadores vinculados",
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 10, "Equipes/Indicadores vinculados",
                         CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
                 row = getRow(sheet, pos++);
                 addCell(row, 4, "Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                addMergedRegion(sheet, row, 5, 6, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                addMergedRegion(sheet, row, 7, 8, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 5, 6, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 7, 8, "Indicador", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 addCell(row, 9, "Dt. Geração", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 addCell(row, 10, "Valor Calculado", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
                 if (Utils.isEmpty(indicadoresVinculados)) {
                     row = getRow(sheet, pos++);
-                    addMergedRegion(sheet, row, 4, 10, "Nenhum registro encontrado.");
+                    XSSFSheetUtils.addMergedRegion(sheet, row, 4, 10, "Nenhum registro encontrado.");
                 }
 
                 XSSFCell primeiroVinculado = null;
@@ -385,8 +386,8 @@ public class AbaCalculosG4 extends Relatorio {
 
                     row = getRow(sheet, pos++);
                     addCell(row, 4, i.getCoEquipe());
-                    addMergedRegion(sheet, row, 5, 6, i.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-                    addMergedRegion(sheet, row, 7, 8, i.getSgTipoIndicador() + " - " + i.getNoTipoIndicador(),
+                    XSSFSheetUtils.addMergedRegion(sheet, row, 5, 6, i.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+                    XSSFSheetUtils.addMergedRegion(sheet, row, 7, 8, i.getSgTipoIndicador() + " - " + i.getNoTipoIndicador(),
                             CellStylesEnum.NORMAL_ALIGN_CENTER);
                     addCell(row, 9, i.getDhGeracaoIndicadorEquipe(), CellStylesEnum.DATE_TIME);
 
@@ -407,13 +408,13 @@ public class AbaCalculosG4 extends Relatorio {
                 getRow(sheet, pos++); // blank
 
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 6, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 6, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
                 /**
                  * IEQQL - Qualidade do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 5, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
                 XSSFCell cellFormulaIEQQL = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
@@ -432,7 +433,7 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQQPZ - Prazo do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQPZ - Prazo do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 5, "IEQQPZ - Prazo do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
                 XSSFCell cellFormulaIEQQPZ = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
@@ -450,7 +451,7 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQQET - Estoque do Serviço
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQQET - Estoque do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 5, "IEQQET - Estoque do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
                 XSSFCell cellFormulaIEQQET = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
@@ -468,7 +469,7 @@ public class AbaCalculosG4 extends Relatorio {
                  * IEQDES - Desenvolvimento
                  */
                 row = getRow(sheet, pos++);
-                addMergedRegion(sheet, row, 4, 5, "IEQDES - Desenvolvimento", CellStylesEnum.NORMAL_ALIGN_LEFT);
+                XSSFSheetUtils.addMergedRegion(sheet, row, 4, 5, "IEQDES - Desenvolvimento", CellStylesEnum.NORMAL_ALIGN_LEFT);
 
                 XSSFCell cellFormulaIEQDES = addCell(row, 6, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                 if (primeiroVinculado != null && ultimoVinculado != null) {

@@ -15,6 +15,7 @@ import org.prometheus.service.DemandaService;
 import org.prometheus.service.EntregaDemandaService;
 import org.prometheus.service.MensuracaoService;
 import org.prometheus.service.OrdemServicoService;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,39 +56,39 @@ public class AbaDemandaSustentacao extends Relatorio {
 		XSSFRow row = null;
 
 		row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		addBlank(sheet);
 
 		row = addNewRow(sheet);
 		//co_demanda    no_modulo       sg_sistema  no_sistema      de_situacao_demanda
 		addCell(row, 0, "Demanda", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, 1, 3, "Módulo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, "Módulo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, 4, "Sigla", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, 5, 7, "Sistema", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 5, 7, "Sistema", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, 8, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
         //co_demanda    no_modulo       sg_sistema  no_sistema      de_situacao_demanda
         addCell(row, 0, demanda.getCoDemanda(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-        addMergedRegion(sheet, row, 1, 3, demanda.getNoModulo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, demanda.getNoModulo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
         addCell(row, 4, demanda.getSgSistema(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-        addMergedRegion(sheet, row, 5, 7, demanda.getNoSistema(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 5, 7, demanda.getNoSistema(), CellStylesEnum.NORMAL_ALIGN_CENTER);
         addCell(row, 8, demanda.getDeSituacaoDemanda(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 		
         addBlank(sheet);
 
         row = addNewRow(sheet);
-        addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "Ordens de Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "Ordens de Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
         
 		List<OrdemServicoDTO> ordensServico = ordemServicoService.listar(coDemanda);
 
         row = addNewRow(sheet);
         // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
         addCell(row, 0, "Código", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addMergedRegion(sheet, row, 1, 3, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addMergedRegion(sheet, row, 4, 6, "Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-        addMergedRegion(sheet, row, 7, 9, "Forma", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 4, 6, "Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 7, 9, "Forma", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
         addCell(row, 10, "Valor previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);  		
 		
         int posPrimeiraOS = row.getRowNum() + 2;
@@ -98,9 +99,9 @@ public class AbaDemandaSustentacao extends Relatorio {
 		    row = addNewRow(sheet);
 	        // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
 	        addCell(row, 0, ordemServico.getCoOrdemServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-	        addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-	        addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-	        addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+	        XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+	        XSSFSheetUtils.addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+	        XSSFSheetUtils.addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 	        addCell(row, 10, ordemServico.getVrEstmoOrdemServico(), CellStylesEnum.DECIMAL);
 	        posUltimaOS++;
 		}
@@ -116,23 +117,23 @@ public class AbaDemandaSustentacao extends Relatorio {
         for (OrdemServicoDTO ordemServico : ordensServico) {
             
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "OS: " + //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, "OS: " + //
                     ordemServico.getCoOrdemServico(), CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
             
             row = addNewRow(sheet);
             // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
             addCell(row, 0, "Código", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-            addMergedRegion(sheet, row, 1, 3, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-            addMergedRegion(sheet, row, 4, 6, "Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-            addMergedRegion(sheet, row, 7, 9, "Forma", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, "Grupo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 4, 6, "Serviço", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 7, 9, "Forma", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, 10, "Valor previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);          
             
             row = addNewRow(sheet);
             // co_ordem_servico no_tipo_grupo           no_tipo_servico         de_tipo_forma   vr_estmo_ordem_servico
             addCell(row, 0, ordemServico.getCoOrdemServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-            addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-            addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-            addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, ordemServico.getNoTipoGrupo(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 4, 6, ordemServico.getNoTipoServico(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 7, 9, ordemServico.getDeTipoForma(), CellStylesEnum.NORMAL_ALIGN_CENTER);
             addCell(row, 10, ordemServico.getVrEstmoOrdemServico(), CellStylesEnum.DECIMAL);
             
             //
@@ -141,13 +142,13 @@ public class AbaDemandaSustentacao extends Relatorio {
             addBlank(sheet);
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 4, "Mensuração", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 4, "Mensuração", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             
             row = addNewRow(sheet);
             // OS   Solicitação Qt. PF  Fator Ajuste    Qt. PF Efetiva
             addCell(row, 0, "Código", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, 1, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-            addMergedRegion(sheet, row, 2, 3, "Tipo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 2, 3, "Tipo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, 4, "Qt. PF", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, 5, "Fator Ajuste", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, 6, "Qt. PF", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);           
@@ -158,7 +159,7 @@ public class AbaDemandaSustentacao extends Relatorio {
             addBlank(sheet);
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT -1 , "Entregas", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT -1 , "Entregas", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
             row = addNewRow(sheet);
             // co_ordem_servico co_entrega  de_situacao_entrega dh_prevista_entrega dh_efetiva_entrega  

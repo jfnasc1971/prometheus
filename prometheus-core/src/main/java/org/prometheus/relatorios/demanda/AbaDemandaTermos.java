@@ -12,6 +12,7 @@ import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.DemandaService;
 import org.prometheus.service.TermoDemandaService;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +46,7 @@ public class AbaDemandaTermos extends Relatorio {
         XSSFRow row = null;
 
         row = addNewRow(sheet);
-        addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT, demanda.getCoDemanda(), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         row = addNewRow(sheet);
         // Termo Dt. Emissão Dt. Fatura Paga Fatura paga Dt. Fatura Gerada Fatura Gerada

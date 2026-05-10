@@ -10,6 +10,6 @@ for f in $(git ls-files --others --exclude-standard);do
   git add $f
 done
 
-git commit -a -m "RTC 24588485 - SIGCT - Solicitação de Memória de Cálculo  - Fevereiro/2026"
+git commit -a -m "RTC 24745148 - SIGCT - Memória de cálculo dos contratos 8663/2018, 8664/2018 e 8718/2023"
 git push
 

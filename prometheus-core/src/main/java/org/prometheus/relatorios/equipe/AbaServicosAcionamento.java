@@ -22,6 +22,7 @@ import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
 import org.prometheus.utils.Utils;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +31,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Component
 public class AbaServicosAcionamento extends Relatorio {
 
-    private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamento.class.getSimpleName());
-    
+	private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamento.class.getSimpleName());
+
 	private static final int LAYOUT_COLUMNS_COUNT = 11;
 
 	@Autowired
@@ -75,9 +76,9 @@ public class AbaServicosAcionamento extends Relatorio {
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
 
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					"Fatura: " + faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-					 CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+					CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 
 			addBlank(sheet);
 
@@ -100,12 +101,13 @@ public class AbaServicosAcionamento extends Relatorio {
 				.listarServicosEntreguesComAtraso(equipe.getNuEquipe(), faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Serviços Atrasados",
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -116,14 +118,14 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntreguesComAtraso)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntreguesComAtraso) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
@@ -138,7 +140,8 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		addBlank(sheet);
 
-		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 1, BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
+		XSSFCell cellQtServicosEntreguesComAtraso = addCell(row, 1,
+				BigDecimal.valueOf(servicosEntreguesComAtraso.size()));
 		return cellQtServicosEntreguesComAtraso;
 	}
 
@@ -147,12 +150,13 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Estoque de Serviços",
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -163,14 +167,14 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntreguesEstoque)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntreguesEstoque) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
@@ -195,12 +199,13 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura(), 19L);
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Contratados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Serviços Contratados",
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -211,14 +216,14 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		if (Utils.isEmpty(servicosContratados)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosContratados) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
@@ -243,12 +248,13 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Serviços Devolvidos",
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -259,14 +265,14 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		if (Utils.isEmpty(servicosDevolvidos)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosDevolvidos) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());
@@ -291,12 +297,13 @@ public class AbaServicosAcionamento extends Relatorio {
 				faturamento.getNuFatura());
 
 		XSSFRow row = addNewRow(sheet);
-		addMergedRegion(sheet, row, 0, 10, "Serviços Entregues", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Serviços Entregues",
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet);
 		int pos = 0;
 		addCell(row, pos++, "Solicitação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-		addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, "Resumo", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		pos = pos + 3;
 		addCell(row, pos++, "Situação", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Data Prevista", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -307,14 +314,14 @@ public class AbaServicosAcionamento extends Relatorio {
 
 		if (Utils.isEmpty(servicosEntregues)) {
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 10, "Nenhuma entrega registrada.");
 		}
 
 		for (EntregaDTO e : servicosEntregues) {
 			row = addNewRow(sheet);
 			pos = 0;
 			addCell(row, pos++, e.getCoSolicitacao());
-			addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 2, e.getNoSolicitacao());
 			pos = pos + 3;
 			addCell(row, pos++, e.getDeSituacaoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
 			addCell(row, pos++, e.getDhPrevista());

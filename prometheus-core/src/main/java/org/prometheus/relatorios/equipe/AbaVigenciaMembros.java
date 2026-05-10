@@ -16,6 +16,7 @@ import org.prometheus.service.EquipeService;
 import org.prometheus.service.QntdeMembrosEquipeService;
 import org.prometheus.service.VigenciaMembrosEquipeService;
 import org.prometheus.utils.Utils;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,11 +69,11 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		pos = 0;
 
-		addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 0, 4, "Total Membros por Vigência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
 
-		addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos++, "Perfil do Profisional", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 		addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -81,7 +82,7 @@ public class AbaVigenciaMembros extends Relatorio {
 			pos = 0;
 			row = addNewRow(sheet, rownum++);
 
-			addMergedRegion(sheet, row, pos++, pos++, Utils.isEmpty(membro.getDePerfil()) ? "-" : membro.getNuPerfil() + " - " + membro.getDePerfil());
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos++, Utils.isEmpty(membro.getDePerfil()) ? "-" : membro.getNuPerfil() + " - " + membro.getDePerfil());
 			addCell(row, pos++, membro.getDtInicioVigenciaMembros());
 			addCell(row, pos++, membro.getDtFinalVigenciaMembros());
 			addCell(row, pos++, membro.getQtMembrosEquipe());
@@ -98,7 +99,7 @@ public class AbaVigenciaMembros extends Relatorio {
 
 		row = addNewRow(sheet, rownum++);
 		
-		addMergedRegion(sheet, row, 6, 11, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, 6, 11, "Vigências de Membros da Equipe", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		
 		List<VigenciaMembrosEquipeDTO> vigencias = vigenciaMembrosEquipeService.listar(equipe.getNuEquipe());
 

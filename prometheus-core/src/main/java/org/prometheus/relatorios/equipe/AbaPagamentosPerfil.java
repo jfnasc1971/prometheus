@@ -106,7 +106,7 @@ public class AbaPagamentosPerfil extends Relatorio {
 						pos++,CellStylesEnum.DECIMAL);
 			}
 
-			if (termo.getNuTipoTermo() == 12) {
+			if (termo.getNuTipoTermo() == 12 || termo.getNuTipoTermo() == 21) {
 				addCell(row, pos++);
 			}
 			

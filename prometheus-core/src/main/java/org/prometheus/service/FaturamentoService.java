@@ -136,6 +136,7 @@ public class FaturamentoService {
 		sb.append("where "); 
 		sb.append("  e.co_equipe = ? ");
 		sb.append("  and f.nu_situacao_fatura in (3,4,5) ");
+		//sb.append("  and f.nu_fatura = 5679 ");
 		sb.append("order by "); 
 		sb.append("  f.dt_final_fatura ");
 

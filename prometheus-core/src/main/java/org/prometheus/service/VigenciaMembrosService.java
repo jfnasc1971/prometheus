@@ -69,7 +69,7 @@ public class VigenciaMembrosService {
 
 		sb.append("SELECT "); 
 		sb.append("  *, "); 
-		sb.append("  (qt_dias_trabalhados / qt_dias_faturamento) * qt_membros_equipe qt_efetiva "); 
+		sb.append("  (qt_dias_trabalhados / qt_dias_faturamento) * qt_membros_equipe * pc_alocacao_membro_efetiva qt_efetiva "); 
 		sb.append("FROM "); 
 		sb.append("  ( "); 
 		sb.append("    SELECT "); 
@@ -106,7 +106,8 @@ public class VigenciaMembrosService {
 		sb.append("        f.dt_final_fatura, "); 
 		sb.append("        e.co_sitio, "); 
 		sb.append("        gc.ic_dias_calculo_pagamento "); 
-		sb.append("      ) qt_dias_faturamento "); 
+		sb.append("      ) qt_dias_faturamento, "); 
+		sb.append("      q.pc_alocacao_membro_efetiva "); 
 		sb.append("    FROM "); 
 		sb.append("      gct.gcttb087_equipe e "); 
 		sb.append("      inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
@@ -166,7 +167,8 @@ public class VigenciaMembrosService {
 		sb.append("        f.dt_final_fatura, "); 
 		sb.append("        e.co_sitio, "); 
 		sb.append("        gc.ic_dias_calculo_pagamento "); 
-		sb.append("      ) qt_dias_faturamento "); 
+		sb.append("      ) qt_dias_faturamento, "); 
+		sb.append("      q.pc_alocacao_membro_efetiva "); 
 		sb.append("    FROM "); 
 		sb.append("      gct.gcttb087_equipe e "); 
 		sb.append("      inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
@@ -187,6 +189,7 @@ public class VigenciaMembrosService {
 		sb.append("  ) tb "); 
 		sb.append("order by "); 
 		sb.append("  de_perfil, dt_inicio_vigencia_membros ");
+
 		return sb.toString();
 	}
 

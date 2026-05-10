@@ -13,6 +13,7 @@ import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.CicloTrabalhoService;
 import org.prometheus.service.EquipeService;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +49,7 @@ public class AbaSprints extends Relatorio {
 		for (FaturamentoDTO faturamento : faturamentos) {
 
 			row = addNewRow(sheet);
-			addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+			XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 					faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
 					CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
@@ -57,7 +58,7 @@ public class AbaSprints extends Relatorio {
 
 			if (ciclos == null || ciclos.isEmpty()) {
 				row = addNewRow(sheet);
-				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhum ciclo encontrado.", //
+				XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Nenhum ciclo encontrado.", //
 						CellStylesEnum.NORMAL_ALIGN_LEFT);
 			}
 
@@ -65,7 +66,7 @@ public class AbaSprints extends Relatorio {
 
 			if (ciclos != null && !ciclos.isEmpty()) {
 				row = addNewRow(sheet);
-				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Ciclos", //
+				XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Ciclos", //
 				        CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 				int pos = 0;
@@ -98,7 +99,7 @@ public class AbaSprints extends Relatorio {
 				addNewRow(sheet);
 				
 				row = addNewRow(sheet);
-				addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Solicitações", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+				XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, "Solicitações", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 				addNewRow(sheet);
 

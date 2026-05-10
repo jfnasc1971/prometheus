@@ -107,8 +107,8 @@ public class CalculoValorDevidoService {
         sb.append("    ), "); 
         sb.append("    0 "); 
         sb.append("  ) as qt_dias_ausencia, "); 
-        sb.append("  sum(qt_membros_equipe * (qt_dias_trabalhados / qt_dias_faturamento)) qt_membros_efetiva "); 
-        sb.append(" from ("); 
+        sb.append("  sum(qt_membros_equipe * (qt_dias_trabalhados / qt_dias_faturamento) * coalesce(pc_alocacao_membro_efetiva,1)) qt_membros_efetiva "); 
+        sb.append(" from ( "); 
         sb.append("    SELECT "); 
         sb.append("      f.nu_fatura, "); 
         sb.append("      f.dt_inicio_fatura, "); 
@@ -117,6 +117,7 @@ public class CalculoValorDevidoService {
         sb.append("      pp.de_perfil, "); 
         sb.append("      q.co_sitio, "); 
         sb.append("      e.nu_equipe, "); 
+        sb.append("      q.pc_alocacao_membro_efetiva, "); 
         sb.append("      q.qt_membros as qt_membros_equipe, "); 
         sb.append("      gct.gctfn305_dias_entre_data( "); 
         sb.append("        CASE "); 
@@ -156,7 +157,7 @@ public class CalculoValorDevidoService {
         sb.append("      ) "); 
         sb.append("    where "); 
         sb.append("      q.nu_equipe = ? "); 
-        sb.append("      and q.dt_inicio_vigencia <= f.dt_final_fatura ");
+        sb.append("      and q.dt_inicio_vigencia <= f.dt_final_fatura "); 
         sb.append("      and ( "); 
         sb.append("        q.dt_final_vigencia is null "); 
         sb.append("        or q.dt_final_vigencia >= f.dt_inicio_fatura "); 

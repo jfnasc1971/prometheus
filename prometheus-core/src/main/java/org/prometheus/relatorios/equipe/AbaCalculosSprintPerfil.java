@@ -36,6 +36,7 @@ import org.prometheus.service.SolicitacaoService;
 import org.prometheus.service.VigenciaMembrosService;
 import org.prometheus.service.VigenciaMembrosSprintService;
 import org.prometheus.utils.Utils;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -147,7 +148,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
         insumo.setNuEquipe(equipe.getNuEquipe());
 
         row = addNewRow(sheet);
-        addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
                 faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
@@ -162,7 +163,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
         int posColVigencias = 10;
 
-        addMergedRegion(sheet, row, posColVigencias, LAYOUT_COLUMNS_COUNT - 1, "Vigência dos Membros do Faturamento", //
+        XSSFSheetUtils.addMergedRegion(sheet, row, posColVigencias, LAYOUT_COLUMNS_COUNT - 1, "Vigência dos Membros do Faturamento", //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         if (Utils.isNotEmpty(vigencias)) {
@@ -170,7 +171,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
             int pos = posColVigencias;
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, pos++, pos += 1, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos += 1, "Perfil", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             pos++;
             addCell(row, pos++, "Dt. Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Dt. Final", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -185,7 +186,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
             for (VigenciaMembrosDTO vigencia : vigencias) {
                 pos = posColVigencias;
                 row = addNewRow(sheet);
-                addMergedRegion(sheet, row, pos++, pos += 1, vigencia.getDePerfil());
+                XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos += 1, vigencia.getDePerfil());
                 pos++;
                 addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
                 addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
@@ -196,7 +197,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                         faturamento.getNuFatura(), vigencia.getNuPerfil());
 
                 addCell(row, pos++, vrPrecoPerfil, CellStylesEnum.DECIMAL);
-
+                
                 if (cellInicioVigencias == null) {
                     cellInicioVigencias = addCell(row, pos++, vigencia.getQtEfetiva(), CellStylesEnum.DECIMAL5);
                 } else {
@@ -234,7 +235,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
          * Dias Trabalhados no Faturamento
          */
         row = getRow(sheet, posRowVigencias++);
-        addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados no Faturamento", //
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, 2, "Dias Trabalhados no Faturamento", //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         row = getRow(sheet, posRowVigencias++);
@@ -253,12 +254,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
          * Ausencias e extras
          */
         row = getRow(sheet, posRowVigencias++);
-        addMergedRegion(sheet, row, 0, 8, "Ausências e extras", //
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, 8, "Ausências e extras", //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
         row = getRow(sheet, posRowVigencias++);
         addCell(row, 0, "Dt. Registro", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-        addMergedRegion(sheet, row, 1, 3, "Perfil Profissional", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+        XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, "Perfil Profissional", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, 4, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, 5, "Qt. Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
         addCell(row, 6, "Qt. Dias Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -270,7 +271,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
         
         if (Utils.isEmpty(ausenciasExtras)) {
         	row = getRow(sheet, posRowVigencias++);
-            addMergedRegion(sheet, row, 0, 8, "Nenhum lançamento registrado.");
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 8, "Nenhum lançamento registrado.");
         }
         
         if (Utils.isNotEmpty(ausenciasExtras)) {
@@ -280,7 +281,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                 BigDecimal vrPrecoGrupo = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), faturamento.getNuFatura(), ausenciaExtra.getNuPerfil());
                 
                 addCell(row, 0, ausenciaExtra.getDhInclusaoInformacao());
-                addMergedRegion(sheet, row, 1, 3, ausenciaExtra.getDePerfil());
+                XSSFSheetUtils.addMergedRegion(sheet, row, 1, 3, ausenciaExtra.getDePerfil());
                 addCell(row, 4, vrPrecoGrupo);
                 addCell(row, 5, ausenciaExtra.getQtDiaAusencia());
                 addCell(row, 6, ausenciaExtra.getQtDiaServicoExtra());
@@ -305,7 +306,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
             addBlank(sheet);
 
             row = addNewRow(sheet);
-            addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
                     "Se não houver Sprint no período ou se os indicadores não estiverem configurados, o FNS não será apurado.", //
                     CellStylesEnum.NOTA_BOLD);
 
@@ -335,7 +336,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                             faturamento.getNuFatura(), equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
 
                     row = addNewRow(sheet);
-                    addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
+                    XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
                             "Sprint " + ciclo.getNuCicloTrabalho(), CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
 
                     int rowNumTituloSprint = row.getRowNum();
@@ -421,7 +422,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
                     int pos = 6;
 
-                    addMergedRegion(sheet, getRow(sheet, rowNumTituloSprint + 2), pos, pos + 4, //
+                    XSSFSheetUtils.addMergedRegion(sheet, getRow(sheet, rowNumTituloSprint + 2), pos, pos + 4, //
                             "Vigência dos membros da Sprint", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
                     row = getRow(sheet, rowNumTituloSprint + 3);
@@ -482,7 +483,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                     int posInicialSolicitacoes = 0;
                     pos = 10;
                     row = getRow(sheet, row.getRowNum() + 2);
-                    addMergedRegion(sheet, row, pos, pos + 4, "Solicitações", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+                    XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 4, "Solicitações", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
                     List<SolicitacaoDTO> solicitacoes = solicitacaoService.listar(equipe.getNuEquipe(),
                             ciclo.getNuCicloTrabalho());
@@ -493,7 +494,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
                             posInicialSolicitacoes = row.getRowNum() + 1;
                         }
                         addCell(row, pos++, s.getCoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-                        addMergedRegion(sheet, row, pos++, pos + 1, s.getNoTipoServico(),
+                        XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos + 1, s.getNoTipoServico(),
                                 CellStylesEnum.NORMAL_ALIGN_CENTER);
                         addCell(row, pos + 2, s.getNuTamanhoServico(), CellStylesEnum.DECIMAL);
                     }
@@ -534,18 +535,18 @@ public class AbaCalculosSprintPerfil extends Relatorio {
             int posRowMediaIndicadores = sheet.getLastRowNum();
 
             row = getRow(sheet, posRowMediaIndicadores + 1);
-            addMergedRegion(sheet, row, 0, 4, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 4, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
 
             row = getRow(sheet, posRowMediaIndicadores + 2);
-            addMergedRegion(sheet, row, 0, 3, "Valor Agregado", CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 3, "Valor Agregado", CellStylesEnum.NORMAL_ALIGN_CENTER);
             cellMediaValorAgregado = addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
             row = getRow(sheet, posRowMediaIndicadores + 3);
-            addMergedRegion(sheet, row, 0, 3, "Qualidade Produto", CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 3, "Qualidade Produto", CellStylesEnum.NORMAL_ALIGN_CENTER);
             cellMediaQualidadeProduto = addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
             row = getRow(sheet, posRowMediaIndicadores + 4);
-            addMergedRegion(sheet, row, 0, 3, "Produtividade", CellStylesEnum.NORMAL_ALIGN_CENTER);
+            XSSFSheetUtils.addMergedRegion(sheet, row, 0, 3, "Produtividade", CellStylesEnum.NORMAL_ALIGN_CENTER);
             cellMediaProdutividade = addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
             if (getMediaIndicador(indicadoresProdutividade, faturamento.getNuFatura(), indicadorFNS) != null) {

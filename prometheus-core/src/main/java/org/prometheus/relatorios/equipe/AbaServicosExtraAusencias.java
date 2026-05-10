@@ -10,6 +10,7 @@ import org.prometheus.dto.AusenciaExtraFaturamentoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.service.AusenciaExtraFaturamentoService;
+import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class AbaServicosExtraAusencias extends Relatorio {
 
         XSSFRow row = addNewRow(sheet);
 
-        addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
+        XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
                 "Serviços extra e ausências", //
                 CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 

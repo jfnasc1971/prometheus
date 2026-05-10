@@ -219,8 +219,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
 			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 			
-			IndicadorFactory factory = AppConfig.getApplicationContext().getBean(IndicadorFactory.class);
-			
 			indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 1);
 			
 			/**
@@ -244,8 +242,6 @@ public class AbaCalculosAcionamento extends Relatorio {
 				/**
 				 * IEQQL - Qualidade do Serviço
 				 */
-				
-				Indicador indicador = (Indicador)factory.get("IEQQET", indicadorContext);
 				row = indicadorContext.nextRow();
 				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
 

@@ -1,5 +1,6 @@
 package org.prometheus.indicadores;
 
+import org.prometheus.relatorios.RelatorioContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class IndicadorIEQQET implements Indicador {
 	
-	private IndicadorContext indicadorContext;
+	private RelatorioContext indicadorContext;
 
-	public IndicadorIEQQET(IndicadorContext indicadorContext) {
+	public IndicadorIEQQET(RelatorioContext indicadorContext) {
 		this.indicadorContext = indicadorContext;
 	}
 	

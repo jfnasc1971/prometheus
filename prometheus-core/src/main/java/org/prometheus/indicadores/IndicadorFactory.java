@@ -1,5 +1,6 @@
 package org.prometheus.indicadores;
 
+import org.prometheus.relatorios.RelatorioContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ public class IndicadorFactory {
 	@Autowired
 	private ApplicationContext context;
 
-	public Indicador get(String sigla, IndicadorContext indicadorContext) {
+	public Indicador get(String sigla, RelatorioContext indicadorContext) {
 
 		String beanName = "Indicador" + sigla;
 

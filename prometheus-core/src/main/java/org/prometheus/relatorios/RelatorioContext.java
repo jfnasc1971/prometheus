@@ -1,18 +1,18 @@
-package org.prometheus.indicadores;
+package org.prometheus.relatorios;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-public class IndicadorContext {
+public class RelatorioContext {
 
 	private XSSFSheet sheet;
 	private Integer rownum;
 
-	public IndicadorContext(XSSFSheet sheet) {
+	public RelatorioContext(XSSFSheet sheet) {
 		this(sheet, 0);
 	}
 
-	public IndicadorContext(XSSFSheet sheet, Integer rownum) {
+	public RelatorioContext(XSSFSheet sheet, Integer rownum) {
 		this.sheet = sheet;
 		this.rownum = rownum;
 	}

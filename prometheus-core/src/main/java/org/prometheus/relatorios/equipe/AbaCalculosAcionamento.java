@@ -21,8 +21,8 @@ import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicadores.Indicador;
-import org.prometheus.indicadores.IndicadorContext;
 import org.prometheus.indicadores.IndicadorFactory;
+import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.relatorios.Relatorio;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
@@ -83,7 +83,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 		
 		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
-		IndicadorContext indicadorContext = new IndicadorContext(sheet);
+		RelatorioContext indicadorContext = new RelatorioContext(sheet);
 		
 		carregarFontes(wb);
 		carregarEstilos(wb);

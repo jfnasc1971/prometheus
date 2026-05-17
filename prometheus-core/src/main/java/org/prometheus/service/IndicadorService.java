@@ -65,43 +65,17 @@ public class IndicadorService {
 	}
 	
     public IndicadorContratoDTO getIndicadorContratoFNS(String coEquipe) {
-        IndicadorContratoDTO dto = null;
-
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-
-            conn = databaseService.getDataSource().getConnection();
-
-            pstmt = conn.prepareStatement(getIndicadoresContratoDML(true));
-            pstmt.setString(1, coEquipe);
-
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-
-                dto = new IndicadorContratoDTO();
-                dto.setSgTipoIndicador(rs.getString("sg_tipo_indicador"));
-                dto.setNoTipoIndicador(rs.getString("no_tipo_indicador"));
-                dto.setVrPesoTipoIndicador(rs.getBigDecimal("vr_peso_tipo_indicador"));
-                dto.setVrFatorAjuste(rs.getBigDecimal("vr_fator_ajuste"));
-                dto.setQtFaturamento(rs.getInt("qt_faturamento"));
-                dto.setVrLimiteMaximoIndicador(rs.getBigDecimal("vr_limite_maximo_indicador"));
-                dto.setIcApenasFaturamentoAtual(rs.getString("ic_apenas_faturamento_atual"));
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DBUtil.close(conn, pstmt, rs);
-        }
-
-        return dto;
+        return listarIndicadoresContrato(coEquipe, true).get(0);
     }	
 	
-	public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe) {
+    public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe) {
+    	List<IndicadorContratoDTO> result = new ArrayList<IndicadorContratoDTO>();
+    	result.addAll(listarIndicadoresContrato(coEquipe, false));
+    	result.addAll(listarIndicadoresContrato(coEquipe, true));
+    	return result;
+    }
+    
+	public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe, boolean icAplicaIndicador) {
 		List<IndicadorContratoDTO> result = new ArrayList<IndicadorContratoDTO>();
 
 		Connection conn = null;
@@ -112,8 +86,16 @@ public class IndicadorService {
 
 			conn = databaseService.getDataSource().getConnection();
 
-			pstmt = conn.prepareStatement(getIndicadoresContratoDML());
-			pstmt.setString(1, coEquipe);
+            StringBuilder sb = new StringBuilder();
+            sb.append(getIndicadoresContratoDML());
+    	    sb.append("  and gi.ic_aplica_indicador = ?");
+            
+    		sb.append("ORDER BY ");
+    		sb.append("  ti.nu_tipo_indicador ");
+    	    
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, coEquipe);
+			pstmt.setString(2, icAplicaIndicador ? "S":"N");
 
 			rs = pstmt.executeQuery();
 
@@ -301,11 +283,7 @@ public class IndicadorService {
 		return sb.toString();
 	}
 
-	public String getIndicadoresContratoDML() {
-	    return getIndicadoresContratoDML(false);
-	}
-	
-	public String getIndicadoresContratoDML(boolean somenteFNS) {
+	private String getIndicadoresContratoDML() {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -331,11 +309,8 @@ public class IndicadorService {
 		sb.append("  INNER JOIN gct.gcttb112_tipo_indicador ti ON ti.nu_tipo_indicador = gi.nu_tipo_indicador ");
 		sb.append("WHERE ");
 		sb.append("  e.co_equipe = ? ");
-		if(somenteFNS) {
-		    sb.append("  and gi.ic_aplica_indicador = 'S'");
-		}
 
 		return sb.toString();
-	}
+	}	
 
 }

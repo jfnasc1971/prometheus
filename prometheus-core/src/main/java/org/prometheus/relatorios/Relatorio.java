@@ -43,6 +43,9 @@ public abstract class Relatorio {
     
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
     
+	private Map<Long, Map<String, XSSFCell>> listaIndicadores;
+	private Map<Long, Map<String, XSSFCell>> listaMediaIndicadores;    
+    
     protected void setColumnWidth(XSSFSheet sheet, int colNum, int width) {
         sheet.setColumnWidth(colNum, (int) sheet.getDefaultColumnWidth() * width * 8);
     }

@@ -66,5 +66,7 @@ public class IndicadorContratoDTO {
         return this.icApenasFaturamentoAtual;
     }
 
-
+    public String getDescricao() {
+    	return getSgTipoIndicador() + " - " + getNoTipoIndicador();
+    }
 }

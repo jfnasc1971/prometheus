@@ -12,7 +12,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.prometheus.AppConfig;
 import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
@@ -20,10 +19,10 @@ import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.dto.InsumosFaturamentoDTO;
 import org.prometheus.dto.VigenciaMembrosDTO;
 import org.prometheus.enums.CellStylesEnum;
-import org.prometheus.indicadores.Indicador;
-import org.prometheus.indicadores.IndicadorFactory;
-import org.prometheus.relatorios.RelatorioContext;
+import org.prometheus.indicador.Indicador;
+import org.prometheus.indicador.IndicadorFactory;
 import org.prometheus.relatorios.Relatorio;
+import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.relatorios.RelatorioEquipe;
 import org.prometheus.service.EntregaService;
 import org.prometheus.service.EquipeService;
@@ -64,6 +63,9 @@ public class AbaCalculosAcionamento extends Relatorio {
     @Autowired
     private IndicadorService indicadorService;
 	
+    @Autowired
+    private IndicadorFactory indicadorFactory;
+	
 	Map<Long, List<XSSFCell>> listaIEQQL = null;
 	Map<Long, List<XSSFCell>> listaIEQQPZ = null;
 	Map<Long, List<XSSFCell>> listaIEQQET = null;
@@ -83,7 +85,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 		
 		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
-		RelatorioContext indicadorContext = new RelatorioContext(sheet);
+		RelatorioContext context = new RelatorioContext(equipe, wb, sheet);
 		
 		carregarFontes(wb);
 		carregarEstilos(wb);
@@ -111,6 +113,8 @@ public class AbaCalculosAcionamento extends Relatorio {
 					equipe.getNuContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), //
 					faturamento.getNuFatura(), faturamento.getDeFatura()));
 
+			context.setFaturamento(faturamento);
+			
 			InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
             List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
@@ -208,152 +212,186 @@ public class AbaCalculosAcionamento extends Relatorio {
 			insumo.setQtDiasAusencia(addCell(row, 4, faturamento.getQtDiasAusencia(), CellStylesEnum.DECIMAL));
 
 			//
-			addNewRow(sheet);
+			context.nextRow(); // blank
 
-			row = getRow(sheet, cellQtEfetiva.getRowIndex() + 2);
-			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 1, "Serviços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-
-			XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
-			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
+//			row = getRow(sheet, cellQtEfetiva.getRowIndex() + 2);
+//			XSSFSheetUtils.addMergedRegion(sheet, row, 0, 1, "Serviços", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+//
+//			XSSFCell cellQtServicosEntregues = contarServicosEntregues(equipe, sheet, faturamento);
+//			XSSFCell cellQtServicosDevolvidos = contarServicosDevolvidos(equipe, sheet, faturamento);
+//			XSSFCell cellQtServicosEntreguesComAtraso = contarServicosAtrasados(equipe, sheet, faturamento);
+//			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
+//			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 			
-			indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 1);
+			context.setRownum(cellQtEfetiva.getRowIndex() + 1);
 			
 			/**
 			 * Indicadores
 			 */
 			if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-				indicadorContext.nextRow(); // blank
+				context.nextRow(); // blank
 
-				row = indicadorContext.nextRow();
+				row = context.nextRow();
 				XSSFSheetUtils.addMergedRegion(sheet, row, 4, 7, "Grupo configurado para aplicar Indicadores somente a partir de "
 						+ DateUtil.format(faturamento.getDtConsiderarFns()), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 			}
 
 			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-
-				indicadorContext.nextRow(); // blank
-
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-
-				/**
-				 * IEQQL - Qualidade do Serviço
-				 */
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQL = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQL, //
-							String.format("%s/(%s+%s)", //
-									cellQtServicosEntregues.getReference(), //
-									cellQtServicosEntregues.getReference(), cellQtServicosDevolvidos.getReference()), //
-							CellStylesEnum.DECIMAL5);
+			
+				//
+				List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(coEquipe, false);
+				
+				for (IndicadorContratoDTO indicadorDTO : indicadores) {
+					Indicador indicador = indicadorFactory.get(indicadorDTO, context);
+					XSSFCell resultado = indicador.calcular();
+					context.addIndicador(faturamento.getNuFatura(), indicadorDTO.getSgTipoIndicador(), resultado);
+					context.nextRow(); // blank
 				}
-
-				addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-				/**
-				 * IEQQPZ - Prazo do Serviço
-				 */
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQPZ - Prazo do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQPZ = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
-						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQPZ, //
-							String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
-									cellQtServicosEntregues.getReference()), //
-							CellStylesEnum.DECIMAL5);
-				}
-
-				addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-				/**
-				 * IEQQET - Estoque do Serviço
-				 */
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQET - Estoque do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
-
-				XSSFCell cellFormulaIEQQET = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-
-				if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
-						&& cellQtServicosContratados.getNumericCellValue() != 0) {
-					setCellFormula(cellFormulaIEQQET, //
-							String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
-									cellQtServicosContratados.getReference()), //
-							CellStylesEnum.DECIMAL5);
-				}
-
-				addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
+				
+				context.nextRow(); // blank
+				
 				/**
 				 * Média dos Indicadores
 				 */
-				indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 2);
+				context.setRownum(cellQtEfetiva.getRowIndex() + 1);
+	
+				indicadores = indicadorService.listarIndicadoresContrato(coEquipe, true);
 
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
-
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQL - Qualidade do Serviço");
-				cellFormulaIEQQL = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) != null) {
-					setCellFormula(cellFormulaIEQQL, //
-							"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) + ")", //
-							CellStylesEnum.DECIMAL5);
+				for (IndicadorContratoDTO indicadorDTO : indicadores) {
+					Indicador indicador = indicadorFactory.get(indicadorDTO, context);
+					XSSFCell resultado = indicador.calcular();
+					insumo.setVrFns(resultado);
+					context.addIndicador(faturamento.getNuFatura(), indicadorDTO.getSgTipoIndicador(), resultado);
+					context.nextRow(); // blank
 				}
-				addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
-
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQPZ - Prazo do Serviço");
-				cellFormulaIEQQPZ = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
-					setCellFormula(cellFormulaIEQQPZ, //
-							"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) + ")", //
-							CellStylesEnum.DECIMAL5);
-				}
-				addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
-
-				row = indicadorContext.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQET - Estoque do Serviço");
-				cellFormulaIEQQET = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-				if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) != null) {
-					setCellFormula(cellFormulaIEQQET, //
-							"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) + ")", //
-							CellStylesEnum.DECIMAL5);
-				}
-				addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
-
-				/**
-				 * Desempenho / Valor FNS
-				 */
-				indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 7);
-
-				row = indicadorContext.nextRow();
-				addCell(row, 8, "Desempenho",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-				addCell(row, 9, "Valor FNS",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-
-				row = indicadorContext.nextRow();
-
-				XSSFCell cellDesempenho = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-				XSSFCell cellValorFNS = addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
-
-				indicadorContext.nextRow(); // blank
-
-				setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
-				setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
-				insumo.setVrFns(cellValorFNS);
+				
+				context.nextRow(); // blank
 
 			}
-
+			
+//			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+//
+//				indicadorContext.nextRow(); // blank
+//
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+//
+//				/**
+//				 * IEQQL - Qualidade do Serviço
+//				 */
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQL - Qualidade do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+//
+//				XSSFCell cellFormulaIEQQL = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//
+//				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+//						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
+//					setCellFormula(cellFormulaIEQQL, //
+//							String.format("%s/(%s+%s)", //
+//									cellQtServicosEntregues.getReference(), //
+//									cellQtServicosEntregues.getReference(), cellQtServicosDevolvidos.getReference()), //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//
+//				addIndicador(listaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+//
+//				/**
+//				 * IEQQPZ - Prazo do Serviço
+//				 */
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQPZ - Prazo do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+//
+//				XSSFCell cellFormulaIEQQPZ = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//
+//				if ("NUMERIC".equals(cellQtServicosEntregues.getCellType().name())
+//						&& cellQtServicosEntregues.getNumericCellValue() != 0) {
+//					setCellFormula(cellFormulaIEQQPZ, //
+//							String.format("1-(%s/%s)", cellQtServicosEntreguesComAtraso.getReference(),
+//									cellQtServicosEntregues.getReference()), //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//
+//				addIndicador(listaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+//
+//				/**
+//				 * IEQQET - Estoque do Serviço
+//				 */
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 3, 4, "IEQQET - Estoque do Serviço", CellStylesEnum.NORMAL_ALIGN_LEFT);
+//
+//				XSSFCell cellFormulaIEQQET = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//
+//				if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
+//						&& cellQtServicosContratados.getNumericCellValue() != 0) {
+//					setCellFormula(cellFormulaIEQQET, //
+//							String.format("%s/%s", cellQtServicosEntreguesEstoque.getReference(),
+//									cellQtServicosContratados.getReference()), //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//
+//				addIndicador(listaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+//
+//				/**
+//				 * Média dos Indicadores
+//				 */
+//				indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 2);
+//
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 10, "Média dos Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+//
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQL - Qualidade do Serviço");
+//				cellFormulaIEQQL = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//				if (getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) != null) {
+//					setCellFormula(cellFormulaIEQQL, //
+//							"average(" + getMediaIndicador(listaIEQQL, faturamento.getNuFatura(), indicadorFNS) + ")", //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//				addIndicador(listaMediaIEQQL, faturamento.getNuFatura(), cellFormulaIEQQL);
+//
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQPZ - Prazo do Serviço");
+//				cellFormulaIEQQPZ = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//				if (getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) != null) {
+//					setCellFormula(cellFormulaIEQQPZ, //
+//							"average(" + getMediaIndicador(listaIEQQPZ, faturamento.getNuFatura(), indicadorFNS) + ")", //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//				addIndicador(listaMediaIEQQPZ, faturamento.getNuFatura(), cellFormulaIEQQPZ);
+//
+//				row = indicadorContext.nextRow();
+//				XSSFSheetUtils.addMergedRegion(sheet, row, 8, 9, "IEQQET - Estoque do Serviço");
+//				cellFormulaIEQQET = addCell(row, 10, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//				if (getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) != null) {
+//					setCellFormula(cellFormulaIEQQET, //
+//							"average(" + getMediaIndicador(listaIEQQET, faturamento.getNuFatura(), indicadorFNS) + ")", //
+//							CellStylesEnum.DECIMAL5);
+//				}
+//				addIndicador(listaMediaIEQQET, faturamento.getNuFatura(), cellFormulaIEQQET);
+//
+//				/**
+//				 * Desempenho / Valor FNS
+//				 */
+//				indicadorContext.setRownum(cellQtEfetiva.getRowIndex() + 7);
+//
+//				row = indicadorContext.nextRow();
+//				
+//				addCell(row, 8, "Desempenho",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+//				addCell(row, 9, "Valor FNS",  CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
+//
+//				row = indicadorContext.nextRow();
+//
+//				XSSFCell cellDesempenho = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//				XSSFCell cellValorFNS = addCell(row, 9, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
+//
+//				indicadorContext.nextRow(); // blank
+//
+//				setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+//				setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
+//				insumo.setVrFns(cellValorFNS);
+//
+//			}
+//
 			result.put(faturamento.getNuFatura(), insumo);
 
 		} // faturamentos

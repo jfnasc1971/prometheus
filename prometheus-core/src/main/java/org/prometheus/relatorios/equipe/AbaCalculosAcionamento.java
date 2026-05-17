@@ -223,17 +223,16 @@ public class AbaCalculosAcionamento extends Relatorio {
 //			XSSFCell cellQtServicosEntreguesEstoque = contarServicosEntreguesEstoque(equipe, sheet, faturamento);
 //			XSSFCell cellQtServicosContratados = contarServicosContratados(equipe, sheet, faturamento);
 			
-			context.setRownum(cellQtEfetiva.getRowIndex() + 1);
+			context.setRownum(cellQtEfetiva.getRowIndex());
 			
 			/**
 			 * Indicadores
 			 */
 			if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-				context.nextRow(); // blank
-
 				row = context.nextRow();
-				XSSFSheetUtils.addMergedRegion(sheet, row, 4, 7, "Grupo configurado para aplicar Indicadores somente a partir de "
-						+ DateUtil.format(faturamento.getDtConsiderarFns()), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+				XSSFSheetUtils.addMergedRegion(sheet, row, 0, 5, "Indicadores configurados para serem aplicados somente a partir de "
+						+ DateUtil.format(faturamento.getDtConsiderarFns()), CellStylesEnum.NOTA_BOLD);
+				context.nextRow();
 			}
 
 			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {

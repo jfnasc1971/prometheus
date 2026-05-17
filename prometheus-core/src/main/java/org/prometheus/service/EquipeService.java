@@ -140,6 +140,7 @@ public class EquipeService {
 
         sb.append("WHERE ");
         sb.append("  upper(c.co_contrato) ilike upper(?) ");
+        sb.append("  and e.nu_tipo_grupo = 63 ");
         sb.append("ORDER BY ");
         sb.append("  e.co_equipe ");
 

@@ -25,8 +25,8 @@ public class IndicadorIEQDEP extends Indicador {
 	private IndicadorService indicadorService;
 
 	@Autowired
-	private FaixaIndicadorService faixaIndicadorService;	
-	
+	private FaixaIndicadorService faixaIndicadorService;
+
 	public IndicadorIEQDEP(IndicadorContratoDTO indicador, RelatorioContext context) {
 		super(indicador, context);
 	}
@@ -103,7 +103,7 @@ public class IndicadorIEQDEP extends Indicador {
 
 		XSSFCell cellDesempenho = XSSFSheetUtils.addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
-		if (formula != null && pesos != null) {
+		if ((formula != null && formula.length() > 1) && (pesos != null && pesos.length() > 1)) {
 			XSSFSheetUtils.setCellFormula(cellDesempenho,//
 					String.format("(%s)/(%s)", formula.substring(1), pesos.substring(1)), //
 					CellStylesEnum.DECIMAL5);
@@ -128,20 +128,19 @@ public class IndicadorIEQDEP extends Indicador {
 
 			StringBuilder formula = new StringBuilder();
 
-            for (int i = 1; i <= qtFaixas; i++) {
+			for (int i = 1; i <= qtFaixas; i++) {
 
-                formula.append(
-                        String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
-                                cellDesempenho.getReference(), pos + i, //
-                                cellDesempenho.getReference(), pos + i, //
-                                pos + i));
-            }
+				formula.append(String.format("+if(and(trunc(%s,2)>=Equipe!H%s,trunc(%s,2)<=Equipe!I%s),Equipe!J%s)", //
+						cellDesempenho.getReference(), pos + i, //
+						cellDesempenho.getReference(), pos + i, //
+						pos + i));
+			}
 
 			if (qtFaixas > 0) {
-				XSSFSheetUtils.setCellFormula(cellFNSApurado, formula.toString().substring(1), CellStylesEnum.DECIMAL);	
+				XSSFSheetUtils.setCellFormula(cellFNSApurado, formula.toString().substring(1), CellStylesEnum.DECIMAL);
 			}
 		}
 
 	}
-	
+
 }

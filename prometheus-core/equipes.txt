@@ -4,10 +4,4 @@
 # Informar o código da equipe, uma em cada linha.
 # Para comentar um determinada equipe, usar o #
 #
-#BRE202300329
-#BRE202300330
-#BRE202500173
-#BRE202300330
-#BRE202500389
-#RJE202200105
-BRE202200036
+BRE202500152

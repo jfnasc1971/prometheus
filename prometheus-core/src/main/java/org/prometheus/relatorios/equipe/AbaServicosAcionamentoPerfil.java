@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @Component
-public class AbaServicosAcionamentoQualidade extends Relatorio {
+public class AbaServicosAcionamentoPerfil extends Relatorio {
 
-	private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamentoQualidade.class.getSimpleName());
+	private static final Logger LOG = LogManager.getLogger(AbaServicosAcionamentoPerfil.class.getSimpleName());
 	
 	private static final int LAYOUT_COLUMNS_COUNT = 12;
 

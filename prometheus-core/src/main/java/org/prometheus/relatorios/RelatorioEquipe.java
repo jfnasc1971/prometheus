@@ -26,7 +26,7 @@ import org.prometheus.relatorios.equipe.AbaCalculoValorDevido;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoMilheiros;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
-import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoQualidade;
+import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoUnisys;
 import org.prometheus.relatorios.equipe.AbaCalculosG4;
 import org.prometheus.relatorios.equipe.AbaCalculosMilheiros;
@@ -36,7 +36,7 @@ import org.prometheus.relatorios.equipe.AbaEquipe;
 import org.prometheus.relatorios.equipe.AbaPagamentos;
 import org.prometheus.relatorios.equipe.AbaPagamentosPerfil;
 import org.prometheus.relatorios.equipe.AbaServicosAcionamento;
-import org.prometheus.relatorios.equipe.AbaServicosAcionamentoQualidade;
+import org.prometheus.relatorios.equipe.AbaServicosAcionamentoPerfil;
 import org.prometheus.relatorios.equipe.AbaVigenciaMembros;
 import org.prometheus.service.EquipeService;
 import org.prometheus.service.FaturamentoService;
@@ -72,13 +72,13 @@ public class RelatorioEquipe extends Relatorio {
 		try {
 			file.delete();
 			file.createNewFile();
-			
-	        FileWriter fw = new FileWriter(file, true);
-	        LOG.info(file.getAbsolutePath());
-	        
-	        fw.write("NU_CONTRATO;CO_CONTRATO;GRUPO;NU_EQUIPE;CO_EQUIPE;VALOR AJUSTE\n");	        
-			
-	        fw.close();
+
+			FileWriter fw = new FileWriter(file, true);
+			LOG.info(file.getAbsolutePath());
+
+			fw.write("NU_CONTRATO;CO_CONTRATO;GRUPO;NU_EQUIPE;CO_EQUIPE;VALOR AJUSTE\n");
+
+			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -268,8 +268,8 @@ public class RelatorioEquipe extends Relatorio {
 		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
 			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosAcionamentoQualidade calculos = AppConfig.getApplicationContext()
-						.getBean(AbaCalculosAcionamentoQualidade.class);
+				AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
+						.getBean(AbaCalculosAcionamentoPerfil.class);
 				calculos.gerar(wb, coEquipe, faturamentos, insumos);
 			}
 
@@ -293,8 +293,8 @@ public class RelatorioEquipe extends Relatorio {
 			}
 
 			if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-				AbaServicosAcionamentoQualidade servicos = AppConfig.getApplicationContext()
-						.getBean(AbaServicosAcionamentoQualidade.class);
+				AbaServicosAcionamentoPerfil servicos = AppConfig.getApplicationContext()
+						.getBean(AbaServicosAcionamentoPerfil.class);
 				servicos.write(wb, coEquipe, faturamentos);
 			}
 

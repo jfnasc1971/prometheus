@@ -94,14 +94,16 @@ public class PerfilService {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" select distinct ");
-        sb.append("   pp.nu_perfil,");
-        sb.append("   pp.de_perfil");
-        sb.append(" from");
-        sb.append("   gct.gcttb522_dstrbco_profissional_perfil p");
-        sb.append("   inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = p.nu_perfil");
-        sb.append(" where");
-        sb.append("   nu_contrato = ?");
+        sb.append(" select distinct "); 
+        sb.append("   pp.nu_perfil, "); 
+        sb.append("   pp.de_perfil "); 
+        sb.append(" from "); 
+        sb.append("   gct.gcttb521_perfil_profissional pp "); 
+        sb.append("   inner join gct.gcttb523_qntde_membro_equipe_perfil q on q.nu_perfil = pp.nu_perfil "); 
+        sb.append(" where "); 
+        sb.append("   q.nu_equipe = ? ");
+        sb.append(" order by ");
+        sb.append("   pp.de_perfil ");
 
         return sb.toString();
     }

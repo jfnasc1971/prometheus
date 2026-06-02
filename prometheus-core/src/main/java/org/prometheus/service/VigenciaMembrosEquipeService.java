@@ -44,6 +44,7 @@ public class VigenciaMembrosEquipeService {
 
 				dto.setCoMatricula(rs.getString("co_matricula"));
 				dto.setNoMembro(rs.getString("no_membro"));
+				dto.setDePerfil(rs.getString("de_perfil"));
 				dto.setNuPosicaoMembro(rs.getLong("nu_posicao_membro"));
 				dto.setDtInicioMembro(rs.getDate("dt_inicio_membro"));
 				dto.setDtFimMembro(rs.getDate("dt_fim_membro"));
@@ -67,9 +68,10 @@ public class VigenciaMembrosEquipeService {
 		sb.append(" select "); 
 		sb.append("   m.tp_matricula || m.nu_matricula co_matricula, "); 
 		sb.append("   m.no_membro, "); 
+		sb.append("   pp.de_perfil, "); 
 		sb.append("   vme.nu_posicao_membro, "); 
 		sb.append("   vme.dt_inicio_membro, "); 
-		sb.append("   vme.dt_fim_membro, ");
+		sb.append("   vme.dt_fim_membro, "); 
 		sb.append("   vme.pc_alocacao_membro, "); 
 		sb.append("   m.tp_matricula, "); 
 		sb.append("   m.nu_matricula "); 
@@ -80,6 +82,7 @@ public class VigenciaMembrosEquipeService {
 		sb.append("     vme.nu_equipe = qme.nu_equipe "); 
 		sb.append("     and vme.dt_inicio_membro = qme.dt_inicio_vigencia_membros "); 
 		sb.append("   ) "); 
+		sb.append("   inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = vme.nu_perfil "); 
 		sb.append("   inner join gct.gcttb418_membros m on m.nu_membro = vme.nu_membro "); 
 		sb.append(" where "); 
 		sb.append("   e.nu_equipe = ? "); 
@@ -87,15 +90,17 @@ public class VigenciaMembrosEquipeService {
 		sb.append("select "); 
 		sb.append("   m.tp_matricula || m.nu_matricula co_matricula, "); 
 		sb.append("   m.no_membro, "); 
+		sb.append("   pp.de_perfil, "); 
 		sb.append("   vme.nu_posicao_membro, "); 
 		sb.append("   vme.dt_inicio_membro, "); 
-		sb.append("   vme.dt_fim_membro, ");
-		sb.append("   vme.pc_alocacao_membro, ");
+		sb.append("   vme.dt_fim_membro, "); 
+		sb.append("   vme.pc_alocacao_membro, "); 
 		sb.append("   m.tp_matricula, "); 
 		sb.append("   m.nu_matricula "); 
 		sb.append(" from "); 
 		sb.append("   gct.gcttb087_equipe e "); 
 		sb.append("   inner join gct.gcttb523_qntde_membro_equipe_perfil qme on qme.nu_equipe = e.nu_equipe "); 
+		sb.append("   inner join gct.gcttb521_perfil_profissional pp on pp.nu_perfil = qme.nu_perfil "); 
 		sb.append("   inner join gct.gcttb419_vigencia_membros_equipe vme on ( "); 
 		sb.append("     vme.nu_equipe = qme.nu_equipe "); 
 		sb.append("     and vme.dt_inicio_membro = qme.dt_inicio_vigencia "); 

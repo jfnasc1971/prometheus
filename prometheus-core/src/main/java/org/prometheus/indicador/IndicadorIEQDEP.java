@@ -101,6 +101,7 @@ public class IndicadorIEQDEP extends Indicador {
 
 		row = context.nextRow();
 
+		//XSSFSheetUtils.addCell(row, 3, "XXX", CellStylesEnum.NORMAL_ALIGN_CENTER);
 		XSSFCell cellDesempenho = XSSFSheetUtils.addCell(row, 4, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
 		if ((formula != null && formula.length() > 1) && (pesos != null && pesos.length() > 1)) {

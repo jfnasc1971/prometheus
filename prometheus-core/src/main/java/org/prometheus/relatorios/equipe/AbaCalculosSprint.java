@@ -513,6 +513,7 @@ public class AbaCalculosSprint extends Relatorio {
 
             setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
             setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
+
             insumo.setVrFns(cellValorFNS);
 
         }
@@ -556,7 +557,7 @@ public class AbaCalculosSprint extends Relatorio {
         }
 
         String ieqnp = parseFormulaDesempenho(indicadoresQualideProduto, nuFatura, "Equipe!J4");
-        if (ieqvl != null) {
+        if (ieqnp != null) {
             s1.append("+" + ieqnp.toString());
             s2.append("," + "Equipe!J4");
         }
@@ -583,8 +584,7 @@ public class AbaCalculosSprint extends Relatorio {
         indicadores = getIndicadoresMediaFNS(lista, nuFatura, 3);
         for (XSSFCell c : indicadores) {
             try {
-                // if (c != null && c.getNumericCellValue() != 0) {
-                if (c != null && c.getCellType() == CellType.FORMULA) {
+                if (c != null && c.getCellType() == CellType.FORMULA && c.getNumericCellValue() != 0) {
                     p1.append("," + c.getReference());
                 }
             } catch (Exception e) {

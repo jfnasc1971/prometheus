@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class IndicadorIEQQET extends Indicador {
 
 	@Autowired
-	private EntregaService entregaService;
+	private IndicadorIEQQETService service;
 
 	public IndicadorIEQQET(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		super(indicador, indicadorContext);
@@ -30,32 +30,31 @@ public class IndicadorIEQQET extends Indicador {
 	public XSSFCell calcular() {
 
 		escreverTitulo();
-		
-		List<EntregaDTO> servicosEntreguesEstoque = entregaService.listarServicosEstoque(
-				context.getEquipe().getNuEquipe(), context.getFaturamento().getNuFatura());
 
+		//
+		BigDecimal qtServicosEntregues = service.contarServicosEntregues(context.getEquipe().getNuEquipe(),
+				context.getFaturamento().getNuFatura());
 		XSSFRow row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 1, "Serviços Entregues");
-		XSSFCell qtServicosEntregues = XSSFSheetUtils.addCell(row, 2,
-				BigDecimal.valueOf(servicosEntreguesEstoque.size()));
+		XSSFCell cellQtServicosEntregues = XSSFSheetUtils.addCell(row, 2, qtServicosEntregues);
 
-		List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(
-				context.getEquipe().getNuEquipe(), context.getFaturamento().getNuFatura(), 19L);
-
+		//
+		BigDecimal qtServicosContratados = service.contarServicosContratados(context.getEquipe().getNuEquipe(),
+				context.getFaturamento().getNuFatura());
 		row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 1, "Serviços Contratados");
-		XSSFCell qtServicosContratados = XSSFSheetUtils.addCell(row, 2, BigDecimal.valueOf(servicosContratados.size()));
+		XSSFCell cellQtServicosContratados = XSSFSheetUtils.addCell(row, 2, qtServicosContratados);
 
 		// =B30/B31
 		row = context.nextRow();
 		XSSFCell resultado = XSSFSheetUtils.addCell(row, 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
-		if ("NUMERIC".equals(qtServicosContratados.getCellType().name())
-				&& qtServicosContratados.getNumericCellValue() != 0) {
+		if ("NUMERIC".equals(cellQtServicosContratados.getCellType().name())
+				&& cellQtServicosContratados.getNumericCellValue() != 0) {
 			XSSFSheetUtils.setCellFormula(resultado, //
 					String.format("%s/%s", //
-							qtServicosEntregues.getReference(), //
-							qtServicosContratados.getReference()), //
+							cellQtServicosEntregues.getReference(), //
+							cellQtServicosContratados.getReference()), //
 					CellStylesEnum.DECIMAL5);
 		}
 

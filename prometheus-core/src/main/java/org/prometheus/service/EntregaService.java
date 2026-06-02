@@ -19,6 +19,10 @@ public class EntregaService {
 	@Autowired
 	private DatabaseService databaseService;
 
+	public List<EntregaDTO> listarServicosContratadosIEQQET(Long nuEquipe, Long nuFatura, Long nuTipoIndicador) {
+		return listar(nuEquipe, nuFatura, getDMLServicosContratadosIEQQET(), nuTipoIndicador);
+	}
+
 	public List<EntregaDTO> listarServicosContratados(Long nuEquipe, Long nuFatura, Long nuTipoIndicador) {
 		return listar(nuEquipe, nuFatura, getDMLServicosContratados(), nuTipoIndicador);
 	}
@@ -300,4 +304,53 @@ public class EntregaService {
 
 		return sb.toString();
 	}
+	
+	private String getDMLServicosContratadosIEQQET() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select "); 
+		sb.append("  s.co_solicitacao, "); 
+		sb.append("  s.no_solicitacao, "); 
+		sb.append("  s.dh_prevista, "); 
+		sb.append("  gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) dh_prevista_pendencias, "); 
+		sb.append("  s.dh_efetiva, "); 
+		sb.append("  sc.ic_servico_compoe_calculo_fns, "); 
+		sb.append("  coalesce(se.co_falha_solicitacao, 'NF') as co_falha_solicitacao, "); 
+		sb.append("  s.nu_situacao_solicitacao, "); 
+		sb.append("  s.de_situacao_solicitacao "); 
+		sb.append("from "); 
+		sb.append("  gct.gcttb086_solicitacao_equipe se "); 
+		sb.append("  inner join gct.gcttb087_equipe e on e.nu_equipe = se.nu_equipe "); 
+		sb.append("  inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
+		sb.append("  inner join gct.gcttb010_contrato c on c.nu_contrato = e.nu_contrato "); 
+		sb.append("  inner join gct.gcttb005_solicitacao s on (se.nu_solicitacao = s.nu_solicitacao) "); 
+		sb.append("  inner join gct.gcttb055_servico_contrato sc on ( "); 
+		sb.append("    sc.nu_tipo_servico = se.nu_tipo_servico "); 
+		sb.append("    and e.nu_tipo_grupo = sc.nu_tipo_grupo "); 
+		sb.append("    and e.nu_contrato = sc.nu_contrato "); 
+		sb.append("  ) "); 
+		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
+		sb.append("where "); 
+		sb.append("  se.nu_equipe = ? "); 
+		sb.append("  and sc.ic_servico_compoe_calculo_fns = 'S' "); 
+		sb.append("  and coalesce(se.co_falha_solicitacao, 'NF') = 'NF' "); 
+		sb.append("  and ( "); 
+		sb.append("    f.dt_inicio_fatura <= gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) "); 
+		sb.append("    and f.dt_final_fatura >= gct.gctfn316_calc_dt_prevista(s.nu_solicitacao, date(s.dh_prevista)) "); 
+		sb.append("  ) "); 
+		sb.append("  and s.nu_situacao_solicitacao in ( "); 
+		sb.append("    select "); 
+		sb.append("      nu_situacao_atendimento "); 
+		sb.append("    from "); 
+		sb.append("      gct.gcttb192_servico_contratado "); 
+		sb.append("    where "); 
+		sb.append("      nu_contrato = c.nu_contrato "); 
+		sb.append("      and nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("      and nu_tipo_indicador = ? "); 
+		sb.append("  ) ");
+
+		return sb.toString();
+	}
+
 }

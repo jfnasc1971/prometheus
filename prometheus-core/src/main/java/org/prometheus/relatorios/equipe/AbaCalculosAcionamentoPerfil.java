@@ -38,11 +38,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AbaCalculosAcionamentoQualidade extends Relatorio {
+public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
-    private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoQualidade.class.getSimpleName());
+    private static final Logger LOG = LogManager.getLogger(AbaCalculosAcionamentoPerfil.class.getSimpleName());
 
-    private static final int LAYOUT_COLUMNS_COUNT = 12;
+    private static final int LAYOUT_COLUMNS_COUNT = 13;
 
     @Autowired
     private AusenciaExtraFaturamentoService ausenciaExtraService;
@@ -177,7 +177,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
             addCell(row, pos++, "Valor Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
             addCell(row, pos++, "Valor Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
-            List<PerfilDTO> perfis = perfilService.listar(equipe.getNuContrato());
+            List<PerfilDTO> perfis = perfilService.listar(equipe.getNuEquipe());
 
             XSSFCell cellVrExtras = null;
             XSSFCell cellVrAusencias = null;
@@ -257,7 +257,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     pos = 4;
                     row = addNewRow(sheet);
 
-                    addCell(row, pos++, vigencia.getDePerfil());
+                    XSSFSheetUtils.addMergedRegion(sheet, row, pos++, pos++, vigencia.getDePerfil());
                     addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
                     addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
                     addCell(row, pos++, vigencia.getQtMembrosEquipe());
@@ -268,7 +268,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                     listaValorPrevisto.add(setCellFormula(sheet, row, //
                             String.format("%s*%s", row.getCell(row.getLastCellNum() - 2).getReference(), //
                                     row.getCell(row.getLastCellNum() - 1).getReference()),
-                            pos++));
+                            pos++, CellStylesEnum.DECIMAL));
 
                     insumo.addQtEfetivaPerfil(vigencia.getNuPerfil(), vigencia.getDtInicioVigenciaMembros(), vigencia.getQtEfetiva());
 
@@ -276,45 +276,45 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
 
                 row = addNewRow(sheet);
 
-                pos = 8;
+                pos = 9;
                 addCell(row, pos++, "Qtd. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 insumo.setQtEfetivaTotal(setCellFormula(sheet, row, //
                         String.format("sum(%s:%s)", //
                                 listaQtEfetiva.get(0).getReference(),
                                 listaQtEfetiva.get(listaValorPrevisto.size() - 1).getReference()), //
-                        pos++));
+                        pos++, CellStylesEnum.DECIMAL));
 
-                pos = 10;
+                pos = 11;
                 addCell(row, pos++, "Valor Equipe", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 insumo.setVrEquipe(setCellFormula(sheet, row, //
                         String.format("sum(%s:%s)", //
                                 listaValorPrevisto.get(0).getReference(),
                                 listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference()), //
-                        pos++));
+                        pos++, CellStylesEnum.DECIMAL));
 
                 if (Utils.isNotEmpty(listaVrExtras)) {
-                    pos = 10;
+                    pos = 11;
                     row = addNewRow(sheet);
                     addCell(row, pos++, "Extras", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                     cellVrExtras = setCellFormula(sheet, row, //
                             "sum(" + listaVrExtras.get(0).getReference() + ":" + //
                                     listaVrExtras.get(listaVrExtras.size() - 1).getReference() + ")",
-                            pos++);
+                            pos++, CellStylesEnum.DECIMAL);
                     insumo.setVrExtras(cellVrExtras);
                 }
 
                 if (Utils.isNotEmpty(listaVrAusencias)) {
-                    pos = 10;
+                    pos = 11;
                     row = addNewRow(sheet);
                     addCell(row, pos++, "Ausências", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                     cellVrAusencias = setCellFormula(sheet, row, //
                             "sum(" + listaVrAusencias.get(0).getReference() + ":" + //
                                     listaVrAusencias.get(listaVrAusencias.size() - 1).getReference() + ")",
-                            pos++);
+                            pos++, CellStylesEnum.DECIMAL);
                     insumo.setVrAusencias(cellVrAusencias);
                 }
 
-                pos = 10;
+                pos = 11;
                 row = addNewRow(sheet);
                 addCell(row, pos++, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
                 insumo.setVrPrevistoTermo(setCellFormula(sheet, row, //
@@ -322,7 +322,7 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                                 listaValorPrevisto.get(listaValorPrevisto.size() - 1).getReference() + ") + " + //
                                 cellVrExtras.getReference() + " - " + //
                                 cellVrAusencias.getReference(),
-                        pos++));
+                        pos++, CellStylesEnum.DECIMAL));
 
                 int rownum = listaValorPrevisto.get(listaValorPrevisto.size() - 1).getRowIndex() + 6;
 
@@ -332,10 +332,10 @@ public class AbaCalculosAcionamentoQualidade extends Relatorio {
                 if (!"S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
                     row = getRow(sheet, rownum++);
-                    XSSFSheetUtils.addMergedRegion(sheet, row, 4, 7,
+                    XSSFSheetUtils.addMergedRegion(sheet, row, 0, 7,
                             "Grupo configurado para aplicar Indicadores somente a partir de "
                                     + DateUtil.format(faturamento.getDtConsiderarFns()),
-                            CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+                            CellStylesEnum.NOTA_BOLD);
                 }
 
                 if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {

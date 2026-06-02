@@ -192,7 +192,7 @@ public class AbaCalculosG4 extends Relatorio {
             /**
              * Serviços Contratados
              */
-            List<EntregaDTO> servicosContratados = entregaService.listarServicosContratados(equipe.getNuEquipe(),
+            List<EntregaDTO> servicosContratados = entregaService.listarServicosContratadosIEQQET(equipe.getNuEquipe(),
                     faturamento.getNuFatura(), 19L);
 
             addBlank(sheet);

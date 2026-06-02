@@ -65,7 +65,11 @@ public class IndicadorService {
 	}
 	
     public IndicadorContratoDTO getIndicadorContratoFNS(String coEquipe) {
-        return listarIndicadoresContrato(coEquipe, true).get(0);
+    	List<IndicadorContratoDTO> result = listarIndicadoresContrato(coEquipe, true);
+    	if (result != null && result.size() == 1) {
+    		return result.get(0);
+    	}
+    	return null;
     }	
 	
     public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe) {

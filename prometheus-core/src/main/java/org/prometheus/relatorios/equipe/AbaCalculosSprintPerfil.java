@@ -137,6 +137,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		XSSFCell cellMediaProdutividade = null;
 		XSSFCell cellDesempenho = null;
 		XSSFCell cellValorFNS = null;
+		XSSFCell cellQtDiasTrabalhadosSprint = null;
 
 		IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
 
@@ -283,7 +284,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			XSSFCell cellVrPrecoPerfil = null;
 			XSSFCell cellInicioVrPrevisto = null;
 			XSSFCell cellFinalVrPrevisto = null;
-
+			
 			for (VigenciaMembrosDTO vigencia : vigencias) {
 				pos = posColVigencias;
 				row = getRow(sheet, posRowVigencias++);
@@ -334,9 +335,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			row = getRow(sheet, posRowVigencias++);
 
 			addCell(row, pos - 2, "Valor Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-			XSSFCell cellVrMembros = setCellFormula(sheet, row, String.format("sum(%s:%s)", //
-					cellInicioVrPrevisto.getReference(), cellFinalVrPrevisto.getReference()), pos - 1, //
-					CellStylesEnum.DECIMAL);
+			XSSFCell cellVrMembros = addCell(row, pos - 1, BigDecimal.ZERO, CellStylesEnum.DECIMAL);
+			if (cellInicioVrPrevisto != null && cellFinalVrPrevisto != null) {
+				setCellFormula(cellVrMembros, String.format("sum(%s:%s)", //
+						cellInicioVrPrevisto.getReference(), cellFinalVrPrevisto.getReference()), //
+						CellStylesEnum.DECIMAL);
+			}
 			
 			row = getRow(sheet, posRowVigencias++);
 			addCell(row, pos - 2, "APEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
@@ -422,11 +426,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					row = addNewRow(sheet);
 					addCell(row, 1, "Data Início");
 					addCell(row, 2, ciclo.getDtInicioCicloTrabalho());
+					
 					addCell(row, 4, "Qt. Dias Sprint");
 					if (diasTrabalhados != null) {
-						addCell(row, 5, diasTrabalhados.getQtDiasSprint());
+						cellQtDiasTrabalhadosSprint = addCell(row, 5, diasTrabalhados.getQtDiasSprint());
 					} else {
-						addCell(row, 5, "");
+						cellQtDiasTrabalhadosSprint = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 					}
 					addCell(row, 7, "Valor Agregado");
 					cellValorAgregado = addCell(row, 8, "");
@@ -437,7 +442,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					addCell(row, 4, "Qt. Dias Trab.");
 					cellQtDiasTrabalhados = addCell(row, 5, "");
 					addCell(row, 7, "Qualidade Produto");
-					cellQualidadeProduto = addCell(row, 8, "");
+					cellQualidadeProduto = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
 					row = addNewRow(sheet);
 					addCell(row, 1, "Data Final");
@@ -445,11 +450,15 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					addCell(row, 4, "Tamanho");
 					cellTamanho = addCell(row, 5);
 					addCell(row, 7, "Produtividade");
-					cellProdutividade = addCell(row, 8, "");
+					cellProdutividade = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
 					row = addNewRow(sheet);
 					addCell(row, 1, "Nota do Código");
-					addCell(row, 2, ciclo.getVrNotaQualidadeProduto());
+					XSSFCell cellVrNotaCodigo = addCell(row, 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER); 
+					if (ciclo.getVrNotaQualidadeProduto() == null) {
+						cellVrNotaCodigo = addCell(row, 2, ciclo.getVrNotaQualidadeProduto(), CellStylesEnum.DECIMAL);
+					}
+					
 					addCell(row, 4, "Qt. Efetiva");
 					cellQtEfetiva = addCell(row, 5, "");
 					addCell(row, 7, "");
@@ -476,7 +485,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					addCell(row, 1, "Qt. Dias Extra");
 					addCell(row, 2, ciclo.getQtDiasExtra());
 					addCell(row, 4, "Prod. Auferida");
-					cellProdAuferida = addCell(row, 5, BigDecimal.ZERO);
+					cellProdAuferida = addCell(row, 5, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 					addCell(row, 7, "");
 					addCell(row, 8, "");
 
@@ -584,11 +593,13 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					setCellFormula(cellTamanho, "sum(O" + posInicialSolicitacoes + ":O" + row.getRowNum() + ")",
 							CellStylesEnum.DECIMAL);
 
-					setCellFormulaProdAuferida(cellProdAuferida);
-					setCellFormulaProdutividade(cellProdAuferida, cellProdutividade);
+					if (!"N/A".equalsIgnoreCase(cellQtDiasTrabalhadosSprint.toString())) {
+						setCellFormulaProdAuferida(cellProdAuferida);
+					}
 
+					setCellFormulaProdutividade(cellProdAuferida, cellProdutividade);
 					setCellFormulaValorAgregado(cellValorAgregado);
-					setCellFormulaQualidadeProduto(cellQualidadeProduto);
+					setCellFormulaQualidadeProduto(cellQualidadeProduto, cellVrNotaCodigo);
 
 					addIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), cellQualidadeProduto);
 					addIndicador(indicadoresValorAgregado, faturamento.getNuFatura(), cellValorAgregado);
@@ -660,7 +671,9 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			cellDesempenho = addCell(row, 7, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 			cellValorFNS = addCell(row, 8, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
-			setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+			if (cellQtDiasTrabalhadosSprint != null && !"N/A".equalsIgnoreCase(cellQtDiasTrabalhadosSprint.toString())) {	
+				setCellFormulaDesempenho(cellDesempenho, faturamento.getNuFatura());
+			}
 			setCellFormulaValorFNS(cellValorFNS, cellDesempenho, qtFaixas);
 			insumo.setVrFns(cellValorFNS);
 
@@ -705,7 +718,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		}
 
 		String ieqnp = parseFormulaDesempenho(indicadoresQualideProduto, nuFatura, "Equipe!J4");
-		if (ieqvl != null) {
+		if (ieqnp != null) {
 			s1.append("+" + ieqnp.toString());
 			s2.append("," + "Equipe!J4");
 		}
@@ -749,6 +762,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 	private void setCellFormulaProdutividade(XSSFCell cell1, XSSFCell cell2) {
 
+		if ("N/A".equalsIgnoreCase(cell1.toString()) || "N/A".equalsIgnoreCase(cell1.toString())) {
+			return;
+		}
+		
 		String formula = "if(%s > Equipe!L5, Equipe!L5, %s)";
 
 		formula = String.format(formula, cell1.getReference(), cell1.getReference());
@@ -763,9 +780,9 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		f.append("if(");
 
 		f.append("(");
+		f.append("F" + (cell.getRow().getRowNum() - 4) + "*");
 		f.append("F" + (cell.getRow().getRowNum() - 3) + "*");
 		f.append("F" + (cell.getRow().getRowNum() - 2) + "*");
-		f.append("F" + (cell.getRow().getRowNum() - 4) + "*");
 		f.append("F" + (cell.getRow().getRowNum() - 1));
 		f.append(")<>0,");
 
@@ -781,8 +798,11 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		setCellFormula(cell, f.toString(), CellStylesEnum.DECIMAL5);
 	}
 
-	private void setCellFormulaQualidadeProduto(XSSFCell cell) {
-		setCellFormula(cell, ("C" + (cell.getRow().getRowNum() + 3)) + "*Equipe!K4", //
+	private void setCellFormulaQualidadeProduto(XSSFCell cell, XSSFCell cellVrNotaCodigo) {
+		if ("N/A".equalsIgnoreCase(cellVrNotaCodigo.toString()) || cellVrNotaCodigo.getNumericCellValue() == 0) {
+			return;
+		}
+		setCellFormula(cell,  cellVrNotaCodigo.getReference() + "*Equipe!K4", //
 				CellStylesEnum.DECIMAL5);
 	}
 

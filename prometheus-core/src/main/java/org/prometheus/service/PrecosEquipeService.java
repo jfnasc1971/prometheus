@@ -88,45 +88,29 @@ public class PrecosEquipeService {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select "); 
-		sb.append("  case "); 
-		sb.append("    when e.nu_situacao_equipe = 2 and f.dt_inicio_fatura > e.dt_final_atendimento then 0 "); 
-		sb.append("    when e.nu_situacao_equipe = 2 and e.dt_final_atendimento between f.dt_inicio_fatura and f.dt_final_fatura then "); 
-		sb.append("      ( "); 
-		sb.append("        select p.vr_preco_grupo "); 
-		sb.append("          from gct.gcttb524_preco_cntrto_equipe_perfil p "); 
-		sb.append("         where p.nu_contrato = e.nu_contrato "); 
-		sb.append("           and p.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("           and p.nu_perfil = ? "); 
-		sb.append("           and e.dt_final_atendimento between p.dt_inicio_vigencia and p.dt_final_vigencia "); 
-		sb.append("      ) "); 
-		sb.append("    when e.nu_situacao_equipe in (1,2) then "); 
-		sb.append("      ( "); 
-		sb.append("        select p.vr_preco_grupo "); 
-		sb.append("          from gct.gcttb524_preco_cntrto_equipe_perfil p "); 
-		sb.append("         where p.nu_contrato = e.nu_contrato "); 
-		sb.append("           and p.nu_tipo_grupo = e.nu_tipo_grupo "); 
-		sb.append("           and p.nu_perfil = ? "); 
-		sb.append("           and f.dt_final_fatura between p.dt_inicio_vigencia and p.dt_final_vigencia "); 
-		sb.append("      ) "); 
-		sb.append("  end vr_preco_grupo "); 
+		sb.append("  p.vr_preco_grupo "); 
 		sb.append("from "); 
 		sb.append("  gct.gcttb087_equipe e "); 
-		sb.append("  inner join gct.gcttb001_area_interna ai on ai.nu_area_interna = e.nu_area_interna "); 
-		sb.append("  inner join gct.gcttb010_contrato c on c.nu_contrato = e.nu_contrato "); 
-		sb.append("  inner join gct.gcttb102_fatura f on f.nu_faturamento = c.nu_faturamento and f.co_sitio = ai.co_sitio "); 
+		sb.append("  inner join gct.gcttb524_preco_cntrto_equipe_perfil p on ( "); 
+		sb.append("    p.nu_contrato = e.nu_contrato "); 
+		sb.append("    and p.nu_tipo_grupo = e.nu_tipo_grupo "); 
+		sb.append("  ) "); 
+		sb.append("  inner join gct.gcttb102_fatura f on f.nu_fatura = ? "); 
 		sb.append("where "); 
 		sb.append("  e.nu_equipe = ? "); 
-		sb.append("  and f.nu_fatura = ? ");
+		sb.append("  and p.nu_perfil = ? "); 
+		sb.append("  and f.dt_final_fatura "); 
+		sb.append("    between p.dt_inicio_vigencia "); 
+		sb.append("      and coalesce(p.dt_final_vigencia, f.dt_final_fatura) ");
 		
 		try {
 
 			conn = databaseService.getDataSource().getConnection();
 
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuPerfil);
-			pstmt.setLong(2, nuPerfil);
-			pstmt.setLong(3, nuEquipe);
-			pstmt.setLong(4, nuFatura);
+			pstmt.setLong(1, nuFatura);
+			pstmt.setLong(2, nuEquipe);
+			pstmt.setLong(3, nuPerfil);
 
 			rs = pstmt.executeQuery();
 

@@ -316,7 +316,7 @@ public class AbaEquipe extends Relatorio {
 
 		if (Utils.isEmpty(situacoes)) {
 			row = addNewRow(sheet, rownum++);
-			XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 3, "Nenhuma situação configurada.", CellStylesEnum.RED_ALIGN_CENTER_BOLD);
+			XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 4, "Nenhuma situação configurada.", CellStylesEnum.NORMAL_ALIGN_CENTER);
 		}
 
 		if (Utils.isNotEmpty(situacoes)) {

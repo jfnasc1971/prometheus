@@ -80,6 +80,15 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 	private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
 	private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
 
+	/**
+	 * 
+	 * @param wb
+	 * @param coEquipe
+	 * @param faturamentos
+	 * @return
+	 * @throws InvalidFormatException
+	 * @throws IOException
+	 */
 	public Map<Long, InsumosFaturamentoDTO> gerar(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
 			throws InvalidFormatException, IOException {
 
@@ -110,6 +119,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		// faturamentos
 		for (FaturamentoDTO faturamento : faturamentos) {
 
+			LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
+					" - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
+					" - " + equipe.getNoTipoGrupo() + //
+					" - " + faturamento.getNuFatura() + //
+					" (" + faturamento.getDtFinalFatura() + ")");
+			
 			List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
 					equipe.getNuEquipe());
 
@@ -151,7 +166,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		row = addNewRow(sheet);
 		XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1,
 				faturamento.getNuFatura() + " - " + faturamento.getDeFatura(), //
-				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+				CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
 
 		/**
 		 * Vigência dos Membros do Faturamento
@@ -305,6 +320,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					cellInicioVrPrevisto = setCellFormula(sheet, row, String.format("%s*%s", //
 							cellInicioVigencias.getReference(), cellVrPrecoPerfil.getReference()), pos++,
 							CellStylesEnum.DECIMAL);
+					cellFinalVrPrevisto = cellInicioVrPrevisto;
 				} else {
 					cellFinalVigencias = addCell(row, pos++, vigencia.getQtEfetiva(), CellStylesEnum.DECIMAL5);
 					cellFinalVrPrevisto = setCellFormula(sheet, row, String.format("%s*%s", //
@@ -415,7 +431,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 					row = addNewRow(sheet);
 					XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-							"Sprint " + ciclo.getNuCicloTrabalho(), CellStylesEnum.LIGHT_BLUE_ALIGN_CENTER_BOLD);
+							"Sprint " + ciclo.getNuCicloTrabalho(), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 					int rowNumTituloSprint = row.getRowNum();
 

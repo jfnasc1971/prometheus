@@ -4,13 +4,5 @@
 # Informar o código da contrato, um em cada linha.
 # Use # se quiser ignorar um determinado contrato
 #
-#03438/2023
-#0729/2024
-#06285/2021
-#06834/2021
-#08067/2021
-#03034/2023
-#06837/2021
-#03776/2023
-#01550/2024
-#08663/2018
+08663/2018
+08664/2018

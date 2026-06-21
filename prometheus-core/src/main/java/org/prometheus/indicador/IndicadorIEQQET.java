@@ -1,15 +1,12 @@
 package org.prometheus.indicador;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.prometheus.dto.EntregaDTO;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.relatorios.RelatorioContext;
-import org.prometheus.service.EntregaService;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

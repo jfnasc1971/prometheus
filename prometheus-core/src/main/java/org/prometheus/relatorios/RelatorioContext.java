@@ -1,8 +1,6 @@
 package org.prometheus.relatorios;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -32,13 +30,34 @@ public class RelatorioContext {
 		this.equipe = equipe;
 	}
 
+	public final XSSFRow getRow(Integer rownum) {
+		
+		System.out.println(this.rownum);
+		
+		XSSFRow row = sheet.getRow(rownum);
+		
+		if (row == null) {
+			row = sheet.createRow(rownum);
+			this.rownum = rownum;
+		}
+		
+		return row;
+	}
+	
+	public final void addEmptyRow() {
+		nextRow();
+	}
+	
 	public final XSSFRow nextRow() {
-		this.rownum += 1;
-
+		
 		XSSFRow row = sheet.getRow(this.rownum);
+		
 		if (row == null) {
 			row = sheet.createRow(this.rownum);
 		}
+		
+		this.rownum += 1;
+		
 		return row;
 	}
 

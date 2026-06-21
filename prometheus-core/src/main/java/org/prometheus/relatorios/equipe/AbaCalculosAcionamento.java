@@ -57,6 +57,8 @@ public class AbaCalculosAcionamento extends Relatorio {
 	@Autowired
 	private IndicadorFactory indicadorFactory;
 
+	private RelatorioContext context;
+	
 	public Map<Long, InsumosFaturamentoDTO> write(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
 			throws InvalidFormatException, IOException {
 
@@ -66,7 +68,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 
 		XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 
-		RelatorioContext context = new RelatorioContext(equipe, wb, sheet);
+		context = new RelatorioContext(equipe, wb, sheet);
 
 		carregarFontes(wb);
 		carregarEstilos(wb);

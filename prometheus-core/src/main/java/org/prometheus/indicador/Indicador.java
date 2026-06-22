@@ -11,6 +11,7 @@ public abstract class Indicador {
 
 	protected IndicadorContratoDTO indicador;
 	protected RelatorioContext context;
+	protected int pos = 0;
 
 	public Indicador(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		this.indicador = indicador;
@@ -19,9 +20,9 @@ public abstract class Indicador {
 	
 	public void escreverTitulo() {
 		XSSFRow row = context.nextRow();
-		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 2, //
+		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
 				indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador(), //
-				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+				CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT);
 	}
 
 	public abstract XSSFCell calcular();

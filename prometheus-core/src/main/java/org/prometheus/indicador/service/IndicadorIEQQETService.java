@@ -1,4 +1,4 @@
-package org.prometheus.indicador;
+package org.prometheus.indicador.service;
 
 import java.math.BigDecimal;
 import java.sql.Connection;

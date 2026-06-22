@@ -7,12 +7,14 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.prometheus.dto.CicloTrabalhoDTO;
 import org.prometheus.dto.EquipeDTO;
 import org.prometheus.dto.FaturamentoDTO;
 
 public class RelatorioContext {
 
 	private EquipeDTO equipe;
+	private CicloTrabalhoDTO ciclo;
 	private XSSFWorkbook wb;
 	private XSSFSheet sheet;
 	private Integer rownum;
@@ -155,4 +157,18 @@ public class RelatorioContext {
 		this.indicadoresFaturamento = indicadoresFaturamento;
 	}
 
+	/**
+	 * @return the ciclo
+	 */
+	public CicloTrabalhoDTO getCiclo() {
+		return ciclo;
+	}
+
+	/**
+	 * @param ciclo the ciclo to set
+	 */
+	public void setCiclo(CicloTrabalhoDTO ciclo) {
+		this.ciclo = ciclo;
+	}
+	
 }

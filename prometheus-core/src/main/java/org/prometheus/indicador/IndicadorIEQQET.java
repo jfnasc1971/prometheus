@@ -6,6 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
+import org.prometheus.indicador.service.IndicadorIEQQETService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;

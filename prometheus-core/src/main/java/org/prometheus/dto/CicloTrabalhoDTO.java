@@ -201,4 +201,8 @@ public class CicloTrabalhoDTO {
 		this.qtDiasExtra = qtDiasExtra;
 	}
 
+	public String getNoCicloTrabalho() {
+		String tmp = "0000" + nuCicloTrabalho;
+		return "SPRINT: " + tmp.substring(tmp.length() - 4, tmp.length());
+	}
 }

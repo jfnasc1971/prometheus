@@ -41,7 +41,7 @@ public class IndicadorSprintIEQVAN extends Indicador {
 		if (param != null) {
 
 			row = context.nextRow();
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Soma notas avaliação");
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Soma Notas Avaliação");
 			cellNota = XSSFSheetUtils.addCell(row, pos + 2, param.getVrAvaliacaoSprint());
 
 			row = context.nextRow();

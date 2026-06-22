@@ -7,6 +7,8 @@ public class ParametrosIndicador {
 	private BigDecimal vrFatorAjuste;
 	private BigDecimal qtQuestoesRespondidas;
 	private BigDecimal vrAvaliacaoSprint;
+	private BigDecimal vrAvaliacoesAssistido;
+	private BigDecimal qtProfissionaisAssistido;
 
 	/**
 	 * @return the vrFatorAjuste
@@ -50,4 +52,33 @@ public class ParametrosIndicador {
 		this.vrAvaliacaoSprint = vrAvaliacaoSprint;
 	}
 
+	/**
+	 * @return the vrAvaliacoesAssistido
+	 */
+	public BigDecimal getVrAvaliacoesAssistido() {
+		return vrAvaliacoesAssistido;
+	}
+
+	/**
+	 * @param vrAvaliacoesAssistido the vrAvaliacoesAssistido to set
+	 */
+	public void setVrAvaliacoesAssistido(BigDecimal vrAvaliacoesAssistido) {
+		this.vrAvaliacoesAssistido = vrAvaliacoesAssistido;
+	}
+
+	/**
+	 * @return the qtProfissionaisAssistido
+	 */
+	public BigDecimal getQtProfissionaisAssistido() {
+		return qtProfissionaisAssistido;
+	}
+
+	/**
+	 * @param qtProfissionaisAssistido the qtProfissionaisAssistido to set
+	 */
+	public void setQtProfissionaisAssistido(BigDecimal qtProfissionaisAssistido) {
+		this.qtProfissionaisAssistido = qtProfissionaisAssistido;
+	}
+
+	
 }

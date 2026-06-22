@@ -130,10 +130,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			context.setFaturamento(faturamento);
 
 			XSSFRow rowReferencia = context.nextRow();
-			
+
 			processarFaturamento(equipe, faturamento, rowReferencia, result);
-			
-			//processarIndicadoresFaturamento(equipe, faturamento, rowReferencia, result);
+
+			processarIndicadoresFaturamento(equipe, faturamento, rowReferencia, result);
 
 		}
 
@@ -144,7 +144,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			Map<Long, InsumosFaturamentoDTO> result) {
 
 		context.addEmptyRow();
-		
+
 		/**
 		 * Indicadores
 		 */
@@ -156,9 +156,31 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					CellStylesEnum.NOTA_BOLD);
 		}
 
+		/**
+		 * Indicadores
+		 */
+		if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+			
+			List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(), false);
+			
+			XSSFRow row = context.nextRow();
+			
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 3,//
+					"Indicadores",
+					CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+			
+			for (IndicadorContratoDTO indicador : indicadores) {
+				row = context.nextRow();
+				XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 2,
+						indicador.getDescricao());
+				XSSFSheetUtils.addCell(row, 3, BigDecimal.ZERO);
+			}
+
+		}
+
 		context.addEmptyRow();
 	}
-	
+
 	private int processarFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
 			Map<Long, InsumosFaturamentoDTO> result) {
 
@@ -180,7 +202,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		 * Dias Trabalhados no Faturamento
 		 */
 		context.addEmptyRow();
-		
+
 		XSSFRow row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 2, "Dias Trabalhados no Faturamento", //
 				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -269,12 +291,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		}
 
 		int ultimaLinhaAusencias = context.getRownum();
-		
+
 		int posColVigencias = 10;
 		context.setRownum(rowReferencia.getRowNum() + 2);
 
 		row = context.nextRow();
-		
+
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, posColVigencias, LAYOUT_COLUMNS_COUNT - 1,
 				"Vigência dos Membros", //
 				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -302,18 +324,18 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			XSSFCell cellFinalVrPrevisto = null;
 
 			for (VigenciaMembrosDTO vigencia : vigencias) {
-				
+
 				pos = posColVigencias;
-				
+
 				row = context.nextRow();
-				
+
 				XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos, vigencia.getDePerfil());
 				pos++;
 				addCell(row, pos++, vigencia.getDtInicioVigenciaMembros());
 				addCell(row, pos++, vigencia.getDtFinalVigenciaMembros());
 				addCell(row, pos++, vigencia.getQtMembrosEquipe());
 				addCell(row, pos++, vigencia.getQtDiasTrabalhados(), CellStylesEnum.DECIMAL);
-				
+
 				BigDecimal vrPrecoPerfil = precoEquipeService.getVrPrecoGrupo(equipe.getNuEquipe(), //
 						faturamento.getNuFatura(), vigencia.getNuPerfil());
 
@@ -345,10 +367,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				} else {
 					insumo.addQtDiasExtraPerfil(vigencia.getNuPerfil(), ausenciaExtra.getQtDiaServicoExtra());
 					insumo.addQtDiasAusenciaPerfil(vigencia.getNuPerfil(), ausenciaExtra.getQtDiaAusencia());
-				}				
-				
+				}
+
 			} // vigencias
-			
+
 			if (cellFinalVigencias == null) {
 				cellFinalVigencias = cellInicioVigencias;
 			}
@@ -393,16 +415,15 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			setCellFormula(context.getSheet(), row, String.format("sum(%s:%s:%s)", //
 					cellVrMembros.getReference(), cellVrExtras.getReference(), cellVrAusencias.getReference()), pos - 1, //
 					CellStylesEnum.DECIMAL);
-			
+
 		}
-		
+
 		if (ultimaLinhaAusencias > context.getRownum()) {
 			context.setRownum(ultimaLinhaAusencias);
 		}
-		System.out.println(ultimaLinhaAusencias + " " + context.getRownum());
-		
+
 		context.addEmptyRow();
-		
+
 		return context.getRownum();
 	}
 

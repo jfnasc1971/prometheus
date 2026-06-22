@@ -133,7 +133,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			
 			processarFaturamento(equipe, faturamento, rowReferencia, result);
 			
-			processarIndicadoresFaturamento(equipe, faturamento, rowReferencia, result);
+			//processarIndicadoresFaturamento(equipe, faturamento, rowReferencia, result);
 
 		}
 
@@ -159,7 +159,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		context.addEmptyRow();
 	}
 	
-	private void processarFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
+	private int processarFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
 			Map<Long, InsumosFaturamentoDTO> result) {
 
 		List<VigenciaMembrosDTO> vigencias = vigenciasMembrosService.listar(faturamento.getNuFatura(),
@@ -268,10 +268,12 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			}
 		}
 
-		int posColVigencias = 10;
-		int rownum = rowReferencia.getRowNum() + 2;
+		int ultimaLinhaAusencias = context.getRownum();
 		
-		row = context.getRow(rownum++);
+		int posColVigencias = 10;
+		context.setRownum(rowReferencia.getRowNum() + 2);
+
+		row = context.nextRow();
 		
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, posColVigencias, LAYOUT_COLUMNS_COUNT - 1,
 				"Vigência dos Membros", //
@@ -281,7 +283,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 			int pos = posColVigencias;
 
-			row = context.getRow(rownum++);
+			row = context.nextRow();
 			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos, "Perfil",
 					CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			pos++;
@@ -303,7 +305,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				
 				pos = posColVigencias;
 				
-				row = context.getRow(rownum++);
+				row = context.nextRow();
 				
 				XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos, vigencia.getDePerfil());
 				pos++;
@@ -351,7 +353,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				cellFinalVigencias = cellInicioVigencias;
 			}
 
-			row = context.getRow(rownum++);
+			row = context.nextRow();
 
 			addCell(row, pos - 2, "Valor Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			XSSFCell cellVrMembros = addCell(row, pos - 1, BigDecimal.ZERO, CellStylesEnum.DECIMAL);
@@ -361,7 +363,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 						CellStylesEnum.DECIMAL);
 			}
 
-			row = context.getRow(rownum++);
+			row = context.nextRow();
 
 			addCell(row, pos - 2, "APEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			XSSFCell cellVrExtras = addCell(row, pos - 1, BigDecimal.ZERO, CellStylesEnum.DECIMAL);
@@ -373,7 +375,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				addCell(row, pos - 1, BigDecimal.ZERO);
 			}
 
-			row = context.getRow(rownum++);
+			row = context.nextRow();
 
 			addCell(row, pos - 2, "DPEC", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			XSSFCell cellVrAusencias = addCell(row, pos - 1, BigDecimal.ZERO, CellStylesEnum.DECIMAL);
@@ -385,7 +387,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				addCell(row, pos - 1, BigDecimal.ZERO);
 			}
 
-			row = context.getRow(rownum++);
+			row = context.nextRow();
 
 			addCell(row, pos - 2, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			setCellFormula(context.getSheet(), row, String.format("sum(%s:%s:%s)", //
@@ -394,12 +396,14 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			
 		}
 		
-		// define a linha do proximo faturamento
-		if(cellFinalVrAusencias != null && cellFinalVrAusencias.getRow().getRowNum() > rownum) {
-			context.setRownum(cellFinalVrAusencias.getRow().getRowNum());
-		} else if (rownum > context.getRownum()) {
-			context.setRownum(rownum);	
+		if (ultimaLinhaAusencias > context.getRownum()) {
+			context.setRownum(ultimaLinhaAusencias);
 		}
+		System.out.println(ultimaLinhaAusencias + " " + context.getRownum());
+		
+		context.addEmptyRow();
+		
+		return context.getRownum();
 	}
 
 	private void processarFaturamento2(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFSheet sheet, XSSFRow row,

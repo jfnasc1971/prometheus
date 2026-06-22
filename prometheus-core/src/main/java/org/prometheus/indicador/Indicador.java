@@ -13,9 +13,9 @@ public abstract class Indicador {
 	protected RelatorioContext context;
 	protected int pos = 0;
 
-	public Indicador(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
+	public Indicador(IndicadorContratoDTO indicador, RelatorioContext context) {
 		this.indicador = indicador;
-		this.context = indicadorContext;
+		this.context = context;
 	}
 	
 	public void escreverTitulo() {

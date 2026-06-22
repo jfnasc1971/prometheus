@@ -7,7 +7,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
-import org.prometheus.indicador.ParametrosIndicador;
 import org.prometheus.indicador.service.IndicadorISETSprintService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;

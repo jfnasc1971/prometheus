@@ -6,18 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndicadorISETSprintService {
+public class IndicadorSprintISETService {
 
 	@Autowired
 	private DatabaseService databaseService;
 
-	public BigDecimal contarServicosEntregues(Long nuEquipe, Long nuCicloTrabalho) {
+	public BigDecimal contarServicosEntregues(RelatorioContext context) {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		
@@ -64,8 +65,8 @@ public class IndicadorISETSprintService {
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			pstmt.setLong(1, 34L);
-			pstmt.setLong(2, nuEquipe);
-			pstmt.setLong(3, nuCicloTrabalho);
+			pstmt.setLong(2, context.getEquipe().getNuEquipe());
+			pstmt.setLong(3, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 
@@ -81,7 +82,7 @@ public class IndicadorISETSprintService {
 		return result;
 	}
 
-	public BigDecimal contarServicosContratados(Long nuEquipe, Long nuCicloTrabalho) {
+	public BigDecimal contarServicosContratados(RelatorioContext context) {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		
@@ -128,8 +129,8 @@ public class IndicadorISETSprintService {
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			pstmt.setLong(1, 34L);
-			pstmt.setLong(2, nuEquipe);
-			pstmt.setLong(3, nuCicloTrabalho);
+			pstmt.setLong(2, context.getEquipe().getNuEquipe());
+			pstmt.setLong(3, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 

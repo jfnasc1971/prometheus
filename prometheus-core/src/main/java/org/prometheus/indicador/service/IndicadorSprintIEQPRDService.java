@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndicadorIEQPRDSprintService {
+public class IndicadorSprintIEQPRDService {
 
 	@Autowired
 	private DatabaseService databaseService;
@@ -42,7 +42,7 @@ public class IndicadorIEQPRDSprintService {
 			sb.append("  and gi.nu_tipo_indicador = ? ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, context.getEquipe().getNuEquipe());
+			pstmt.setLong(1, context.getEquipe().getNuContrato());
 			pstmt.setLong(2, context.getEquipe().getNuTipoGrupo());
 			pstmt.setLong(3, 46L);
 
@@ -61,7 +61,7 @@ public class IndicadorIEQPRDSprintService {
 	}
 
 	
-	public BigDecimal contarDiasSprint(Long nuEquipe, Long nuCicloTrabalho) {
+	public BigDecimal contarDiasSprint(RelatorioContext context) {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		
@@ -92,8 +92,8 @@ public class IndicadorIEQPRDSprintService {
 			sb.append("  and cct.nu_ciclo_trabalho = ? ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuEquipe);
-			pstmt.setLong(2, nuCicloTrabalho);
+			pstmt.setLong(1, context.getEquipe().getNuEquipe());
+			pstmt.setLong(2, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 
@@ -109,7 +109,7 @@ public class IndicadorIEQPRDSprintService {
 		return result;
 	}
 
-	public BigDecimal calcularTamanhoSprint(Long nuEquipe, Long nuCicloTrabalho) {
+	public BigDecimal calcularTamanhoSprint(RelatorioContext context) {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		
@@ -149,8 +149,8 @@ public class IndicadorIEQPRDSprintService {
 			sb.append("  and cct.nu_ciclo_trabalho = ? ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuEquipe);
-			pstmt.setLong(2, nuCicloTrabalho);
+			pstmt.setLong(1, context.getEquipe().getNuEquipe());
+			pstmt.setLong(2, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 
@@ -166,7 +166,7 @@ public class IndicadorIEQPRDSprintService {
 		return result;
 	}
 
-	public BigDecimal contarMembrosSprint(Long nuEquipe, Long nuCicloTrabalho) {
+	public BigDecimal contarMembrosSprint(RelatorioContext context) {
 		
 		BigDecimal result = BigDecimal.ZERO;
 		
@@ -199,8 +199,8 @@ public class IndicadorIEQPRDSprintService {
 			sb.append("  ) ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuEquipe);
-			pstmt.setLong(2, nuCicloTrabalho);
+			pstmt.setLong(1, context.getEquipe().getNuEquipe());
+			pstmt.setLong(2, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 

@@ -6,7 +6,7 @@ import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
 import org.prometheus.indicador.ParametrosIndicador;
-import org.prometheus.indicador.service.IndicadorIEQVANSprintService;
+import org.prometheus.indicador.service.IndicadorSprintIEQVANService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class IndicadorSprintIEQVAN extends Indicador {
 
 	@Autowired
-	private IndicadorIEQVANSprintService service;
+	private IndicadorSprintIEQVANService service;
 
 	public IndicadorSprintIEQVAN(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		super(indicador, indicadorContext);
@@ -33,8 +33,7 @@ public class IndicadorSprintIEQVAN extends Indicador {
 		XSSFCell cellNota = null;
 		XSSFCell cellQtQuestoes = null;
 
-		ParametrosIndicador param = service.recuperar(context.getEquipe().getNuEquipe(),
-				context.getFaturamento().getNuFatura(), context.getCiclo().getNuCicloTrabalho());
+		ParametrosIndicador param = service.recuperar(context);
 
 		XSSFRow row = null;
 		

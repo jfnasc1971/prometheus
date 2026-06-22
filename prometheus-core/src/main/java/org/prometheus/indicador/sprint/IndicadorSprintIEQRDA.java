@@ -6,7 +6,7 @@ import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
 import org.prometheus.indicador.ParametrosIndicador;
-import org.prometheus.indicador.service.IndicadorIEQRDASprintService;
+import org.prometheus.indicador.service.IndicadorSprintIEQRDAService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class IndicadorSprintIEQRDA extends Indicador {
 
 	@Autowired
-	private IndicadorIEQRDASprintService service;
+	private IndicadorSprintIEQRDAService service;
 
 	public IndicadorSprintIEQRDA(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		super(indicador, indicadorContext);
@@ -34,8 +34,7 @@ public class IndicadorSprintIEQRDA extends Indicador {
 		XSSFCell cellQtQuestoes = null;
 		XSSFCell cellQtProfissionais = null;
 
-		ParametrosIndicador param = service.recuperar(context.getEquipe().getNuEquipe(),
-				context.getFaturamento().getNuFatura(), context.getCiclo().getNuCicloTrabalho());
+		ParametrosIndicador param = service.recuperar(context);
 
 		XSSFRow row = null;
 		

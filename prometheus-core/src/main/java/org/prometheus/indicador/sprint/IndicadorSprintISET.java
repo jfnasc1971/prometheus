@@ -7,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
-import org.prometheus.indicador.service.IndicadorISETSprintService;
+import org.prometheus.indicador.service.IndicadorSprintISETService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class IndicadorSprintISET extends Indicador {
 
 	@Autowired
-	private IndicadorISETSprintService service;
+	private IndicadorSprintISETService service;
 
 	public IndicadorSprintISET(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		super(indicador, indicadorContext);
@@ -30,11 +30,8 @@ public class IndicadorSprintISET extends Indicador {
 	public XSSFCell calcular() {
 		escreverTitulo();
 
-		BigDecimal qtServicosEntregues = service.contarServicosEntregues(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
-		
-		BigDecimal qtServicosContratatos = service.contarServicosContratados(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
+		BigDecimal qtServicosEntregues = service.contarServicosEntregues(context);
+		BigDecimal qtServicosContratatos = service.contarServicosContratados(context);
 
 		XSSFCell cellQtServicosEntregues = null;
 		XSSFCell cellQtServicosContratados = null;

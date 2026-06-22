@@ -7,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.prometheus.dto.IndicadorContratoDTO;
 import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
-import org.prometheus.indicador.service.IndicadorIEQPRDSprintService;
+import org.prometheus.indicador.service.IndicadorSprintIEQPRDService;
 import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class IndicadorSprintIEQPRD extends Indicador {
 
 	@Autowired
-	private IndicadorIEQPRDSprintService service;
+	private IndicadorSprintIEQPRDService service;
 
 	public IndicadorSprintIEQPRD(IndicadorContratoDTO indicador, RelatorioContext indicadorContext) {
 		super(indicador, indicadorContext);
@@ -30,17 +30,10 @@ public class IndicadorSprintIEQPRD extends Indicador {
 	public XSSFCell calcular() {
 		escreverTitulo();
 
-		BigDecimal nuTamanhoSprint = service.calcularTamanhoSprint(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
-		
-		BigDecimal qtDiasSprint = service.contarDiasSprint(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
-
-		BigDecimal qtMembrosSprint = service.contarMembrosSprint(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
-
-		BigDecimal vrProdutividadeEsperada = service.contarMembrosSprint(context.getEquipe().getNuEquipe(),
-				context.getCiclo().getNuCicloTrabalho());
+		BigDecimal nuTamanhoSprint = service.calcularTamanhoSprint(context);
+		BigDecimal qtDiasSprint = service.contarDiasSprint(context);
+		BigDecimal qtMembrosSprint = service.contarMembrosSprint(context);
+		BigDecimal vrProdutividadeEsperada = service.recuperarProdutividadeEsperada(context);
 		
 		XSSFCell cellNuTamanhoSprint = null;
 		XSSFCell cellQtDiasSprint = null;
@@ -63,7 +56,7 @@ public class IndicadorSprintIEQPRD extends Indicador {
 
 		row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Produtividade Esperada");
-		cellVrProdutividadeEsperada = XSSFSheetUtils.addCell(row, pos + 2, vrProdutividadeEsperada);
+		cellVrProdutividadeEsperada = XSSFSheetUtils.addCell(row, pos + 2, vrProdutividadeEsperada, CellStylesEnum.DECIMAL5);
 		
 		row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Peso");

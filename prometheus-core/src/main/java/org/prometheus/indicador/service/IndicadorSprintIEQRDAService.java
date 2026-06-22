@@ -6,18 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.prometheus.indicador.ParametrosIndicador;
+import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndicadorIEQRDASprintService {
+public class IndicadorSprintIEQRDAService {
 
 	@Autowired
 	private DatabaseService databaseService;
 
-	public ParametrosIndicador recuperar(Long nuEquipe, Long nuFatura, Long nuCicloTrabalho) {
+	public ParametrosIndicador recuperar(RelatorioContext context) {
 
 		ParametrosIndicador result = null;
 
@@ -57,9 +58,9 @@ public class IndicadorIEQRDASprintService {
 			sb.append("  gi.vr_fator_ajuste ");
 
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuEquipe);
+			pstmt.setLong(1, context.getEquipe().getNuEquipe());
 			pstmt.setLong(2, 31L);
-			pstmt.setLong(3, nuCicloTrabalho);
+			pstmt.setLong(3, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 

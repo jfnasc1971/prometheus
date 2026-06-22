@@ -6,18 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.prometheus.indicador.ParametrosIndicador;
+import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.DBUtil;
 import org.prometheus.utils.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndicadorIEQVANSprintService {
+public class IndicadorSprintIEQVANService {
 
 	@Autowired
 	private DatabaseService databaseService;
 
-	public ParametrosIndicador recuperar(Long nuEquipe, Long nuFatura, Long nuCicloTrabalho) {
+	public ParametrosIndicador recuperar(RelatorioContext context) {
 
 		ParametrosIndicador result = null;
 
@@ -72,10 +73,10 @@ public class IndicadorIEQVANSprintService {
 			sb.append("limit 1 ");
 
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setLong(1, nuFatura);
-			pstmt.setLong(2, nuEquipe);
+			pstmt.setLong(1, context.getFaturamento().getNuFatura());
+			pstmt.setLong(2, context.getEquipe().getNuEquipe());
 			pstmt.setLong(3, 30L);
-			pstmt.setLong(4, nuCicloTrabalho);
+			pstmt.setLong(4, context.getCiclo().getNuCicloTrabalho());
 
 			rs = pstmt.executeQuery();
 

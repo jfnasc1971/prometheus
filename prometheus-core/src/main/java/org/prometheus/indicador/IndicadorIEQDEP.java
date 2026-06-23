@@ -47,7 +47,7 @@ public class IndicadorIEQDEP extends Indicador {
 		List<Long> listaIndicadoresFaturamento = new ArrayList<Long>(context.getIndicadoresFaturamento().keySet());
 
 		List<IndicadorContratoDTO> indicadores = indicadorService
-				.listarIndicadoresContrato(context.getEquipe().getCoEquipe(), false);
+				.listarIndicadores(context.getEquipe().getCoEquipe(), false);
 
 		StringBuilder formula = new StringBuilder();
 		StringBuilder pesos = new StringBuilder();

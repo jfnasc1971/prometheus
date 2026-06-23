@@ -22,7 +22,7 @@ public abstract class Indicador {
 		XSSFRow row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
 				indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador(), //
-				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+				CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT_BOLD);
 	}
 
 	public abstract XSSFCell calcular();

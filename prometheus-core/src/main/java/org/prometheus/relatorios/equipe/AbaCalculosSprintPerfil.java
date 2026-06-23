@@ -3,6 +3,7 @@ package org.prometheus.relatorios.equipe;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,8 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 	private Map<Long, List<XSSFCell>> indicadoresQualideProduto;
 	private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
 
+	private List<FaturamentoDTO> faturamentos = new ArrayList<FaturamentoDTO>();
+	
 	/**
 	 * 
 	 * @param wb
@@ -105,10 +108,6 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 	 */
 	public Map<Long, InsumosFaturamentoDTO> gerar(XSSFWorkbook wb, String coEquipe, List<FaturamentoDTO> faturamentos)
 			throws InvalidFormatException, IOException {
-
-		indicadoresProdutividade = new LinkedHashMap<Long, List<XSSFCell>>();
-		indicadoresQualideProduto = new LinkedHashMap<Long, List<XSSFCell>>();
-		indicadoresValorAgregado = new LinkedHashMap<Long, List<XSSFCell>>();
 
 		Map<Long, InsumosFaturamentoDTO> result = new LinkedHashMap<Long, InsumosFaturamentoDTO>();
 
@@ -171,13 +170,14 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		 */
 		if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
-			List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(),
-					false);
+			List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(equipe.getCoEquipe(), false);
 
 			XSSFRow row = context.nextRow();
 
+			int rowNum = row.getRowNum();
+
 			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 3, //
-					"Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+					"Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 			for (IndicadorContratoDTO indicador : indicadores) {
 				row = context.nextRow();
@@ -188,9 +188,42 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			}
 
 			processarCiclosTrabalho(equipe, faturamento, result);
+
+			processarMediaIndicadores(equipe, faturamento, result, indicadores, rowNum);
 		}
 
 		context.addEmptyRow();
+	}
+
+	private void processarMediaIndicadores(EquipeDTO equipe, FaturamentoDTO faturamento,
+			Map<Long, InsumosFaturamentoDTO> result, List<IndicadorContratoDTO> indicadores, int rowNum) {
+
+		IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorFNS(equipe.getCoEquipe());
+
+		int fromIndex = 0;
+		int toIndex = this.faturamentos.size() - 1;
+		
+		if (this.faturamentos.size() > indicadorFNS.getQtFaturamento()) {
+			fromIndex = (this.faturamentos.size() - indicadorFNS.getQtFaturamento()) - 1;
+		}
+		
+		XSSFRow row = context.getRow(rowNum++);
+
+		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 8, //
+				"Média Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+		
+		for (IndicadorContratoDTO indicador : indicadores) {
+			
+			row = context.getRow(rowNum++);
+			
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 7, indicador.getDescricao());
+			XSSFSheetUtils.addCell(row, 8, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
+			
+			for (FaturamentoDTO fa : this.faturamentos.subList(fromIndex, toIndex)) {
+				System.out.println(fa.getNuFatura() + " " +  indicador.getSgTipoIndicador() + //
+						" " + fa.getVrIndicador(indicador.getSgTipoIndicador()));
+			}
+		}
 	}
 
 	private int processarCiclosTrabalho(EquipeDTO equipe, FaturamentoDTO faturamento,
@@ -388,10 +421,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 					pos = 10;
 
 					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
-							"INDICADORES DA SPRINT", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+							"INDICADORES DA SPRINT", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
-					List<IndicadorContratoDTO> indicadores = indicadorService
-							.listarIndicadoresContrato(equipe.getCoEquipe(), false);
+					List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(equipe.getCoEquipe(),
+							false);
 
 					for (IndicadorContratoDTO indicador : indicadores) {
 						Indicador indicadorImpl = indicadorSprintFactory.get(indicador, context);
@@ -422,14 +455,9 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 	private void apurarIndicadores(EquipeDTO equipe, FaturamentoDTO faturamento) {
 
-		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(),
-				false);
+		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(equipe.getCoEquipe(), false);
 
 		for (IndicadorContratoDTO indicador : indicadores) {
-
-			System.out.println(indicador.getSgTipoIndicador() + " " + //
-					faturamento.getIndicadores().get(indicador.getSgTipoIndicador()) + " " + //
-					faturamento.getCiclosTrabalho().size());
 
 			StringBuilder formula = new StringBuilder();
 
@@ -450,7 +478,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			if (Utils.isNotEmpty(formula.toString())) {
 
 				XSSFSheetUtils.setCellStyle(vrIndicador, CellStylesEnum.DECIMAL);
-				
+
 				if (qtCiclos == 1) {
 					vrIndicador.setCellFormula(formula.toString().substring(1));
 				} else {
@@ -459,6 +487,9 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			}
 
 		}
+		
+		// GUARDAR EM ORDEM PARA PROCESSAR AS MEDIAS DOS INDICADORES
+		this.faturamentos.add(faturamento);
 	}
 
 	private int processarFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
@@ -490,7 +521,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		row = context.nextRow();
 		addCell(row, 0, "Data Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, 1, "Data Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, 2, "Dias Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, 2, "Quantidade", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = context.nextRow();
 		addCell(row, 0, faturamento.getDtInicioFatura());
@@ -511,8 +542,8 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 1, 3, "Perfil Profissional",
 				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, 4, "Preço", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, 5, "Qt. Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, 6, "Qt. Dias Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, 5, "Dias Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, 6, "Dias Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, 7, "Vr. Dia Ausência", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, 8, "Vr. Dia Extra", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
@@ -724,7 +755,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		XSSFCell cellValorFNS = null;
 		XSSFCell cellQtDiasTrabalhadosSprint = null;
 
-		IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
+		IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorFNS(equipe.getCoEquipe());
 
 		InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 
@@ -759,7 +790,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		row = getRow(sheet, posRowVigencias++);
 		addCell(row, 0, "Data Início", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 		addCell(row, 1, "Data Final", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-		addCell(row, 2, "Dias Faturamento", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		addCell(row, 2, "Quantidade", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = getRow(sheet, posRowVigencias++);
 		addCell(row, 0, faturamento.getDtInicioFatura());
@@ -977,9 +1008,6 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 						faturamento.getDeFatura(), //
 						ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 
-				CicloTrabalhoDTO diasTrabalhados = cicloTrabalhoService.getDiasTrabalhados(faturamento.getNuFatura(),
-						equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
-
 				row = addNewRow(sheet);
 				XSSFSheetUtils.addMergedRegion(sheet, row, 0, LAYOUT_COLUMNS_COUNT - 1, //
 						"Sprint " + ciclo.getNuCicloTrabalho(), CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
@@ -1118,4 +1146,5 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				CellStylesEnum.DECIMAL5);
 	}
 
+	
 }

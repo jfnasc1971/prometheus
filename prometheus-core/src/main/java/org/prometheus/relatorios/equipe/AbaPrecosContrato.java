@@ -242,7 +242,7 @@ public class AbaPrecosContrato extends Relatorio {
 		pos = 7;
 		rownum = 0;
 
-		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe());
+		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(equipe.getCoEquipe());
 
 		row = addNewRow(sheet, rownum++);
 		XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 5, "Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);

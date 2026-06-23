@@ -134,7 +134,7 @@ public class AbaCalculosSprint extends Relatorio {
         XSSFCell cellDesempenho = null;
         XSSFCell cellValorFNS = null;
 
-        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(equipe.getCoEquipe());
+        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorFNS(equipe.getCoEquipe());
 
         InsumosFaturamentoDTO insumo = new InsumosFaturamentoDTO();
 

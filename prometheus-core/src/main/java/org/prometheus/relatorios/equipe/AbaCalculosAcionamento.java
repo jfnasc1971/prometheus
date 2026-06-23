@@ -205,7 +205,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 			if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
 				//
-				List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(coEquipe, false);
+				List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(coEquipe, false);
 
 				for (IndicadorContratoDTO indicadorDTO : indicadores) {
 					Indicador indicador = indicadorFactory.get(indicadorDTO, context);
@@ -221,7 +221,7 @@ public class AbaCalculosAcionamento extends Relatorio {
 				 */
 				context.setRownum(cellQtEfetiva.getRowIndex() + 1);
 
-				indicadores = indicadorService.listarIndicadoresContrato(coEquipe, true);
+				indicadores = indicadorService.listarIndicadores(coEquipe, true);
 
 				for (IndicadorContratoDTO indicadorDTO : indicadores) {
 					Indicador indicador = indicadorFactory.get(indicadorDTO, context);

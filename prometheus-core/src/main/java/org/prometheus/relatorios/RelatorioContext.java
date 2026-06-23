@@ -33,9 +33,6 @@ public class RelatorioContext {
 	}
 
 	public final XSSFRow getRow(Integer rownum) {
-		
-		System.out.println(this.rownum);
-		
 		XSSFRow row = sheet.getRow(rownum);
 		
 		if (row == null) {

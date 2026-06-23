@@ -81,7 +81,7 @@ public class AbaCalculosAcionamentoPerfil extends Relatorio {
 
         EquipeDTO equipe = equipeService.findBy(coEquipe);
         
-        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorContratoFNS(coEquipe);
+        IndicadorContratoDTO indicadorFNS = indicadorService.getIndicadorFNS(coEquipe);
 
         XSSFSheet sheet = wb.createSheet(RelatorioEquipe.ABA_CALCULOS);
 

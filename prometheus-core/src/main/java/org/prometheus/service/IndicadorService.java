@@ -64,22 +64,22 @@ public class IndicadorService {
 		
 	}
 	
-    public IndicadorContratoDTO getIndicadorContratoFNS(String coEquipe) {
-    	List<IndicadorContratoDTO> result = listarIndicadoresContrato(coEquipe, true);
+    public IndicadorContratoDTO getIndicadorFNS(String coEquipe) {
+    	List<IndicadorContratoDTO> result = listarIndicadores(coEquipe, true);
     	if (result != null && result.size() == 1) {
     		return result.get(0);
     	}
     	return null;
     }	
 	
-    public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe) {
+    public List<IndicadorContratoDTO> listarIndicadores(String coEquipe) {
     	List<IndicadorContratoDTO> result = new ArrayList<IndicadorContratoDTO>();
-    	result.addAll(listarIndicadoresContrato(coEquipe, false));
-    	result.addAll(listarIndicadoresContrato(coEquipe, true));
+    	result.addAll(listarIndicadores(coEquipe, false));
+    	result.addAll(listarIndicadores(coEquipe, true));
     	return result;
     }
     
-	public List<IndicadorContratoDTO> listarIndicadoresContrato(String coEquipe, boolean icAplicaIndicador) {
+	public List<IndicadorContratoDTO> listarIndicadores(String coEquipe, boolean icAplicaIndicador) {
 		List<IndicadorContratoDTO> result = new ArrayList<IndicadorContratoDTO>();
 
 		Connection conn = null;

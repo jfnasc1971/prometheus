@@ -62,7 +62,7 @@ public class AbaIndicadores extends Relatorio {
 
 		int pos = 0;
 
-		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe());
+		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadores(equipe.getCoEquipe());
 
 		int rownum = 0;
 

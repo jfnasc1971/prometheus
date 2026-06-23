@@ -112,7 +112,7 @@ public class SituacaoEntregaIndicadorService {
 		sb.append("    select "); 
 		sb.append("      ti.sg_tipo_indicador, "); 
 		sb.append("      ti.no_tipo_indicador, "); 
-		sb.append("      'Serviços Contratatados' :: text no_agrupador, "); 
+		sb.append("      'Serviços Contratados' :: text no_agrupador, "); 
 		sb.append("      sa.nu_situacao_atendimento, "); 
 		sb.append("      sa.no_situacao_atendimento, "); 
 		sb.append("      e.nu_contrato, "); 

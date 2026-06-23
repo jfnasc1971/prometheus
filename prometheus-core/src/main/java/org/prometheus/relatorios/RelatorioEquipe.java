@@ -198,6 +198,8 @@ public class RelatorioEquipe extends Relatorio {
 		LOG.info(file.getAbsolutePath());
 
 		XSSFWorkbook wb = createWorkbook();
+		
+		wb.setForceFormulaRecalculation(true);
 
 		LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
 				" - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
@@ -303,31 +305,31 @@ public class RelatorioEquipe extends Relatorio {
 		//
 		// Calculos Valor Devido
 		//
-//		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-//
-//			if (equipe.getNuTipoGrupo() != 70L) {
-//				AbaCalculoValorDevidoPerfil abaCalculoValorDevido = AppConfig.getApplicationContext()
-//						.getBean(AbaCalculoValorDevidoPerfil.class);
-//				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
-//			}
-//
-//			if (equipe.getNuTipoGrupo() == 70L) {
-//				AbaCalculoValorDevidoMilheiros abaCalculoValorDevido = AppConfig.getApplicationContext()
-//						.getBean(AbaCalculoValorDevidoMilheiros.class);
-//				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
-//			}
-//
-//		}
-//
-//		if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
-//			AbaCalculoValorDevido abaCalculoValorDevido = AppConfig.getApplicationContext()
-//					.getBean(AbaCalculoValorDevido.class);
-//			cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
-//		}
+		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+
+			if (equipe.getNuTipoGrupo() != 70L) {
+				AbaCalculoValorDevidoPerfil abaCalculoValorDevido = AppConfig.getApplicationContext()
+						.getBean(AbaCalculoValorDevidoPerfil.class);
+				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+			}
+
+			if (equipe.getNuTipoGrupo() == 70L) {
+				AbaCalculoValorDevidoMilheiros abaCalculoValorDevido = AppConfig.getApplicationContext()
+						.getBean(AbaCalculoValorDevidoMilheiros.class);
+				cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+			}
+
+		}
+
+		if (DistribuicaoProfissionalEnum.GLOBAL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
+			AbaCalculoValorDevido abaCalculoValorDevido = AppConfig.getApplicationContext()
+					.getBean(AbaCalculoValorDevido.class);
+			cellValorDevido = abaCalculoValorDevido.write(wb, coEquipe, faturamentos, insumos);
+		}
 
 		// Ajuste
-//		AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
-//		abaAjuste.write(wb, equipe, cellValorDevido, cellValorPagamentos);
+		AbaAjuste abaAjuste = AppConfig.getApplicationContext().getBean(AbaAjuste.class);
+		abaAjuste.write(wb, equipe, cellValorDevido, cellValorPagamentos);
 
 		wb.write(fos);
 		wb.close();

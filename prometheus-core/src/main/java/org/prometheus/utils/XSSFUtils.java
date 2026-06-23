@@ -18,6 +18,7 @@ public class XSSFUtils {
 		
 		if (cell != null) {
 			result = String.format("'%s'!%s", cell.getSheet().getSheetName(), cell.getReference());
+			System.out.println(result);
 		}
 		
 		return result;

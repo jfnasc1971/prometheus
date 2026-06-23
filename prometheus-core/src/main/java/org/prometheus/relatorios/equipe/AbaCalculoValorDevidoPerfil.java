@@ -1,6 +1,7 @@
 package org.prometheus.relatorios.equipe;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -135,10 +136,10 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                             CellStylesEnum.DECIMAL);
                     
                     // FNS
-                    if (insumo.getVrFns() == null) {
+                    if (insumo.getVrFns() == null || !XSSFUtils.isApurado(insumo.getVrFns())) {
                         addCell(row, pos++, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                     } else {
-                        setCellFormula(sheet, row, XSSFUtils.getFullReference(insumo.getVrFns()), pos++, CellStylesEnum.DECIMAL);
+                    	addCell(row, pos++, BigDecimal.valueOf(insumo.getVrFns().getNumericCellValue()), CellStylesEnum.DECIMAL);
                     }
 
                     // J20*K20

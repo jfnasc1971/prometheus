@@ -16,7 +16,5 @@
 
   <modules>
     <module>prometheus-core</module>
-    <module>prometheus-ear</module>
-    <module>prometheus-web</module>
   </modules>
 </project>

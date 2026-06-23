@@ -96,7 +96,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 	private Map<Long, List<XSSFCell>> indicadoresValorAgregado;
 
 	private List<FaturamentoDTO> faturamentos = new ArrayList<FaturamentoDTO>();
-	
+
 	/**
 	 * 
 	 * @param wb
@@ -152,8 +152,6 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 	private void processarIndicadoresFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
 			Map<Long, InsumosFaturamentoDTO> result) {
 
-		context.addEmptyRow();
-
 		/**
 		 * Indicadores
 		 */
@@ -177,7 +175,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			int rowNum = row.getRowNum();
 
 			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 3, //
-					"Indicadores", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+					"Indicadores Apurados", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 			for (IndicadorContratoDTO indicador : indicadores) {
 				row = context.nextRow();
@@ -186,6 +184,8 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 						CellStylesEnum.NORMAL_ALIGN_CENTER);
 				faturamento.addIndicador(indicador.getSgTipoIndicador(), vrIndicador);
 			}
+
+			context.addEmptyRow();
 
 			processarCiclosTrabalho(equipe, faturamento, result);
 
@@ -202,25 +202,40 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 		int fromIndex = 0;
 		int toIndex = this.faturamentos.size() - 1;
-		
+
 		if (this.faturamentos.size() > indicadorFNS.getQtFaturamento()) {
 			fromIndex = (this.faturamentos.size() - indicadorFNS.getQtFaturamento()) - 1;
 		}
-		
+
 		XSSFRow row = context.getRow(rowNum++);
 
-		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 8, //
-				"Média Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
-		
+		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 10, //
+				"Média dos Indicadores (" + indicadorFNS.getQtFaturamento() + " meses)", //
+				CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+
+		row = context.getRow(rowNum++);
+
+		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 7, //
+				"Indicador", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+
+		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 8, 9, //
+				"Peso", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+
+		XSSFSheetUtils.addCell(row, 10, "Valor", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+
 		for (IndicadorContratoDTO indicador : indicadores) {
-			
+
 			row = context.getRow(rowNum++);
-			
+
 			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 7, indicador.getDescricao());
-			XSSFSheetUtils.addCell(row, 8, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
 			
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 8, 9, //
+					indicador.getVrPesoTipoIndicador(), CellStylesEnum.DECIMAL);
+			
+			XSSFSheetUtils.addCell(row, 10, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
+
 			for (FaturamentoDTO fa : this.faturamentos.subList(fromIndex, toIndex)) {
-				System.out.println(fa.getNuFatura() + " " +  indicador.getSgTipoIndicador() + //
+				System.out.println(fa.getNuFatura() + " " + indicador.getSgTipoIndicador() + //
 						" " + fa.getVrIndicador(indicador.getSgTipoIndicador()));
 			}
 		}
@@ -487,7 +502,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 			}
 
 		}
-		
+
 		// GUARDAR EM ORDEM PARA PROCESSAR AS MEDIAS DOS INDICADORES
 		this.faturamentos.add(faturamento);
 	}
@@ -1146,5 +1161,4 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				CellStylesEnum.DECIMAL5);
 	}
 
-	
 }

@@ -1,9 +1,18 @@
 package org.prometheus.utils;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.prometheus.indicador.Indicador;
 
 public class XSSFUtils {
 
+	public static boolean isApurado(XSSFCell cell) {
+		if (cell != null) {
+			return !cell.toString().equalsIgnoreCase(Indicador.NAO_APURADO);
+		}
+		
+		return false;
+	}	
+	
 	public static String getFullReference(XSSFCell cell) {
 		String result = null;
 		

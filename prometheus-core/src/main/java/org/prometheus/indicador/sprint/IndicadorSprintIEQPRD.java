@@ -34,7 +34,7 @@ public class IndicadorSprintIEQPRD extends Indicador {
 		BigDecimal qtDiasSprint = service.contarDiasSprint(context);
 		BigDecimal qtMembrosSprint = service.contarMembrosSprint(context);
 		BigDecimal vrProdutividadeEsperada = service.recuperarProdutividadeEsperada(context);
-		
+
 		XSSFCell cellNuTamanhoSprint = null;
 		XSSFCell cellQtDiasSprint = null;
 		XSSFCell cellQtMembrosSprint = null;
@@ -56,8 +56,9 @@ public class IndicadorSprintIEQPRD extends Indicador {
 
 		row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Produtividade Esperada");
-		cellVrProdutividadeEsperada = XSSFSheetUtils.addCell(row, pos + 2, vrProdutividadeEsperada, CellStylesEnum.DECIMAL5);
-		
+		cellVrProdutividadeEsperada = XSSFSheetUtils.addCell(row, pos + 2, vrProdutividadeEsperada,
+				CellStylesEnum.DECIMAL5);
+
 		row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Peso");
 		XSSFSheetUtils.addCell(row, pos + 2, indicador.getVrPesoTipoIndicador());
@@ -66,11 +67,15 @@ public class IndicadorSprintIEQPRD extends Indicador {
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Valor Indicador");
 		XSSFCell result = XSSFSheetUtils.addCell(row, pos + 2, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
 
-//		if (qtServicosContratatos != null && qtServicosContratatos.doubleValue() != 0) {
-//			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s)", //
-//					cellQtServicosEntregues.getReference(), cellQtServicosContratados.getReference()), //
-//					CellStylesEnum.DECIMAL);
-//		}
+		if ((nuTamanhoSprint.doubleValue() * qtDiasSprint.doubleValue() * qtMembrosSprint.doubleValue()
+				* vrProdutividadeEsperada.doubleValue()) != 0) {
+			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s/%s/%s)", //
+					cellNuTamanhoSprint.getReference(),
+					cellQtMembrosSprint.getReference(), 
+					cellQtDiasSprint.getReference(), 
+					cellVrProdutividadeEsperada.getReference()), //
+					CellStylesEnum.DECIMAL);
+		}
 
 		return result;
 	}

@@ -1,5 +1,10 @@
 package org.prometheus.dto;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+
 public class CicloTrabalhoDTO {
 
 	private Long nuFatura;
@@ -24,6 +29,7 @@ public class CicloTrabalhoDTO {
 	private String deJustificativaAlteracao;
 	private java.math.BigDecimal qtDiasAusencia;
 	private java.math.BigDecimal qtDiasExtra;
+	private Map<String, XSSFCell> indicadores;
 
 	public void setNuEquipe(Long nuEquipe) {
 		this.nuEquipe = nuEquipe;
@@ -204,5 +210,40 @@ public class CicloTrabalhoDTO {
 	public String getNoCicloTrabalho() {
 		String tmp = "0000" + nuCicloTrabalho;
 		return "SPRINT: " + tmp.substring(tmp.length() - 4, tmp.length());
+	}
+
+	/**
+	 * @return the indicadores
+	 */
+	public Map<String, XSSFCell> getIndicadores() {
+		if (indicadores == null) {
+			indicadores = new HashMap<String, XSSFCell>();
+		}
+		return indicadores;
+	}
+
+	/**
+	 * @param indicadores the indicadores to set
+	 */
+	public void setIndicadores(Map<String, XSSFCell> indicadores) {
+		this.indicadores = indicadores;
+	}
+	
+	/**
+	 * 
+	 * @param sgIndicador
+	 * @param vrIndicador
+	 */
+	public void addIndicador(String sgIndicador, XSSFCell vrIndicador) {
+		getIndicadores().put(sgIndicador, vrIndicador);
+	}
+	
+	/**
+	 * 
+	 * @param sgIndicador
+	 * @return
+	 */
+	public XSSFCell getVrIndicador(String sgIndicador) {
+		return getIndicadores().get(sgIndicador);
 	}
 }

@@ -42,6 +42,7 @@ import org.prometheus.service.VigenciaMembrosSprintService;
 import org.prometheus.utils.DateUtil;
 import org.prometheus.utils.Utils;
 import org.prometheus.utils.XSSFSheetUtils;
+import org.prometheus.utils.XSSFUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -79,10 +80,10 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 	@Autowired
 	private IndicadorService indicadorService;
-	
+
 	@Autowired
 	private IndicadorFactory indicadorFactory;
-	
+
 	@Autowired
 	private IndicadorSprintFactory indicadorSprintFactory;
 
@@ -169,20 +170,21 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		 * Indicadores
 		 */
 		if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
-			
-			List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(), false);
-			
+
+			List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(),
+					false);
+
 			XSSFRow row = context.nextRow();
-			
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 3,//
-					"Indicadores",
-					CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
-			
+
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 3, //
+					"Indicadores", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+
 			for (IndicadorContratoDTO indicador : indicadores) {
 				row = context.nextRow();
-				XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 2,
-						indicador.getDescricao());
-				XSSFSheetUtils.addCell(row, 3, BigDecimal.ZERO);
+				XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 2, indicador.getDescricao());
+				XSSFCell vrIndicador = XSSFSheetUtils.addCell(row, 3, Indicador.NAO_APURADO,
+						CellStylesEnum.NORMAL_ALIGN_CENTER);
+				faturamento.addIndicador(indicador.getSgTipoIndicador(), vrIndicador);
 			}
 
 			processarCiclosTrabalho(equipe, faturamento, result);
@@ -191,218 +193,274 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		context.addEmptyRow();
 	}
 
-	private int processarCiclosTrabalho(EquipeDTO equipe, FaturamentoDTO faturamento, 
+	private int processarCiclosTrabalho(EquipeDTO equipe, FaturamentoDTO faturamento,
 			Map<Long, InsumosFaturamentoDTO> result) {
-		
+
 		context.addEmptyRow();
-		
-        // ciclos
-        List<CicloTrabalhoDTO> ciclos = cicloTrabalhoService.listar(faturamento.getNuFatura(), equipe.getNuEquipe());
-		
-        if (Utils.isEmpty(ciclos)) {
 
-        	XSSFRow row = context.nextRow();
-        	XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                    "Se não houver Sprint no período ou se os indicadores não estiverem configurados, o FNS não será apurado.", //
-                    CellStylesEnum.NOTA_BOLD);
-        }        
+		// ciclos
+		List<CicloTrabalhoDTO> ciclos = cicloTrabalhoService.listar(faturamento.getNuFatura(), equipe.getNuEquipe());
 
-        if (Utils.isNotEmpty(ciclos)) {
+		if (Utils.isEmpty(ciclos)) {
 
-            for (CicloTrabalhoDTO ciclo : ciclos) {
+			XSSFRow row = context.nextRow();
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, LAYOUT_COLUMNS_COUNT - 1, //
+					"Se não houver Sprint no período ou se os indicadores não estiverem configurados, o FNS não será apurado.", //
+					CellStylesEnum.NOTA_BOLD);
+		}
 
-                if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
+		if (Utils.isNotEmpty(ciclos)) {
 
-                	/**
-                	 * DADOS DA SPRINT                	
-                	 */
-                    LOG.info(String.format("%s - %s - %s - Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
-                            equipe.getNuContrato(), equipe.getNoContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
-                            faturamento.getNuFatura(), faturamento.getDeFatura(), //
-                            ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
+			for (CicloTrabalhoDTO ciclo : ciclos) {
 
-                    context.setCiclo(ciclo);
-                    
-                    XSSFRow row = context.nextRow();
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, LAYOUT_COLUMNS_COUNT - 1, //
-                            ciclo.getNoCicloTrabalho(), CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
-                    
-                    int rowInicioDados = context.getRownum();
-                    
-                    context.addEmptyRow();
-                    
-                    row = context.nextRow();
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 1, //
-                            "Dados da Sprint", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-                    
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Data Início");
-                    XSSFSheetUtils.addCell(row, 1, ciclo.getDtInicioCicloTrabalho());
+				if ("S".equalsIgnoreCase(faturamento.getIcConsiderarFns())) {
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Data Alvo");
-                    XSSFSheetUtils.addCell(row, 1, ciclo.getDtAlvoCicloTrabalho());
+					/**
+					 * DADOS DA SPRINT
+					 */
+					LOG.info(String.format("%s - %s - %s - Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
+							equipe.getNuContrato(), equipe.getNoContrato(),
+							equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
+							faturamento.getDeFatura(), //
+							ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Data Final");
-                    XSSFSheetUtils.addCell(row, 1, ciclo.getDtFinalCicloTrabalho());
+					context.setCiclo(ciclo);
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Tamanho");
-                    XSSFCell cellTamanho = XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
+					XSSFRow row = context.nextRow();
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, LAYOUT_COLUMNS_COUNT - 1, //
+							ciclo.getNoCicloTrabalho(), CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Falha Caixa");
-                    XSSFSheetUtils.addCell(row, 1, ciclo.getCoFalhaCicloTrabalho(), CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+					int rowInicioDados = context.getRownum();
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Qt. Membros");
-                    XSSFCell cellQtMembrosCiclo = XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
+					context.addEmptyRow();
 
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, 0, "Qt. Dias Sprint.");
-                    XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
-                    
-                    context.addEmptyRow();
-                    
-                    context.setRownum(rowInicioDados + 1);
-                    
-                    row = context.nextRow();
-                    
-                    /**
-                     * VIGENCIA DE MEMBROS DA SPRINT
-                     */
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 3, 7, //
-                            "Vigência dos membros da Sprint", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-                    
-                    int pos = 3;
-                    row = context.nextRow();
-                    XSSFSheetUtils.addCell(row, pos++, "Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addCell(row, pos++, "Fim", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addCell(row, pos++, "Qt. Trabalhados", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addCell(row, pos++, "Qt. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
-                    
-                    List<VigenciaMembrosSprintDTO> vigenciaMembrosSprint = vigenciasMembrosSprintService
-                            .listar(faturamento.getNuFatura(), equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
-                    
-                    XSSFCell prineiraVigencia = null;
-                    XSSFCell ultimaVigencia = null;
-                    
-                    for (VigenciaMembrosSprintDTO d : vigenciaMembrosSprint) {
+					row = context.nextRow();
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 0, 1, //
+							"Dados da Sprint", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
-                        pos = 3;
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Data Início");
+					XSSFSheetUtils.addCell(row, 1, ciclo.getDtInicioCicloTrabalho());
 
-                        row = context.nextRow();
-                        
-                        XSSFSheetUtils.addCell(row, pos++, d.getDtInicioVigenciaMembros());
-                        XSSFSheetUtils.addCell(row, pos++, d.getDtFinalVigenciaMembros());
-                        XSSFSheetUtils.addCell(row, pos++, d.getQtMembrosEquipe());
-                        XSSFSheetUtils.addCell(row, pos++, d.getQtDiasTrab());
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Data Alvo");
+					XSSFSheetUtils.addCell(row, 1, ciclo.getDtAlvoCicloTrabalho());
 
-                        if (prineiraVigencia == null) {
-                        	prineiraVigencia = XSSFSheetUtils.addCell(row, pos++, d.getQtEfetiva(), CellStylesEnum.DECIMAL5);
-                        	ultimaVigencia = prineiraVigencia; 	
-                        } else {
-                        	ultimaVigencia = XSSFSheetUtils.addCell(row, pos++, d.getQtEfetiva(), CellStylesEnum.DECIMAL5);
-                        }
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Data Final");
+					XSSFSheetUtils.addCell(row, 1, ciclo.getDtFinalCicloTrabalho());
 
-                    }
-                    
-                    row = context.nextRow();
-                    
-                    if (prineiraVigencia != null) {
-                        
-                    	XSSFSheetUtils.setCellFormula(cellQtMembrosCiclo, //
-                        		String.format("sum(%s:%s)", prineiraVigencia.getReference(), ultimaVigencia.getReference()), //
-                        		CellStylesEnum.DECIMAL);
-                    }
-                    
-                    /**
-                     * SOLICITACOES 
-                     */
-                    context.addEmptyRow();
-                    
-                    row = context.nextRow();
-                    
-                    pos = 0;
-                    
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 4, //
-                    		"Solicitações", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
-                    
-                    List<SolicitacaoDTO> solicitacoes = solicitacaoService.listar(equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
-                    
-                    row = context.nextRow();
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Tamanho");
+					XSSFCell cellTamanho = XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
 
-                    XSSFSheetUtils.addCell(row, pos++, "Código", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos + 1, "Tipo de Serviço",
-                            CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
-                    XSSFSheetUtils.addCell(row, pos + 2, "Tamanho", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
-                    
-                    XSSFCell prineiraSolicitacao = null;
-                    XSSFCell ultimaSolicitacao = null;
-                    
-                    for (SolicitacaoDTO s : solicitacoes) {
-                        pos = 0;
-                        row = context.nextRow();
-                        XSSFSheetUtils.addCell(row, pos++, s.getCoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
-                        XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos + 1, s.getNoTipoServico(),
-                                CellStylesEnum.NORMAL_ALIGN_LEFT);
-                        
-                        if (prineiraSolicitacao == null) {
-                        	prineiraSolicitacao = XSSFSheetUtils.addCell(row, pos + 2, s.getNuTamanhoServico(), CellStylesEnum.DECIMAL);
-                        	ultimaSolicitacao = prineiraSolicitacao;
-                        } else{
-                        	ultimaSolicitacao = XSSFSheetUtils.addCell(row, pos + 2, s.getNuTamanhoServico(), CellStylesEnum.DECIMAL);	
-                        }
-                        
-                    }
-                    
-                    if (prineiraSolicitacao != null) {
-                        
-                    	XSSFSheetUtils.setCellFormula(cellTamanho, //
-                        		String.format("sum(%s:%s)", prineiraSolicitacao.getReference(), ultimaSolicitacao.getReference()), //
-                        		CellStylesEnum.DECIMAL);
-                    }
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Falha Caixa");
+					XSSFSheetUtils.addCell(row, 1, ciclo.getCoFalhaCicloTrabalho(),
+							CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 
-                    int rowFinalDados = context.getRownum();
-                    
-                    /**
-                     * INDICADORES DA SPRINT
-                     */
-                    context.setRownum(rowInicioDados + 1);
-                    
-                    row = context.nextRow();
-                    
-                    pos = 10;
-                    
-                    XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
-                    		"INDICADORES DA SPRINT", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
-                    
-                    List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(), false);
-                    
-                    for (IndicadorContratoDTO indicador : indicadores) {
-                    	Indicador indicadorImpl = indicadorSprintFactory.get(indicador, context);
-                    	System.out.println(indicador.getDescricao());
-                    	indicadorImpl.calcular();
-                    	row = context.nextRow();
-                    }
-                    
-                    if (rowFinalDados > context.getRownum()) {
-                    	context.setRownum(rowFinalDados + 1);
-                    }
-                    
-                    context.addEmptyRow();
-                }
-                
-            } // ciclos
-        }          
-        
-        context.addEmptyRow();
-        
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Qt. Membros");
+					XSSFCell cellQtMembrosCiclo = XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
+
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, 0, "Qt. Dias Sprint.");
+					XSSFSheetUtils.addCell(row, 1, ciclo.getQtDiasSprint());
+
+					context.addEmptyRow();
+
+					context.setRownum(rowInicioDados + 1);
+
+					row = context.nextRow();
+
+					/**
+					 * VIGENCIA DE MEMBROS DA SPRINT
+					 */
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 3, 7, //
+							"Vigência dos membros da Sprint", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+
+					int pos = 3;
+					row = context.nextRow();
+					XSSFSheetUtils.addCell(row, pos++, "Início", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addCell(row, pos++, "Fim", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addCell(row, pos++, "Qt. Membros", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addCell(row, pos++, "Qt. Trabalhados", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addCell(row, pos++, "Qt. Efetiva", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
+
+					List<VigenciaMembrosSprintDTO> vigenciaMembrosSprint = vigenciasMembrosSprintService
+							.listar(faturamento.getNuFatura(), equipe.getNuEquipe(), ciclo.getNuCicloTrabalho());
+
+					XSSFCell prineiraVigencia = null;
+					XSSFCell ultimaVigencia = null;
+
+					for (VigenciaMembrosSprintDTO d : vigenciaMembrosSprint) {
+
+						pos = 3;
+
+						row = context.nextRow();
+
+						XSSFSheetUtils.addCell(row, pos++, d.getDtInicioVigenciaMembros());
+						XSSFSheetUtils.addCell(row, pos++, d.getDtFinalVigenciaMembros());
+						XSSFSheetUtils.addCell(row, pos++, d.getQtMembrosEquipe());
+						XSSFSheetUtils.addCell(row, pos++, d.getQtDiasTrab());
+
+						if (prineiraVigencia == null) {
+							prineiraVigencia = XSSFSheetUtils.addCell(row, pos++, d.getQtEfetiva(),
+									CellStylesEnum.DECIMAL5);
+							ultimaVigencia = prineiraVigencia;
+						} else {
+							ultimaVigencia = XSSFSheetUtils.addCell(row, pos++, d.getQtEfetiva(),
+									CellStylesEnum.DECIMAL5);
+						}
+
+					}
+
+					row = context.nextRow();
+
+					if (prineiraVigencia != null) {
+
+						XSSFSheetUtils.setCellFormula(cellQtMembrosCiclo, //
+								String.format("sum(%s:%s)", prineiraVigencia.getReference(),
+										ultimaVigencia.getReference()), //
+								CellStylesEnum.DECIMAL);
+					}
+
+					/**
+					 * SOLICITACOES
+					 */
+					context.addEmptyRow();
+
+					row = context.nextRow();
+
+					pos = 0;
+
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 4, //
+							"Solicitações", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+
+					List<SolicitacaoDTO> solicitacoes = solicitacaoService.listar(equipe.getNuEquipe(),
+							ciclo.getNuCicloTrabalho());
+
+					row = context.nextRow();
+
+					XSSFSheetUtils.addCell(row, pos++, "Código", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos + 1, "Tipo de Serviço",
+							CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+					XSSFSheetUtils.addCell(row, pos + 2, "Tamanho", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
+
+					XSSFCell prineiraSolicitacao = null;
+					XSSFCell ultimaSolicitacao = null;
+
+					for (SolicitacaoDTO s : solicitacoes) {
+						pos = 0;
+						row = context.nextRow();
+						XSSFSheetUtils.addCell(row, pos++, s.getCoSolicitacao(), CellStylesEnum.NORMAL_ALIGN_CENTER);
+						XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos++, pos + 1, s.getNoTipoServico(),
+								CellStylesEnum.NORMAL_ALIGN_LEFT);
+
+						if (prineiraSolicitacao == null) {
+							prineiraSolicitacao = XSSFSheetUtils.addCell(row, pos + 2, s.getNuTamanhoServico(),
+									CellStylesEnum.DECIMAL);
+							ultimaSolicitacao = prineiraSolicitacao;
+						} else {
+							ultimaSolicitacao = XSSFSheetUtils.addCell(row, pos + 2, s.getNuTamanhoServico(),
+									CellStylesEnum.DECIMAL);
+						}
+
+					}
+
+					if (prineiraSolicitacao != null) {
+
+						XSSFSheetUtils.setCellFormula(cellTamanho, //
+								String.format("sum(%s:%s)", prineiraSolicitacao.getReference(),
+										ultimaSolicitacao.getReference()), //
+								CellStylesEnum.DECIMAL);
+					}
+
+					int rowFinalDados = context.getRownum();
+
+					/**
+					 * INDICADORES DA SPRINT
+					 */
+					context.setRownum(rowInicioDados + 1);
+
+					row = context.nextRow();
+
+					pos = 10;
+
+					XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
+							"INDICADORES DA SPRINT", CellStylesEnum.ORANGE_ALIGN_CENTER_BOLD);
+
+					List<IndicadorContratoDTO> indicadores = indicadorService
+							.listarIndicadoresContrato(equipe.getCoEquipe(), false);
+
+					for (IndicadorContratoDTO indicador : indicadores) {
+						Indicador indicadorImpl = indicadorSprintFactory.get(indicador, context);
+						XSSFCell vrIndicador = indicadorImpl.calcular();
+						ciclo.addIndicador(indicador.getSgTipoIndicador(), vrIndicador);
+						row = context.nextRow();
+					}
+
+					if (rowFinalDados > context.getRownum()) {
+						context.setRownum(rowFinalDados + 1);
+					}
+
+					context.addEmptyRow();
+				}
+
+				faturamento.getCiclosTrabalho().add(ciclo);
+
+			} // ciclos
+
+		}
+
+		apurarIndicadores(equipe, faturamento);
+
+		context.addEmptyRow();
+
 		return context.getRownum();
 	}
-	
+
+	private void apurarIndicadores(EquipeDTO equipe, FaturamentoDTO faturamento) {
+
+		List<IndicadorContratoDTO> indicadores = indicadorService.listarIndicadoresContrato(equipe.getCoEquipe(),
+				false);
+
+		for (IndicadorContratoDTO indicador : indicadores) {
+
+			System.out.println(indicador.getSgTipoIndicador() + " " + //
+					faturamento.getIndicadores().get(indicador.getSgTipoIndicador()) + " " + //
+					faturamento.getCiclosTrabalho().size());
+
+			StringBuilder formula = new StringBuilder();
+
+			XSSFCell vrIndicador = faturamento.getVrIndicador(indicador.getSgTipoIndicador());
+
+			int qtCiclos = 0;
+
+			for (CicloTrabalhoDTO ciclo : faturamento.getCiclosTrabalho()) {
+
+				XSSFCell vrIndicadorCiclo = ciclo.getVrIndicador(indicador.getSgTipoIndicador());
+
+				if (XSSFUtils.isApurado(vrIndicadorCiclo)) {
+					formula.append("+" + vrIndicadorCiclo.getReference());
+					qtCiclos++;
+				}
+			}
+
+			if (Utils.isNotEmpty(formula.toString())) {
+
+				XSSFSheetUtils.setCellStyle(vrIndicador, CellStylesEnum.DECIMAL);
+				
+				if (qtCiclos == 1) {
+					vrIndicador.setCellFormula(formula.toString().substring(1));
+				} else {
+					vrIndicador.setCellFormula("(" + formula.toString().substring(1) + ")/" + qtCiclos);
+				}
+			}
+
+		}
+	}
+
 	private int processarFaturamento(EquipeDTO equipe, FaturamentoDTO faturamento, XSSFRow rowReferencia,
 			Map<Long, InsumosFaturamentoDTO> result) {
 
@@ -914,8 +972,9 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				cellProdutividade = null;
 
 				LOG.info(String.format("%s - % Equipe: %s - Fatura: %s - %s Ciclo: %s - Dt. Alvo: %s", //
-						equipe.getNuContrato(), equipe.getNoContrato(), equipe.getNuEquipe() + " - " + equipe.getCoEquipe(),
-						faturamento.getNuFatura(), faturamento.getDeFatura(), //
+						equipe.getNuContrato(), equipe.getNoContrato(),
+						equipe.getNuEquipe() + " - " + equipe.getCoEquipe(), faturamento.getNuFatura(),
+						faturamento.getDeFatura(), //
 						ciclo.getNuCicloTrabalho(), ciclo.getDtAlvoCicloTrabalho()));
 
 				CicloTrabalhoDTO diasTrabalhados = cicloTrabalhoService.getDiasTrabalhados(faturamento.getNuFatura(),

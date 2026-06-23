@@ -24,7 +24,7 @@ public enum FontsEnum {
     FontsEnum(Integer index, FontWeightEnum fontWeight, XSSFColor color) {
         this.index = index;
         this.size = (short) 10;
-        this.fontFamily = "Calibri";
+        this.fontFamily = "Arial";
         this.fontWeight = fontWeight;
         this.color = color;
     }

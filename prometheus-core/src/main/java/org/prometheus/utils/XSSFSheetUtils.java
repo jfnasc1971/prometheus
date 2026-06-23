@@ -55,6 +55,10 @@ public class XSSFSheetUtils {
 		return cell1;
 	}
 
+	public static final void setCellStyle(XSSFCell cell, CellStylesEnum style) {
+		cell.setCellStyle(cell.getSheet().getWorkbook().getCellStyleAt(style.index));
+	}
+	
 	public static final XSSFCell addCell(XSSFRow row, int pos, String value, CellStylesEnum style) {
 		XSSFCell cell1 = row.createCell(pos);
 		cell1.setCellStyle(row.getSheet().getWorkbook().getCellStyleAt(style.index));

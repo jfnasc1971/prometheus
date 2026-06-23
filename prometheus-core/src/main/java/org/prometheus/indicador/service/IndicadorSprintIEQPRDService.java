@@ -124,7 +124,7 @@ public class IndicadorSprintIEQPRDService {
 			StringBuilder sb = new StringBuilder();
 
 			sb.append("SELECT "); 
-			sb.append("  sum(se.nu_tamanho_servico) "); 
+			sb.append("  coalesce(sum(se.nu_tamanho_servico),0) "); 
 			sb.append("FROM "); 
 			sb.append("  gct.gcttb088_ciclo_trabalho cct "); 
 			sb.append("  inner join gct.gcttb087_equipe e on ( "); 

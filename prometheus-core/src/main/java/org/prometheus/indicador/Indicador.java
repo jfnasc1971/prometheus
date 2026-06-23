@@ -8,7 +8,7 @@ import org.prometheus.relatorios.RelatorioContext;
 import org.prometheus.utils.XSSFSheetUtils;
 
 public abstract class Indicador {
-
+	public static final String NAO_APURADO = "N/A";
 	protected IndicadorContratoDTO indicador;
 	protected RelatorioContext context;
 	protected int pos = 0;
@@ -17,12 +17,12 @@ public abstract class Indicador {
 		this.indicador = indicador;
 		this.context = context;
 	}
-	
+
 	public void escreverTitulo() {
 		XSSFRow row = context.nextRow();
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 2, //
 				indicador.getSgTipoIndicador() + " - " + indicador.getNoTipoIndicador(), //
-				CellStylesEnum.WHITE_SMOKE_ALIGN_LEFT);
+				CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 	}
 
 	public abstract XSSFCell calcular();

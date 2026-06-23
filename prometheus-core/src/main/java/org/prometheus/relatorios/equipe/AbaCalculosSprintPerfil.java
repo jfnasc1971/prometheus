@@ -216,7 +216,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		//
 		XSSFSheetUtils.addCell(row, 12, "Desempenho", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
 		XSSFSheetUtils.addCell(row, 13, "FNS", CellStylesEnum.GREEN_ALIGN_CENTER_BOLD);
-		
+
 		row = context.getRow(rowNum++);
 
 		XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 7, //
@@ -228,34 +228,53 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 		XSSFSheetUtils.addCell(row, 10, "Valor", CellStylesEnum.WHITE_SMOKE_ALIGN_CENTER_BOLD);
 
 		//
-		XSSFSheetUtils.addCell(row, 12, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
+		XSSFCell cellVrDesempenho = XSSFSheetUtils.addCell(row, 12, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
 		XSSFSheetUtils.addCell(row, 13, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
+
+		StringBuilder formulaDesempenho = new StringBuilder();
+		StringBuilder pesos = new StringBuilder();
 		
 		for (IndicadorContratoDTO indicador : indicadores) {
 
 			row = context.getRow(rowNum++);
 
 			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 5, 7, indicador.getDescricao());
-			
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 8, 9, //
+
+			XSSFCell cellVrPesoIndicador = XSSFSheetUtils.addMergedRegion(context.getSheet(), row, 8, 9, //
 					indicador.getVrPesoTipoIndicador(), CellStylesEnum.DECIMAL);
-			
-			XSSFCell cellVrIndicador = XSSFSheetUtils.addCell(row, 10, Indicador.NAO_APURADO, CellStylesEnum.NORMAL_ALIGN_CENTER);
+
+			XSSFCell cellVrIndicador = XSSFSheetUtils.addCell(row, 10, Indicador.NAO_APURADO,
+					CellStylesEnum.NORMAL_ALIGN_CENTER);
 
 			StringBuilder formula = new StringBuilder();
-			
+
 			for (FaturamentoDTO fa : this.faturamentos.subList(fromIndex, toIndex)) {
 				if (XSSFUtils.isApurado(fa.getVrIndicador(indicador.getSgTipoIndicador()))) {
-					formula.append("," + fa.getVrIndicador(indicador.getSgTipoIndicador()));
+					
+					formula.append(String.format(",%s", //
+							fa.getVrIndicador(indicador.getSgTipoIndicador()).getReference()));
+
+					pesos.append("," + cellVrPesoIndicador.getReference());
 				}
 			}
-			
+
 			if (Utils.isNotEmpty(formula.toString())) {
-				System.out.println(String.format("average(%s)", formula.toString().substring(1)));
-				cellVrIndicador.setCellFormula(String.format("average(%s)", //
+				
+				cellVrIndicador.setCellFormula(String.format("average(%s)",//
 						formula.toString().substring(1)));
-				XSSFSheetUtils.setCellStyle(cellVrIndicador, CellStylesEnum.DECIMAL);
+				
+				XSSFSheetUtils.setCellStyle(cellVrIndicador, CellStylesEnum.DECIMAL5);
+				
+				formulaDesempenho.append(String.format(",%s*%s", //
+						cellVrIndicador.getReference(), cellVrPesoIndicador.getReference()));
 			}
+		}
+		
+		if (Utils.isNotEmpty(formulaDesempenho.toString())) {
+			cellVrDesempenho.setCellFormula(String.format("sum(%s)/sum(%s)",//
+					formulaDesempenho.toString().substring(1),//
+					pesos.toString().substring(1)));
+			XSSFSheetUtils.setCellStyle(cellVrDesempenho, CellStylesEnum.DECIMAL5);			
 		}
 	}
 
@@ -510,7 +529,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 			if (Utils.isNotEmpty(formula.toString())) {
 
-				XSSFSheetUtils.setCellStyle(vrIndicador, CellStylesEnum.DECIMAL);
+				XSSFSheetUtils.setCellStyle(vrIndicador, CellStylesEnum.DECIMAL5);
 
 				if (qtCiclos == 1) {
 					vrIndicador.setCellFormula(formula.toString().substring(1));

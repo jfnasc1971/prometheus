@@ -43,7 +43,7 @@ public class IndicadorSprintIEQNP extends Indicador {
 		if (cellNota.getReference() != null) {
 			XSSFSheetUtils.setCellFormula(result,
 					String.format("%s*%s", cellNota.getReference(), cellVrAjuste.getReference()), //
-					CellStylesEnum.DECIMAL);
+					CellStylesEnum.DECIMAL5);
 		}
 
 		return result;

@@ -74,7 +74,7 @@ public class IndicadorSprintIEQPRD extends Indicador {
 					cellQtMembrosSprint.getReference(), 
 					cellQtDiasSprint.getReference(), 
 					cellVrProdutividadeEsperada.getReference()), //
-					CellStylesEnum.DECIMAL);
+					CellStylesEnum.DECIMAL5);
 		}
 
 		return result;

@@ -60,7 +60,7 @@ public class IndicadorSprintISET extends Indicador {
 		if (qtServicosContratatos != null && qtServicosContratatos.doubleValue() != 0) {
 			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s)", //
 					cellQtServicosEntregues.getReference(), cellQtServicosContratados.getReference()), //
-					CellStylesEnum.DECIMAL);
+					CellStylesEnum.DECIMAL5);
 		}
 
 		return result;

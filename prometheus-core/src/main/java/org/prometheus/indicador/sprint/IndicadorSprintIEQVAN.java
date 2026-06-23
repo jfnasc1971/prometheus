@@ -63,7 +63,7 @@ public class IndicadorSprintIEQVAN extends Indicador {
 		if (cellNota != null) {
 			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s)*%s", //
 					cellNota.getReference(), cellQtQuestoes.getReference(), cellVrAjuste.getReference()), //
-					CellStylesEnum.DECIMAL);
+					CellStylesEnum.DECIMAL5);
 		}
 
 		return result;

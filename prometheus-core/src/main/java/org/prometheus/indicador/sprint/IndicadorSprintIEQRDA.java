@@ -69,7 +69,7 @@ public class IndicadorSprintIEQRDA extends Indicador {
 			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s/%s)*%s", //
 					cellNota.getReference(), cellQtQuestoes.getReference(), //
 					cellQtProfissionais.getReference(), cellVrAjuste.getReference()), //
-					CellStylesEnum.DECIMAL);
+					CellStylesEnum.DECIMAL5);
 		}
 
 		return result;

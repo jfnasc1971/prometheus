@@ -41,15 +41,15 @@ public class IndicadorSprintIEQRDA extends Indicador {
 		if (param != null) {
 
 			row = context.nextRow();
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Soma Notas Assistido");
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Somatório Notas Assistido");
 			cellNota = XSSFSheetUtils.addCell(row, pos + 2, param.getVrAvaliacaoSprint());
 			
 			row = context.nextRow();
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Questões respondidas");
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Quantidade de Questões Respondidas");
 			cellQtQuestoes = XSSFSheetUtils.addCell(row, pos + 2, param.getQtQuestoesRespondidas());			
 
 			row = context.nextRow();
-			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Quantidade Profisionais");
+			XSSFSheetUtils.addMergedRegion(context.getSheet(), row, pos, pos + 1, "Quantidade de Avaliações");
 			cellQtProfissionais = XSSFSheetUtils.addCell(row, pos + 2, param.getQtProfissionaisAssistido());
 
 			row = context.nextRow();

@@ -290,7 +290,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 
 		// essa posição fixa é o número da primeira linha das faixas
 		// da seção "Valores Faixas Indicador" na aba equipe
-		int pos = 16;
+		int pos = 15;
 
 		if (!"N/A".equalsIgnoreCase(cellVrDesempenho.toString())) {
 

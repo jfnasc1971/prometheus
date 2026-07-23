@@ -49,7 +49,7 @@ public class IndicadorSprintIEQVANService {
 			sb.append("    and sc.nu_tipo_grupo = e.nu_tipo_grupo ");
 			sb.append("    and sc.nu_tipo_servico = se.nu_tipo_servico ");
 			sb.append("    and sc.ic_servico_compoe_calculo_fns = 'S' ");
-			sb.append("    and se.co_falha_solicitacao = 'NF' ");
+			sb.append("    and coalesce(se.co_falha_solicitacao,'NF') = 'NF' ");
 			sb.append("  ) ");
 			sb.append("  inner join gct.gcttb199_avlco_atndmnto_equipe a on ( ");
 			sb.append("    a.nu_equipe = ct.nu_equipe ");

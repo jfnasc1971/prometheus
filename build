@@ -36,7 +36,7 @@ if [ "$1" == commit ];then
 fi
 
 cp prometheus-core/target/prometheus.jar /projetos/prometheus/dist/
-cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/Sustentacao/Planilhas/
+cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/sustentacao/Memorias_Calculo/
 cd /projetos/caixa/sigct/Sustentacao/Planilhas/
 git commit -a -m "Prometheus - Melhorias e correções"
 git push

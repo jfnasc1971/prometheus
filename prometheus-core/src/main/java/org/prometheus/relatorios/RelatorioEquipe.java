@@ -253,7 +253,7 @@ public class RelatorioEquipe extends Relatorio {
 
 				if (isTipoGrupoG4) {
 					AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
-					insumos = calculos.write(wb, coEquipe, faturamentos);
+					calculos.write(wb, coEquipe, faturamentos, insumos);
 				}
 
 			}
@@ -268,9 +268,20 @@ public class RelatorioEquipe extends Relatorio {
 		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
 			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
-				AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
-						.getBean(AbaCalculosAcionamentoPerfil.class);
-				calculos.gerar(wb, coEquipe, faturamentos, insumos);
+				
+				boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
+				
+				if (!isTipoGrupoG4) {
+					AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
+							.getBean(AbaCalculosAcionamentoPerfil.class);
+					calculos.gerar(wb, coEquipe, faturamentos, insumos);
+				}
+
+				if (isTipoGrupoG4) {
+					AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
+					calculos.write(wb, coEquipe, faturamentos, insumos);
+				}
+				
 			}
 
 			if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {

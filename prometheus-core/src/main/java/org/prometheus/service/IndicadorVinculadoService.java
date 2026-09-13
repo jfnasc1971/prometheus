@@ -104,7 +104,7 @@ public class IndicadorVinculadoService {
 		sb.append("    and f.co_sitio = ai.co_sitio "); 
 		sb.append("  ) "); 
 		sb.append("where "); 
-		sb.append("  vie.vr_calculo_indicador is not null "); 
+		sb.append("  coalesce(vie.vr_calculo_indicador,0) <> 0 "); 
 		sb.append("  and giv.nu_tipo_indicador = ? "); 
 		sb.append("  and giv.nu_contrato = ? "); 
 		sb.append("  and giv.nu_tipo_grupo = ? "); 

@@ -1,0 +1,12 @@
+#
+# LISTA DE CONTRATOS A SEREM PROCESSADAS
+#
+# Informar o código da contrato, um em cada linha.
+# Use # se quiser ignorar um determinado contrato
+#
+03034/2023
+03438/2023
+03776/2023
+06285/2021
+06834/2021
+06837/2021

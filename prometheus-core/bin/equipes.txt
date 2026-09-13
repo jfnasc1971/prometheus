@@ -1,6 +1,0 @@
-#
-# LISTA DE EQUIPES A SEREM PROCESSADAS
-#
-# Informar o código da equipe, uma em cada linha.
-# Para comentar um determinada equipe, usar o #
-#

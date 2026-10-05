@@ -136,7 +136,7 @@ public class AbaCalculoValorDevidoPerfil extends Relatorio {
                             CellStylesEnum.DECIMAL);
                     
                     // FNS
-                    if (insumo.getVrFns() == null || !XSSFUtils.isApurado(insumo.getVrFns())) {
+                    if (!XSSFUtils.isNumericValue(insumo.getVrFns())) {
                         addCell(row, pos++, "N/A", CellStylesEnum.NORMAL_ALIGN_CENTER);
                     } else {
                     	addCell(row, pos++, BigDecimal.valueOf(insumo.getVrFns().getNumericCellValue()), CellStylesEnum.DECIMAL);

@@ -278,7 +278,8 @@ public class AbaEquipe extends Relatorio {
 		pos = 7;
 		rownum = 13;
 		row = addNewRow(sheet, rownum++);
-		XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 2, "Faixas Indicador FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
+		XSSFSheetUtils.addMergedRegion(sheet, row, pos, pos + 2, //
+				"Faixas Indicador FNS", CellStylesEnum.LIGHT_GREY_ALIGN_CENTER_BOLD);
 
 		row = addNewRow(sheet, rownum++);
 		addCell(row, pos++, "Vr. Inicial", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);

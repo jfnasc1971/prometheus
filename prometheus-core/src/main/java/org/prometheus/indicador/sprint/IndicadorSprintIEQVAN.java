@@ -36,7 +36,7 @@ public class IndicadorSprintIEQVAN extends Indicador {
 		ParametrosIndicador param = service.recuperar(context);
 
 		XSSFRow row = null;
-		
+
 		if (param != null) {
 
 			row = context.nextRow();
@@ -64,6 +64,10 @@ public class IndicadorSprintIEQVAN extends Indicador {
 			XSSFSheetUtils.setCellFormula(result, String.format("(%s/%s)*%s", //
 					cellNota.getReference(), cellQtQuestoes.getReference(), cellVrAjuste.getReference()), //
 					CellStylesEnum.DECIMAL5);
+//			System.out.println(String.format("IEQVAN %s;%s;%s", //
+//					context.getFaturamento().getNuFatura(), //
+//					context.getCiclo().getNuCicloTrabalho(), //
+//					result.getNumericCellValue()));
 		}
 
 		return result;

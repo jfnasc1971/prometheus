@@ -313,7 +313,7 @@ public class IndicadorService {
 		sb.append("  INNER JOIN gct.gcttb112_tipo_indicador ti ON ti.nu_tipo_indicador = gi.nu_tipo_indicador ");
 		sb.append("WHERE ");
 		sb.append("  e.co_equipe = ? ");
-		sb.append("  and ti.nu_tipo_indicador not in (30,31,34) ");
+		sb.append("  and ti.nu_tipo_indicador not in (31,34) ");
 
 		return sb.toString();
 	}	

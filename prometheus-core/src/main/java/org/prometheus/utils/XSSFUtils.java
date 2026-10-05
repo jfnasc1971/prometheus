@@ -1,10 +1,26 @@
 package org.prometheus.utils;
 
+import java.math.BigDecimal;
+
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.prometheus.enums.CellStylesEnum;
 import org.prometheus.indicador.Indicador;
 
 public class XSSFUtils {
 
+	public static boolean isNumericValue(XSSFCell cell) {
+		if (isApurado(cell)) {
+			try {
+				BigDecimal.valueOf(cell.getNumericCellValue());
+				return true;
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+		}
+	
+		return false;
+	}	
+	
 	public static boolean isApurado(XSSFCell cell) {
 		if (cell != null) {
 			return !cell.toString().equalsIgnoreCase(Indicador.NAO_APURADO);
@@ -18,7 +34,6 @@ public class XSSFUtils {
 		
 		if (cell != null) {
 			result = String.format("'%s'!%s", cell.getSheet().getSheetName(), cell.getReference());
-			System.out.println(result);
 		}
 		
 		return result;

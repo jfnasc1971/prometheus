@@ -27,6 +27,7 @@ import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoMilheiros;
 import org.prometheus.relatorios.equipe.AbaCalculoValorDevidoPerfil;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamento;
 import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoPerfil;
+import org.prometheus.relatorios.equipe.AbaCalculosAcionamentoUnisys;
 import org.prometheus.relatorios.equipe.AbaCalculosG4;
 import org.prometheus.relatorios.equipe.AbaCalculosSprint;
 import org.prometheus.relatorios.equipe.AbaCalculosSprintPerfil;
@@ -270,7 +271,7 @@ public class RelatorioEquipe extends Relatorio {
 
 		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
-			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())) {
+			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento()) && !equipe.getNuContrato().equals(899L)) {
 				
 				boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
 				
@@ -285,6 +286,12 @@ public class RelatorioEquipe extends Relatorio {
 					calculos.write(wb, coEquipe, faturamentos, insumos);
 				}
 				
+			}
+			
+			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento()) && equipe.getNuContrato().equals(899L)) {
+				AbaCalculosAcionamentoUnisys calculos = AppConfig.getApplicationContext()
+						.getBean(AbaCalculosAcionamentoUnisys.class);
+				calculos.gerar(wb, coEquipe, faturamentos, insumos);
 			}
 
 			if (TipoAtendimentoEnum.SPRINT.SIGLA.equals(equipe.getIcTipoAtendimento())) {

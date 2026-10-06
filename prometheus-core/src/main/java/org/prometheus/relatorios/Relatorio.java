@@ -420,7 +420,8 @@ public abstract class Relatorio {
             for (Long j : cells) {
                 for (XSSFCell c : indicadores.get(j)) {
                     try {
-                        if (c != null && !"N/A".equalsIgnoreCase(c.toString()) && c.getNumericCellValue() != 0) {
+                        //if (c != null && !"N/A".equalsIgnoreCase(c.toString()) && c.getNumericCellValue() != 0) {
+                        if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
                             sb.append(", " + c.getReference());
                         }
                     } catch (Exception e) {

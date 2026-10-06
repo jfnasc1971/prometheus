@@ -21,18 +21,22 @@ public class EntregaServiceUnisys {
 	private DatabaseService databaseService;
 
 	public List<EntregaDTO> listarServicosContratados(Long nuEquipe, Long nuFatura) {
+		System.out.println(String.format("%s %s %s", nuEquipe, nuFatura, getDMLServicosContratados()));
 		return listar(nuEquipe, nuFatura, getDMLServicosContratados());
 	}
 
 	public List<EntregaDTO> listarServicosEntregues(Long nuEquipe, Long nuFatura) {
+		System.out.println(String.format("%s %s %s", nuEquipe, nuFatura, getDMLServicosEntregues()));
 		return listar(nuEquipe, nuFatura, getDMLServicosEntregues());
 	}
 
 	public List<EntregaDTO> listarServicosAtrasados(Long nuEquipe, Long nuFatura) {
+		System.out.println(String.format("%s %s %s", nuEquipe, nuFatura, getDMLServicosAtrasados()));
 		return listar(nuEquipe, nuFatura, getDMLServicosAtrasados());
 	}
 
 	public List<EntregaDTO> listarServicosDevolvidos(Long nuEquipe, Long nuFatura) {
+		System.out.println(String.format("%s %s %s", nuEquipe, nuFatura, getDMLServicosDevolvidos()));
 		return listar(nuEquipe, nuFatura, getDMLServicosDevolvidos());
 	}
 	

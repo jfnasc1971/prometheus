@@ -1,35 +1,39 @@
 <?xml version="1.0"?>
-<project name="prometheus" default="package">
+<project name="prometheus" default="package" basedir=".">
 
   <property file="build.properties" />
+  <condition property="mvn.executable" value="mvn.cmd" else="mvn">
+    <os family="windows" />
+  </condition>
 
 	<target name="init" depends="update-build-number">
 		<mkdir dir="${build.dir}/${app.version}.${build.number}" />
 	</target>
 
 	<target name="update-revision">
-		<exec executable="/bin/bash" outputproperty="revision.number" failonerror="true">
-			<arg value="-c" />
-			<arg value="git log --format='%H' -n 1" />
+		<exec executable="git" outputproperty="revision.number" failonerror="true">
+			<arg value="log" />
+			<arg value="--format=%H" />
+			<arg value="-n" />
+			<arg value="1" />
+		</exec>
+
+		<exec executable="git" outputproperty="repo.info" failonerror="true">
+			<arg value="log" />
+			<arg value="-1" />
 		</exec>
 		
 		<echo>Commit ID: ${revision.number}</echo>
 
-		<exec executable="/bin/bash" failonerror="true">
-			<arg value="-c" />
-			<arg value="git log -1 > /tmp/repoinfo.properties" />
-		</exec>
-		
-		<exec executable="/bin/bash" failonerror="true">
-			<arg value="-c" />
-			<arg value="iconv -t ISO-8859-1 -f UTF-8 /tmp/repoinfo.properties > ${basedir}/prometheus-core/src/main/resources/repoinfo.properties" />
-		</exec>
+		<echo file="${basedir}/prometheus-core/src/main/resources/repoinfo.properties" encoding="ISO-8859-1">${repo.info}</echo>
 	</target>
 
 	<target name="package" depends="init">
-		<exec executable="/bin/bash" failonerror="true">
-			<arg value="-c" />
-			<arg value="mvn -DskipTests -Dapp.version=${app.version} clean install" />
+		<exec executable="${mvn.executable}" failonerror="true">
+			<arg value="-DskipTests" />
+			<arg value="-Dapp.version=${app.version}" />
+			<arg value="clean" />
+			<arg value="install" />
 		</exec>
 		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${build.dir}/${app.version}/prometheus-${app.version}.${build.number}.jar" />
 		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${dist.dir}/prometheus.jar" />

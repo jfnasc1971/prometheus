@@ -1,6 +1,9 @@
 #!/bin/bash
 clear
 
+export JAVA_HOME=/c/caixa/opt/jdk1.8.0_461
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
+
 BUILD_FILE="prometheus-core/src/main/resources/build.properties"
 
 ant

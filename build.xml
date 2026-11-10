@@ -1,26 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Prometheus" default="package" basedir=".">
+<?xml version="1.0"?>
+<project name="prometheus" default="package" basedir=".">
 
-  <!-- Detecta o sistema operacional -->
-  <condition property="is.windows">
+  <property file="build.properties" />
+  <condition property="mvn.executable" value="mvn.cmd" else="mvn">
     <os family="windows" />
   </condition>
 
-  <condition property="is.linux">
-    <os family="unix" />
-  </condition>
+	<target name="init" depends="update-build-number">
+		<mkdir dir="${build.dir}/${app.version}.${build.number}" />
+	</target>
 
-  <!-- Define qual arquivo de build incluir -->
-  <condition property="build.file" value="build.win.xml" else="build.linux.xml">
-    <isset property="is.windows" />
-  </condition>
+	<target name="update-revision">
+		<exec executable="git" outputproperty="revision.number" failonerror="true">
+			<arg value="log" />
+			<arg value="--format=%H" />
+			<arg value="-n" />
+			<arg value="1" />
+		</exec>
 
-  <!-- Importa o build apropriado -->
-  <import file="${build.file}" />
+		<exec executable="git" outputproperty="repo.info" failonerror="true">
+			<arg value="log" />
+			<arg value="-1" />
+		</exec>
+		
+		<echo>Commit ID: ${revision.number}</echo>
 
-  <!-- Target principal -->
-  <target name="package" depends="package-platform">
-    <echo message="Executando target package do Prometheus (${os.name})" />
-  </target>
+		<echo file="${basedir}/prometheus-core/src/main/resources/repoinfo.properties" encoding="ISO-8859-1">${repo.info}</echo>
+	</target>
 
+	<target name="package" depends="init">
+		<exec executable="${mvn.executable}" failonerror="true">
+			<arg value="-DskipTests" />
+			<arg value="-Dapp.version=${app.version}" />
+			<arg value="clean" />
+			<arg value="install" />
+		</exec>
+		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${build.dir}/${app.version}/prometheus-${app.version}.${build.number}.jar" />
+		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${dist.dir}/prometheus.jar" />
+	</target>
+
+	<target name="update-build-number" depends="update-revision">
+		<buildnumber file="build.number"/>
+		<echo>Build Number: ${build.number}</echo>
+
+		<propertyfile file="${basedir}/prometheus-core/src/main/resources/build.properties">
+			<entry key="build.date" type="date" value="now" />
+			<entry key="revision.number" value="${revision.number}" />
+			<entry key="build.number" value="${build.number}" />
+			<entry key="nomeSistema" value="${app.name}" />
+			<entry key="version" value="${app.version}" />
+		</propertyfile>
+
+	</target>
 </project>

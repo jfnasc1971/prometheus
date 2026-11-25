@@ -34,10 +34,3 @@ if [ "$1" == commit ];then
   git push -u origin v$LABEL 
 
 fi
-
-cp prometheus-core/target/prometheus.jar /projetos/prometheus/dist/
-cp prometheus-core/target/prometheus.jar /projetos/caixa/sigct/sustentacao/Memorias_Calculo/
-cd /projetos/caixa/sigct/sustentacao/planilhas/
-git commit -a -m "STRY00077013: SIGCT - Memória de cálculo dos contratos 8663/2018, 8664/2018 e 8718/2023"
-git push
-

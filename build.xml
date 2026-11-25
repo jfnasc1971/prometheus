@@ -7,7 +7,7 @@
   </condition>
 
 	<target name="init" depends="update-build-number">
-		<mkdir dir="${build.dir}/${app.version}.${build.number}" />
+
 	</target>
 
 	<target name="update-revision">
@@ -35,7 +35,6 @@
 			<arg value="clean" />
 			<arg value="install" />
 		</exec>
-		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${build.dir}/${app.version}/prometheus-${app.version}.${build.number}.jar" />
 		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${dist.dir}/prometheus.jar" />
 	</target>
 

@@ -584,7 +584,7 @@ public class AbaCalculosSprint extends Relatorio {
         indicadores = getIndicadoresMediaFNS(lista, nuFatura, 3);
         for (XSSFCell c : indicadores) {
             try {
-                if (c != null && c.getCellType() == CellType.FORMULA && c.getNumericCellValue() != 0) {
+                if (c != null && c.getCellType() == CellType.FORMULA) {// && c.getNumericCellValue() != 0) {
                     p1.append("," + c.getReference());
                 }
             } catch (Exception e) {

@@ -357,7 +357,7 @@ public class RelatorioEquipe extends Relatorio {
 				File.separator + //
 				equipe.getNoTipoGrupo();
 		
-		dir="";
+		//dir="";
 		(new File(PATH + "/" + dir)).mkdirs();
 
 		File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + equipe.getCoEquipe() + ".xlsx");

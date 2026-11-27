@@ -38,8 +38,8 @@ import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
 
-    //public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    public static final String PATH = "/projetos/memorias/Tests/logs";    
+    public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+    //public static final String PATH = "/projetos/memorias/tests/logs";    
     
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
     

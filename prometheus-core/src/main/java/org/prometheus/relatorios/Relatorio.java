@@ -1,5 +1,6 @@
 package org.prometheus.relatorios;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +38,8 @@ import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
 
-    //public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    public static final String PATH = "/projetos/Memorias";    
+    public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+    //public static final String PATH = "/projetos/Memorias";    
     
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
     

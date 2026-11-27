@@ -186,18 +186,14 @@ public class RelatorioEquipe extends Relatorio {
 			return null;
 		}
 
-		String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
-		//String dir = equipe.getCoContrato().replaceAll("[ /]", "_") + "/" + equipe.getNoTipoGrupo();
-
-		(new File(PATH + "/" + dir)).mkdirs();
-
-		File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + coEquipe + ".xlsx");
-		file.delete();
+		File file = createFile(equipe);
 		FileOutputStream fos = new FileOutputStream(file);
 
 		LOG.info(file.getAbsolutePath());
 
 		XSSFWorkbook wb = createWorkbook();
+
+		wb.setForceFormulaRecalculation(true);
 
 		LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
 				" - " + equipe.getNuEquipe() + " - " + equipe.getCoEquipe() + //
@@ -333,6 +329,19 @@ public class RelatorioEquipe extends Relatorio {
 		wb.close();
 
 		return file.getAbsolutePath();
+	}
+
+	private File createFile(EquipeDTO equipe) {
+		String dir = //equipe.getNoContrato().trim().split(" ")[0] + "_" + //
+				equipe.getCoContrato().replaceAll("[ /]", "_") + //
+				File.separator + //
+				equipe.getNoTipoGrupo();
+
+		(new File(PATH + "/" + dir)).mkdirs();
+
+		File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + equipe.getCoEquipe() + ".xlsx");
+		file.delete();
+		return file;
 	}
 
 	private XSSFWorkbook createWorkbook() {

@@ -38,6 +38,5 @@ if [ "$1" == commit ];then
 
 fi
 
-cp prometheus-core/target/prometheus.jar /projetos/prometheus/dist/
 cp prometheus-core/target/prometheus.jar /projetos/lib/
 

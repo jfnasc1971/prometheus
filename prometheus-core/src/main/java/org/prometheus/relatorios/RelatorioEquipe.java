@@ -187,22 +187,13 @@ public class RelatorioEquipe extends Relatorio {
 			return null;
 		}
 
-		// String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
-		String dir = equipe.getNoContrato().replaceAll("[ /]", "_").replaceAll("[ /]", "_") + //
-				//"_" + equipe.getCoContrato().replaceAll("[ /]", "_") + //
-				File.separator + //
-				equipe.getNoTipoGrupo();
-
-		(new File(PATH + "/" + dir)).mkdirs();
-
-		File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + coEquipe + ".xlsx");
-		file.delete();
+		File file = createFile(equipe);
 		FileOutputStream fos = new FileOutputStream(file);
 
 		LOG.info(file.getAbsolutePath());
 
 		XSSFWorkbook wb = createWorkbook();
-		
+
 		wb.setForceFormulaRecalculation(true);
 
 		LOG.info(equipe.getNuContrato() + " - " + equipe.getNoContrato() + //
@@ -271,10 +262,11 @@ public class RelatorioEquipe extends Relatorio {
 
 		if (DistribuicaoProfissionalEnum.PERFIL.SIGLA.equals(equipe.getIcDistribuiProfissional())) {
 
-			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento()) && !equipe.getNuContrato().equals(899L)) {
-				
+			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())
+					&& !equipe.getNuContrato().equals(899L)) {
+
 				boolean isTipoGrupoG4 = equipe.getNoTipoGrupo().startsWith("Equipes de Grupo 04");
-				
+
 				if (!isTipoGrupoG4) {
 					AbaCalculosAcionamentoPerfil calculos = AppConfig.getApplicationContext()
 							.getBean(AbaCalculosAcionamentoPerfil.class);
@@ -285,10 +277,11 @@ public class RelatorioEquipe extends Relatorio {
 					AbaCalculosG4 calculos = AppConfig.getApplicationContext().getBean(AbaCalculosG4.class);
 					calculos.write(wb, coEquipe, faturamentos, insumos);
 				}
-				
+
 			}
-			
-			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento()) && equipe.getNuContrato().equals(899L)) {
+
+			if (TipoAtendimentoEnum.ACIONAMENTO.SIGLA.equals(equipe.getIcTipoAtendimento())
+					&& equipe.getNuContrato().equals(899L)) {
 				AbaCalculosAcionamentoUnisys calculos = AppConfig.getApplicationContext()
 						.getBean(AbaCalculosAcionamentoUnisys.class);
 				calculos.gerar(wb, coEquipe, faturamentos, insumos);
@@ -356,6 +349,19 @@ public class RelatorioEquipe extends Relatorio {
 		wb.close();
 
 		return file.getAbsolutePath();
+	}
+
+	private File createFile(EquipeDTO equipe) {
+		String dir = equipe.getNoContrato().trim().split(" ")[0] + "_" + //
+				equipe.getCoContrato().replaceAll("[ /]", "_") + //
+				File.separator + //
+				equipe.getNoTipoGrupo();
+
+		(new File(PATH + "/" + dir)).mkdirs();
+
+		File file = new File(PATH + "/" + dir + "/SIGCT_MemoriaCalculo_" + equipe.getCoEquipe() + ".xlsx");
+		file.delete();
+		return file;
 	}
 
 	private XSSFWorkbook createWorkbook() {

@@ -39,12 +39,9 @@ import org.prometheus.utils.Utils;
 public abstract class Relatorio {
 
     public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    //private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";    
+    // public static final String PATH = "/projetos/memorias";    
     
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
-    
-	private Map<Long, Map<String, XSSFCell>> listaIndicadores;
-	private Map<Long, Map<String, XSSFCell>> listaMediaIndicadores;    
     
     protected void setColumnWidth(XSSFSheet sheet, int colNum, int width) {
         sheet.setColumnWidth(colNum, (int) sheet.getDefaultColumnWidth() * width * 8);

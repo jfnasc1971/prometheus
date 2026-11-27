@@ -186,8 +186,8 @@ public class RelatorioEquipe extends Relatorio {
 			return null;
 		}
 
-		// String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
-		String dir = equipe.getCoContrato().replaceAll("[ /]", "_") + "/" + equipe.getNoTipoGrupo();
+		String dir = ""; // equipe.getCoContrato().replaceAll("[ /]", "_");
+		//String dir = equipe.getCoContrato().replaceAll("[ /]", "_") + "/" + equipe.getNoTipoGrupo();
 
 		(new File(PATH + "/" + dir)).mkdirs();
 

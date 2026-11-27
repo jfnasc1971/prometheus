@@ -1,6 +1,5 @@
 package org.prometheus.relatorios;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +37,8 @@ import org.prometheus.utils.Utils;
 
 public abstract class Relatorio {
 
-    public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
-    //private static final String PATH = "/projetos/caixa/sigct/Trabalho/RTC23192487/Demonstrativos";    
+    //public static final String PATH = System.getProperty("user.dir") + File.separator + "Demonstrativos";
+    public static final String PATH = "/projetos/Memorias";    
     
     public static final Integer DEFAULT_COLUMNS_WIDTH = 60;
     
@@ -392,6 +391,11 @@ public abstract class Relatorio {
 
     protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura,
             IndicadorContratoDTO indicadorFNS) {
+    	return getMediaIndicador(indicadores, nuFatura, indicadorFNS, true);
+    }    
+    
+    protected String getMediaIndicador(Map<Long, List<XSSFCell>> indicadores, Long nuFatura,
+            IndicadorContratoDTO indicadorFNS, boolean ignorarZero) {
 
         if (indicadorFNS == null) {
             return null;
@@ -420,8 +424,13 @@ public abstract class Relatorio {
             for (Long j : cells) {
                 for (XSSFCell c : indicadores.get(j)) {
                     try {
-                        if (c != null && !"N/A".equalsIgnoreCase(c.toString()) && c.getNumericCellValue() != 0) {
-                            sb.append(", " + c.getReference());
+                        if (c != null && !"N/A".equalsIgnoreCase(c.toString())) {
+                        	if (c.getNumericCellValue() != 0) {
+                        		sb.append(", " + c.getReference());	
+                        	}
+                        	else if (c.getNumericCellValue() == 0 && !ignorarZero) {
+                        		sb.append(", " + c.getReference());	
+                        	}
                         }
                     } catch (Exception e) {
                     }

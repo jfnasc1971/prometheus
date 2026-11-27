@@ -487,7 +487,7 @@ public class AbaCalculosSprint extends Relatorio {
             if (getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS) != null) {
                 setCellFormula(cellMediaQualidadeProduto, //
                         "average("
-                                + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS)
+                                + getMediaIndicador(indicadoresQualideProduto, faturamento.getNuFatura(), indicadorFNS, false)
                                 + ")", //
                         CellStylesEnum.DECIMAL5);
             }
@@ -556,7 +556,7 @@ public class AbaCalculosSprint extends Relatorio {
             s2.append("," + "Equipe!J3");
         }
 
-        String ieqnp = parseFormulaDesempenho(indicadoresQualideProduto, nuFatura, "Equipe!J4");
+        String ieqnp = parseFormulaDesempenho(indicadoresQualideProduto, nuFatura, "Equipe!J4", false);
         if (ieqnp != null) {
             s1.append("+" + ieqnp.toString());
             s2.append("," + "Equipe!J4");
@@ -576,6 +576,10 @@ public class AbaCalculosSprint extends Relatorio {
     }
 
     private String parseFormulaDesempenho(Map<Long, List<XSSFCell>> lista, Long nuFatura, String cellPesoIndicador) {
+    	return parseFormulaDesempenho(lista, nuFatura, cellPesoIndicador, true);
+    }
+    
+    private String parseFormulaDesempenho(Map<Long, List<XSSFCell>> lista, Long nuFatura, String cellPesoIndicador, boolean ignorarZero) {
 
         StringBuilder p1 = new StringBuilder();
 
@@ -584,7 +588,10 @@ public class AbaCalculosSprint extends Relatorio {
         indicadores = getIndicadoresMediaFNS(lista, nuFatura, 3);
         for (XSSFCell c : indicadores) {
             try {
-                if (c != null && c.getCellType() == CellType.FORMULA && c.getNumericCellValue() != 0) {
+                if (c != null && c.getCellType() == CellType.FORMULA && c.getNumericCellValue() == 0 && !ignorarZero) {
+                    p1.append("," + c.getReference());
+                }
+                else if (c != null && c.getCellType() == CellType.FORMULA && c.getNumericCellValue() != 0) {
                     p1.append("," + c.getReference());
                 }
             } catch (Exception e) {

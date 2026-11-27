@@ -1,7 +1,7 @@
 #!/bin/bash
 IFS=$'\n'
 JAVA_CMD="/projetos/lib/jvm/jdk1.8.0_421/bin/java"
-CLASSPATH="/projetos/prometheus/dist/prometheus.jar"
+CLASSPATH="/projetos/lib/prometheus.jar"
 
 $JAVA_CMD -Dfile.encoding=UTF-8 -Dspring.profiles.active=local -classpath "$CLASSPATH" org.prometheus.relatorios.RelatorioEquipe $1
 

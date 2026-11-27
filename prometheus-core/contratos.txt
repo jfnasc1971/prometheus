@@ -4,5 +4,5 @@
 # Informar o código da contrato, um em cada linha.
 # Use # se quiser ignorar um determinado contrato
 #
-08663/2018
-08664/2018
+#08663/2018
+#08664/2018

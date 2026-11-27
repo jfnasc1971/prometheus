@@ -4,7 +4,7 @@
   <property file="build.properties" />
 
 	<target name="init" depends="update-build-number">
-		<mkdir dir="${build.dir}/${app.version}.${build.number}" />
+
 	</target>
 
 	<target name="update-revision">
@@ -31,7 +31,7 @@
 			<arg value="-c" />
 			<arg value="mvn -DskipTests -Dapp.version=${app.version} clean install" />
 		</exec>
-		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${dist.dir}/prometheus.jar" /-->
+		<copy file="${basedir}/prometheus-core/target/prometheus.jar" tofile="${dist.dir}/prometheus.jar" />
 	</target>
 
 	<target name="update-build-number" depends="update-revision">

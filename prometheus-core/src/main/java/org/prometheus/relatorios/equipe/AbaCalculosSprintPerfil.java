@@ -801,7 +801,7 @@ public class AbaCalculosSprintPerfil extends Relatorio {
 				addCell(row, pos - 1, BigDecimal.ZERO);
 			}
 
-			row = context.nextRow();
+			row = context.nextRow();	
 
 			addCell(row, pos - 2, "Valor Previsto", CellStylesEnum.NORMAL_ALIGN_CENTER_BOLD);
 			setCellFormula(context.getSheet(), row, String.format("sum(%s:%s:%s)", //
